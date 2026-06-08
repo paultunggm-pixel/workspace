@@ -50,6 +50,25 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - GitHub Push Protection 开启，防止意外推送密钥
 - 如推送被拒提示 secret scanning，先清理文件中的密钥再重试
 
+## 已安装插件
+
+| 插件 | 核心用途 |
+|------|---------|
+| `superpowers` | 子代理驱动开发、系统调试、TDD、代码审查 |
+| `frontend-design` | 高质量前端界面生成 |
+| `oh-my-claudecode` | 多代理编排、skill 体系、wiki、LSP |
+| `claude-md-management` | CLAUDE.md 质量审计与自动改进 |
+| `security-guidance` | 代码安全审查、敏感信息扫描 |
+| `commit-commands` | 标准化 Git 提交工作流（commit/push/PR） |
+| `code-review` | 多代理自动化代码审查 |
+
+### 关键 Skill 调用规则
+
+- 代码修改后 → `/code-review` 自动审查
+- 部署前安全检查 → `/security-review`
+- CLAUDE.md 维护 → `/claude-md-improver`
+- 复杂多步骤任务 → `/plan` 后执行
+
 ## 网页部署
 
 - 静态 HTML 网页通过 `deploy-static-site` skill 部署，同时推送至：
