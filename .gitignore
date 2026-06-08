@@ -1,0 +1,42 @@
+# Claude Code 本地缓存
+.omc/
+.omc/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# MHTML 压缩包（原始 .mhtml 保留）
+*.mhtml.zip
+
+# 大文件
+*.xlsx
+*.xls
+*.zip
+*.tar.gz
+*.gz
+
+# 独立 Git 仓库（不纳入父仓库）
+consistency-eval-gh/
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+
+# 含密钥的配置文件
+.mcp.json
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# 临时文件
+*.tmp
+*.temp
+*.swp
+*.swo
+*~

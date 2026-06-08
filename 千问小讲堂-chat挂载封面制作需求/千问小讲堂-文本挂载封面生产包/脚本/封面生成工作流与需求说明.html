@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>千问小讲堂 · 挂载封面生成 — 工作流与需求说明</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#fff; --ink:#1f2329; --sub:#5b6472;
+    --line:#e6e8ec; --brand:#3b6cff; --brand-soft:#eef3ff;
+    --warn:#d9480f; --warn-soft:#fff2e8; --ok:#1f9d57; --ok-soft:#e9f8ef;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    line-height:1.7;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:980px;margin:0 auto;padding:40px 24px 80px;}
+  header.hero{background:linear-gradient(135deg,#2b3a67,#3b6cff);color:#fff;
+    border-radius:20px;padding:34px 36px;box-shadow:0 10px 30px rgba(43,58,103,.25);}
+  header.hero h1{margin:0 0 8px;font-size:26px;letter-spacing:.5px;}
+  header.hero p{margin:4px 0;color:#dfe7ff;font-size:14px;}
+  .tag{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);
+    padding:3px 10px;border-radius:999px;font-size:12px;margin:8px 6px 0 0;}
+  .lead{margin-top:18px;background:var(--warn-soft);border:1px solid #ffd8bf;border-left:4px solid var(--warn);
+    border-radius:12px;padding:14px 18px;color:#8a3b12;font-size:14.5px;}
+  .lead b{color:var(--warn);}
+  section{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:24px 26px;margin-top:22px;box-shadow:0 2px 8px rgba(20,30,50,.03);}
+  h2{font-size:18px;margin:0 0 16px;display:flex;align-items:center;gap:10px;}
+  h2 .n{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;
+    background:var(--brand-soft);color:var(--brand);font-size:14px;font-weight:700;}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px;}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{color:var(--sub);font-weight:600;background:#fafbfc;}
+  tr:last-child td{border-bottom:none;}
+  code{background:#f1f3f6;padding:1px 6px;border-radius:6px;font-size:13px;
+    font-family:"SF Mono",Menlo,Consolas,monospace;color:#c0392b;}
+  /* flow */
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:8px;}
+  .step{flex:1 1 150px;min-width:140px;background:var(--brand-soft);border:1px solid #d6e2ff;
+    border-radius:12px;padding:12px 14px;font-size:13.5px;}
+  .step b{display:block;color:var(--brand);font-size:14px;margin-bottom:3px;}
+  .arrow{color:#b9c2d6;font-size:20px;font-weight:700;}
+  ul.req{margin:0;padding-left:20px;}
+  ul.req li{margin:7px 0;font-size:14.5px;}
+  ul.req li b{color:var(--brand);}
+  /* pain */
+  .pri{font-weight:700;font-size:12px;padding:2px 8px;border-radius:999px;white-space:nowrap;}
+  .p-hi{background:var(--warn-soft);color:var(--warn);}
+  .p-md{background:#fff7e6;color:#ad6800;}
+  .who{color:var(--sub);font-size:13px;white-space:nowrap;}
+  /* roles */
+  .roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;}
+  .role{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:#fcfdff;}
+  .role b{color:var(--ink);font-size:14.5px;}
+  .role span{display:block;color:var(--sub);font-size:13px;margin-top:5px;}
+  /* status */
+  .status li{margin:6px 0;font-size:14.5px;}
+  .pill{display:inline-block;font-size:12px;padding:1px 9px;border-radius:999px;margin-right:6px;}
+  .pill.ok{background:var(--ok-soft);color:var(--ok);}
+  .pill.todo{background:#f1f3f6;color:#5b6472;}
+  footer{color:#9aa3b2;font-size:12px;text-align:center;margin-top:30px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <h1>千问小讲堂 · 挂载封面生成</h1>
+    <p>工作流 / 产品需求 / 卡点与问题</p>
+    <div>
+      <span class="tag">面向：产品</span>
+      <span class="tag">设计</span>
+      <span class="tag">内容</span>
+      <span class="tag">工程</span>
+    </div>
+    <div class="lead">
+      结论先行：<b>这不是一个人能闭环的事</b>。至少需要「内容 + 设计 + 工程 + 审校」四方各自定标准、各自交付，
+      否则像「成品图错名」这类错漏，无法被系统性地发现。
+    </div>
+  </header>
+
+  <section>
+    <h2><span class="n">1</span>我们在做什么</h2>
+    <p style="margin-top:0;color:var(--sub);font-size:14.5px;">
+      把每条课程内容（学名 / 钩子 / 插画）批量合成为统一品牌样式的竖版封面（144×192），
+      并上传 OSS、把封面 URL 回写到内容表。已覆盖四类样式：
+    </p>
+    <table>
+      <tr><th>样式</th><th>适用</th><th>主文案</th><th>字体</th></tr>
+      <tr><td>style1</td><td>小低数学</td><td>钩子（整段自动换行）</td><td>造字工房圆黑 + 普惠</td></tr>
+      <tr><td>style2</td><td>小高数学</td><td>钩子（整段自动换行）</td><td>普惠 Bold</td></tr>
+      <tr><td>style3</td><td>语文（单名）</td><td>学名</td><td>HYXinRenWenSong 65W</td></tr>
+      <tr><td>成语故事</td><td>成语 / 寓言</td><td>学名（大）+ 钩子（小）</td><td>65W 标题 + W 常规钩子（白 70%）</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span>标准工作流（现状）</h2>
+    <div class="flow">
+      <div class="step"><b>① 内容表</b>学名 / 钩子 / 干净插画 url / 年级</div>
+      <span class="arrow">→</span>
+      <div class="step"><b>② Figma 规格</b>字号 / 位置 / 字重 / 换行 / 配色</div>
+      <span class="arrow">→</span>
+      <div class="step"><b>③ 渲染脚本</b>选样式 → 排版换行 → 毛玻璃徽标 → 文字</div>
+    </div>
+    <div class="flow" style="margin-top:10px;">
+      <div class="step"><b>④ 双版本产出</b>PNG 无损 + JPG ≤50K 压缩</div>
+      <span class="arrow">→</span>
+      <div class="step"><b>⑤ 上传 OSS</b>得到 CDN URL</div>
+      <span class="arrow">→</span>
+      <div class="step"><b>⑥ 回写内容表</b>压缩前 url / 压缩后 url</div>
+    </div>
+    <p style="font-size:13.5px;color:var(--sub);margin-bottom:0;">
+      其中部分篇目（如寓言故事）由设计老师直接出成品图，可跳过渲染直接进入 ④。
+      交付标准：每条两版 —— <b>PNG 压缩前（无损，约 250–420KB）</b>、<b>JPG 压缩后（≤50KB，自适应画质）</b>。
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span>产品需求 · 把样式当「规则」而非「个例」</h2>
+    <ul class="req">
+      <li><b>输入规范</b>：内容表稳定提供 学名 / 钩子 / 干净插画 url / 年级或学科，列名统一、每条带唯一 <code>guid</code>。</li>
+      <li><b>样式规则化</b>：每种样式的字体/字号/字重/位置/行高/字间距/配色，由设计在 Figma 固化为「可读规格」，而非逐图量取。</li>
+      <li><b>可读性规则</b>：白字落在浅色插画上的处理（压暗 / 毛玻璃 / 阴影）需有明确判定标准。</li>
+      <li><b>文案换行规则</b>：钩子断行（按标点断、不显示逗号、避免孤字、两行均衡）在内容侧约定清楚。</li>
+      <li><b>交付标准</b>：压缩目标（30–50KB）、格式（JPG 有损 / PNG 无损）、命名与回写列名固定下来。</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span>卡点与问题 · 需各方认领</h2>
+    <table>
+      <tr><th>等级</th><th>问题</th><th>现状 / 例子</th><th>影响</th><th>责任方</th></tr>
+      <tr><td><span class="pri p-hi">高</span></td><td><b>成品图错名</b></td>
+        <td><code>画龙点睛.png</code> 实为塞翁失马、<code>画龙点睛-1.png</code> 实为惊弓之鸟；缺真正的画龙点睛</td>
+        <td>按文件名匹配会全错，需逐张开图人工核对</td><td class="who">设计出图 + 审校</td></tr>
+      <tr><td><span class="pri p-hi">高</span></td><td><b>设计规格未沉淀</b></td>
+        <td>钩子字号/字重一度无人知，靠在 Figma 逐个点开文本框扒取</td>
+        <td>工程反复返工，规格易漂移</td><td class="who">设计</td></tr>
+      <tr><td><span class="pri p-md">中</span></td><td><b>可读性无标准</b></td>
+        <td>浅底白字发虚；压暗/毛玻璃/阴影选型来回试</td>
+        <td>出图质量不稳定</td><td class="who">设计</td></tr>
+      <tr><td><span class="pri p-md">中</span></td><td><b>文案换行无约定</b></td>
+        <td>钩子贪心换行出现「子？」孤尾；逗号是否显示不统一</td>
+        <td>排版观感差，需逐条调</td><td class="who">内容 + 设计</td></tr>
+      <tr><td><span class="pri p-hi">高</span></td><td><b>数据列名不统一</b></td>
+        <td><code>学名确认版</code> vs <code>学名·确认版</code>；部分表无封面 url 列</td>
+        <td>脚本需逐表适配，易错</td><td class="who">产品 + 内容</td></tr>
+      <tr><td><span class="pri p-hi">高</span></td><td><b>匹配靠中文名</b></td>
+        <td>成品图 / 数据按「学名」匹配，命名不一致即丢失</td>
+        <td>漏配、错配（应改用 guid）</td><td class="who">全体</td></tr>
+      <tr><td><span class="pri p-md">中</span></td><td><b>覆盖不全</b></td>
+        <td>50 篇成语只有 20 张成品图，画龙点睛缺图</td>
+        <td>需「生成兜底」补齐</td><td class="who">设计 + 工程</td></tr>
+      <tr><td><span class="pri p-md">中</span></td><td><b>工程未产品化</b></td>
+        <td>OSS 凭证 / ossutil 路径本地硬编码；脚本单机跑</td>
+        <td>不可协作、不可复用、有安全隐患</td><td class="who">工程</td></tr>
+      <tr><td><span class="pri p-hi">高</span></td><td><b>审校环节缺失</b></td>
+        <td>命名、文案、字体合规、可读性目前全靠临时人工抽检</td>
+        <td>错漏无法被系统发现</td><td class="who">新增审校 / QA</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2><span class="n">5</span>建议的角色与分工</h2>
+    <div class="roles">
+      <div class="role"><b>产品</b><span>输入规范、唯一 ID、交付标准、覆盖范围</span></div>
+      <div class="role"><b>设计</b><span>Figma 固化样式规格 + 可读性规则；成品图规范命名、补齐缺图</span></div>
+      <div class="role"><b>内容</b><span>保证学名/钩子/url 准确，约定钩子断行与标点规则</span></div>
+      <div class="role"><b>工程</b><span>维护渲染/压缩/上传/回写；按 guid 关联、列名规范化、凭证外置</span></div>
+      <div class="role"><b>审校 / QA</b><span>开图核名、文案与字体合规、浅底可读性抽检、回写一致性校验</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">6</span>当前进展（事实）</h2>
+    <ul class="status" style="list-style:none;padding:0;margin:0;">
+      <li><span class="pill ok">已完成</span>数学（小低/小高）、语文（学名）、成语故事（学名+钩子）四类样式跑通并产出</li>
+      <li><span class="pill ok">已完成</span>语文 479 条：全量生成 PNG+JPG、上传 OSS、回写两列 URL</li>
+      <li><span class="pill ok">已完成</span>成语 50 篇：20 张用设计成品（已修正 2 处错名）+ 30 张自动生成兜底，已全量上传并回写</li>
+      <li><span class="pill todo">仍依赖人工</span>成品图核名、设计规格扒取、可读性判断、钩子文案校对</li>
+    </ul>
+  </section>
+
+  <footer>千问小讲堂封面生成 · 内部沟通文档</footer>
+</div>
+</body>
+</html>

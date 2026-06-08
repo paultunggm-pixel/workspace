@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>2026 世界杯 AI 频道</title>
+<style>
+:root {
+  --bg: #f0f2f5;
+  --card: #fff;
+  --green: #059669;
+  --green-light: #ecfdf5;
+  --red: #dc2626;
+  --red-light: #fef2f2;
+  --blue: #2563eb;
+  --blue-light: #eff6ff;
+  --gold: #d97706;
+  --gold-light: #fffbeb;
+  --text: #111827;
+  --text2: #4b5563;
+  --text3: #9ca3af;
+  --border: #e5e7eb;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --radius: 14px;
+  --radius-sm: 10px;
+  --safe-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ===== Fixed Header ===== */
+.top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.top-bar .logo {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, #059669, #047857);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.top-bar h1 {
+  font-size: 15px;
+  font-weight: 700;
+  flex: 1;
+}
+.top-bar .countdown-mini {
+  font-size: 11px;
+  color: var(--green);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  background: var(--green-light);
+  padding: 4px 10px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+.top-bar .live-dot {
+  width: 7px; height: 7px;
+  background: var(--red);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+  display: inline-block;
+  margin-right: 4px;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+/* ===== Feed Container ===== */
+main {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 12px 14px;
+  /* space for fixed bottom input */
+  padding-bottom: calc(96px + var(--safe-bottom));
+}
+
+/* ===== Section Header ===== */
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  font-weight: 700;
+  margin: 20px 0 10px;
+  padding: 0 2px;
+}
+.section-head .s-icon { font-size: 18px; }
+.section-head .s-more {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--green);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* ===== My Teams (Expanded) ===== */
+.teams-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px 0 10px;
+}
+.teams-row::-webkit-scrollbar { display: none; }
+.team-chip {
+  flex-shrink: 0;
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  background: var(--card);
+  border: 2px solid var(--border);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: var(--shadow);
+}
+.team-chip.active {
+  border-color: var(--green);
+  background: var(--green-light);
+  color: var(--green);
+}
+.team-chip .t-flag { font-size: 18px; }
+.team-chip .t-check {
+  font-size: 10px;
+  color: var(--green);
+  font-weight: 800;
+}
+
+/* Team detail card */
+.team-detail {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  margin-bottom: 10px;
+  border-left: 3px solid var(--green);
+  animation: fadeSlide 0.3s ease;
+}
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.team-detail-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 12px;
+}
+.team-detail-flag { font-size: 36px; }
+.team-detail-name { font-size: 17px; font-weight: 700; }
+.team-detail-group {
+  font-size: 12px; color: var(--text2);
+  background: #f3f4f6; padding: 3px 10px; border-radius: 10px;
+}
+.team-detail-match {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  background: #f9fafb;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.team-detail-match:active { background: #f3f4f6; }
+.team-detail-match .md-vs {
+  font-size: 20px;
+  flex: 1; text-align: center;
+  font-weight: 700;
+  color: var(--text3);
+}
+.team-detail-match .md-date {
+  font-size: 11px; color: var(--text2);
+  min-width: 70px; text-align: right;
+}
+.team-detail-news {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  margin-top: 8px;
+  background: var(--green-light);
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.team-detail-news .news-dot { color: var(--green); font-weight: 700; }
+
+/* ===== Match Card ===== */
+.match-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.match-card.live { border-left: 3px solid var(--red); }
+.match-card .mc-top {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 11px; color: var(--text2);
+  margin-bottom: 10px;
+}
+.match-card .mc-live-tag {
+  background: var(--red);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  animation: pulse 2s ease-in-out infinite;
+}
+.match-card .mc-teams {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.match-card .mc-team {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+.match-card .mc-flag { font-size: 36px; }
+.match-card .mc-name { font-size: 12px; font-weight: 600; text-align: center; }
+.match-card .mc-score { font-size: 26px; font-weight: 800; }
+.match-card .mc-vs { font-size: 12px; color: var(--text3); font-weight: 600; flex-shrink: 0; }
+.match-card .mc-actions {
+  display: flex; gap: 8px;
+  margin-top: 8px;
+}
+.btn-chat {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  gap: 4px;
+  transition: all 0.2s;
+}
+.btn-chat:active { background: #f3f4f6; }
+.btn-chat.ai { border-color: var(--green); color: var(--green); background: var(--green-light); }
+
+/* ===== Group Grid ===== */
+.groups-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.group-box {
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 12px;
+}
+.group-box:active { border-color: var(--green); }
+.group-box .g-name {
+  font-weight: 700; color: var(--green);
+  margin-bottom: 4px; font-size: 13px;
+}
+.group-box .g-team {
+  padding: 2px 0;
+  color: var(--text2);
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===== Analysis Feed ===== */
+.analysis-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+}
+.analysis-card .ac-header {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 10px;
+}
+.analysis-card .ac-badge {
+  background: linear-gradient(135deg, #059669, #047857);
+  color: #fff;
+  font-size: 10px; font-weight: 700;
+  padding: 3px 10px; border-radius: 10px;
+}
+.analysis-card .ac-title {
+  font-size: 14px; font-weight: 600;
+}
+.analysis-card .ac-body {
+  font-size: 13px; color: var(--text2);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+.analysis-card .ac-chat-prompts {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+
+/* ===== Player Card (compact) ===== */
+.players-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px 0 8px;
+}
+.players-row::-webkit-scrollbar { display: none; }
+.player-mini {
+  flex-shrink: 0;
+  width: 110px;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 14px 10px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: border-color 0.2s;
+}
+.player-mini:active { border-color: var(--green); }
+.player-mini .pm-flag { font-size: 32px; }
+.player-mini .pm-name { font-size: 13px; font-weight: 700; margin: 6px 0 2px; }
+.player-mini .pm-info { font-size: 10px; color: var(--text3); margin-bottom: 6px; }
+.player-mini .pm-chat {
+  font-size: 10px;
+  color: var(--green);
+  background: var(--green-light);
+  padding: 3px 10px;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+/* ===== Fan Tabs ===== */
+.fan-tabs {
+  display: flex; gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin-bottom: 8px;
+}
+.fan-tabs::-webkit-scrollbar { display: none; }
+.fan-tab {
+  flex-shrink: 0;
+  padding: 7px 14px;
+  border-radius: 18px;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  box-shadow: var(--shadow);
+  transition: all 0.2s;
+}
+.fan-tab.active {
+  background: var(--green-light);
+  border-color: var(--green);
+  color: var(--green);
+}
+.fan-topic {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  margin-bottom: 6px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  font-size: 13px; font-weight: 500;
+  border: 1px solid var(--border);
+}
+.fan-topic .ft-icon { font-size: 20px; flex-shrink: 0; }
+.fan-topic .ft-text { flex: 1; }
+.fan-topic .ft-meta { font-size: 10px; color: var(--text3); margin-top: 2px; }
+.fan-topic .ft-arrow { color: var(--text3); }
+
+/* ===== Poll ===== */
+.poll-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+}
+.poll-card .poll-q { font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+.poll-opt {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  background: #f9fafb;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+.poll-opt.voted { border-color: var(--green); }
+.poll-opt .po-bar {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  background: rgba(5,150,105,0.08);
+  border-radius: 10px;
+  transition: width 0.6s ease;
+}
+.poll-opt .po-text { position: relative; z-index: 1; flex: 1; }
+.poll-opt .po-pct { position: relative; z-index: 1; font-weight: 700; color: var(--green); font-size: 13px; }
+.poll-votes { font-size: 11px; color: var(--text3); margin-top: 4px; }
+
+/* ===== Chat Messages in Feed ===== */
+.chat-msg {
+  max-width: 82%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 13px;
+  line-height: 1.65;
+  margin-bottom: 8px;
+  animation: msgIn 0.3s ease;
+}
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.chat-msg.user {
+  align-self: flex-end;
+  background: var(--green);
+  color: #fff;
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.chat-msg.ai {
+  align-self: flex-start;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+}
+.chat-msg .msg-sender {
+  font-size: 10px; font-weight: 700; margin-bottom: 4px;
+  opacity: 0.7;
+}
+
+/* ===== Bottom Input ===== */
+.input-dock {
+  position: fixed;
+  bottom: 0;
+  left: 0; right: 0;
+  z-index: 200;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  padding: 8px 14px var(--safe-bottom);
+  max-width: 500px;
+  margin: 0 auto;
+}
+.input-capsules {
+  display: flex; gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px 0 6px;
+}
+.input-capsules::-webkit-scrollbar { display: none; }
+.input-capsule {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text2);
+  transition: all 0.2s;
+}
+.input-capsule:active { border-color: var(--green); color: var(--green); background: var(--green-light); }
+.input-capsule.hot {
+  background: #fef3c7;
+  border-color: #f59e0b;
+  color: #92400e;
+}
+.input-row {
+  display: flex; gap: 8px;
+  align-items: center;
+}
+.input-row input {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 22px;
+  border: 1.5px solid var(--border);
+  background: #f9fafb;
+  font-size: 14px;
+  outline: none;
+  color: var(--text);
+  transition: border-color 0.2s;
+}
+.input-row input:focus { border-color: var(--green); background: #fff; }
+.input-row .send-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--green);
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.15s;
+}
+.input-row .send-btn:active { transform: scale(0.95); }
+
+/* Toast */
+.toast {
+  position: fixed;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #111827;
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 300;
+  opacity: 0;
+  animation: toastAnim 2s ease forwards;
+  pointer-events: none;
+  white-space: nowrap;
+}
+@keyframes toastAnim {
+  0% { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+  15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  75% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Welcome card */
+.welcome-card {
+  background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+  border: 1px solid #a7f3d0;
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.welcome-card .wc-title {
+  font-size: 14px; font-weight: 700; margin-bottom: 6px;
+}
+.welcome-card .wc-text {
+  font-size: 12px; color: var(--text2); line-height: 1.6;
+}
+
+/* Team matches in detail */
+.matches-mini {
+  margin-top: 10px;
+}
+.match-mini-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 12px;
+  cursor: pointer;
+}
+.match-mini-row:last-child { border-bottom: none; }
+.match-mini-row .mm-teams { flex: 1; font-weight: 600; }
+.match-mini-row .mm-date { color: var(--text3); font-size: 11px; white-space: nowrap; }
+.match-mini-row .mm-chat {
+  color: var(--green); font-size: 11px; font-weight: 600;
+  padding: 3px 10px; background: var(--green-light); border-radius: 10px;
+  flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+
+<!-- Fixed Top Bar -->
+<div class="top-bar">
+  <div class="logo">🏆</div>
+  <h1>2026 世界杯 AI 频道</h1>
+  <div class="countdown-mini" id="cdMini"></div>
+</div>
+
+<!-- Feed -->
+<main id="feed">
+
+  <!-- Welcome -->
+  <div class="welcome-card">
+    <div class="wc-title">👋 欢迎来到世界杯 AI 频道</div>
+    <div class="wc-text">
+      我是你的 AI 球友 ⚽ 订阅主队获取实时赛况，随时问我任何关于世界杯的问题——战术分析、赛程查询、球员八卦还是规则科普，我都会！
+    </div>
+  </div>
+
+  <!-- ===== My Teams ===== -->
+  <div class="section-head">
+    <span class="s-icon">⭐</span> 我的主队
+    <span style="font-size:11px;color:var(--text3);font-weight:400;">（点击关注，获取专属赛况推送）</span>
+  </div>
+  <div class="teams-row" id="teamsRow"></div>
+  <div id="teamDetailArea"></div>
+
+  <!-- ===== Group Stage ===== -->
+  <div class="section-head">
+    <span class="s-icon">📋</span> 小组赛分组
+    <a href="#" class="s-more" onclick="askAI('完整赛程表');return false">完整赛程 ›</a>
+  </div>
+  <div class="groups-grid" id="groupsGrid"></div>
+
+  <!-- ===== AI Analysis ===== -->
+  <div class="section-head">
+    <span class="s-icon">🧠</span> AI 赛事分析
+  </div>
+  <div id="analysisArea"></div>
+
+  <!-- ===== Star Players ===== -->
+  <div class="section-head">
+    <span class="s-icon">🌟</span> 球星看点
+  </div>
+  <div class="players-row" id="playersRow"></div>
+
+  <!-- ===== Fan Zone ===== -->
+  <div class="section-head">
+    <span class="s-icon">💬</span> 球迷热聊
+  </div>
+  <div class="fan-tabs" id="fanTabs"></div>
+  <div id="fanContent"></div>
+
+  <!-- ===== Poll ===== -->
+  <div class="section-head">
+    <span class="s-icon">📊</span> 今日投票
+  </div>
+  <div id="pollArea"></div>
+
+  <!-- Chat messages appear here -->
+  <div id="chatFeed"></div>
+
+  <div style="height:16px"></div>
+</main>
+
+<!-- Fixed Bottom Input -->
+<div class="input-dock">
+  <div class="input-capsules" id="capsules">
+    <span class="input-capsule hot" onclick="askAI('今天有什么比赛？')">🔥 今日赛程</span>
+    <span class="input-capsule" onclick="askAI('预测一下冠军归属')">🔮 冠军预测</span>
+    <span class="input-capsule" onclick="askAI('梅西这届状态怎么样？')">🐐 梅西状态</span>
+    <span class="input-capsule" onclick="askAI('新赛制48队怎么踢？')">📖 赛制科普</span>
+    <span class="input-capsule" onclick="askAI('越位规则详解')">🤔 越位是什么</span>
+  </div>
+  <div class="input-row">
+    <input type="text" id="chatInput" placeholder="问问 AI 任何世界杯问题..." onkeydown="if(event.key==='Enter')sendMsg()">
+    <button class="send-btn" onclick="sendMsg()">➤</button>
+  </div>
+</div>
+
+<script>
+// ===== Data: 2026 World Cup Groups =====
+const groups = {
+  A: [{f:'🇲🇽',n:'墨西哥'},{f:'🇿🇦',n:'南非'},{f:'🇰🇷',n:'韩国'},{f:'🇨🇿',n:'捷克'}],
+  B: [{f:'🇧🇦',n:'波黑'},{f:'🇨🇦',n:'加拿大'},{f:'🇶🇦',n:'卡塔尔'},{f:'🇨🇭',n:'瑞士'}],
+  C: [{f:'🇧🇷',n:'巴西'},{f:'🇲🇦',n:'摩洛哥'},{f:'🇭🇹',n:'海地'},{f:'🏴󠁧󠁢󠁳󠁣󠁴󠁿',n:'苏格兰'}],
+  D: [{f:'🇹🇷',n:'土耳其'},{f:'🇺🇸',n:'美国'},{f:'🇦🇺',n:'澳大利亚'},{f:'🇵🇾',n:'巴拉圭'}],
+  E: [{f:'🇩🇪',n:'德国'},{f:'🇨🇼',n:'库拉索'},{f:'🇨🇮',n:'科特迪瓦'},{f:'🇪🇨',n:'厄瓜多尔'}],
+  F: [{f:'🇳🇱',n:'荷兰'},{f:'🇯🇵',n:'日本'},{f:'🇸🇪',n:'瑞典'},{f:'🇹🇳',n:'突尼斯'}],
+  G: [{f:'🇧🇪',n:'比利时'},{f:'🇪🇬',n:'埃及'},{f:'🇮🇷',n:'伊朗'},{f:'🇳🇿',n:'新西兰'}],
+  H: [{f:'🇪🇸',n:'西班牙'},{f:'🇺🇾',n:'乌拉圭'},{f:'🇨🇻',n:'佛得角'},{f:'🇸🇦',n:'沙特'}],
+  I: [{f:'🇫🇷',n:'法国'},{f:'🇳🇴',n:'挪威'},{f:'🇸🇳',n:'塞内加尔'},{f:'🇮🇶',n:'伊拉克'}],
+  J: [{f:'🇦🇷',n:'阿根廷'},{f:'🇦🇹',n:'奥地利'},{f:'🇩🇿',n:'阿尔及利亚'},{f:'🇯🇴',n:'约旦'}],
+  K: [{f:'🇵🇹',n:'葡萄牙'},{f:'🇨🇴',n:'哥伦比亚'},{f:'🇨🇩',n:'刚果(金)'},{f:'🇺🇿',n:'乌兹别克斯坦'}],
+  L: [{f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',n:'英格兰'},{f:'🇭🇷',n:'克罗地亚'},{f:'🇬🇭',n:'加纳'},{f:'🇵🇦',n:'巴拿马'}],
+};
+
+// Team group map
+const teamGroup = {};
+Object.entries(groups).forEach(([g, teams]) => {
+  teams.forEach(t => { teamGroup[t.n] = g; });
+});
+
+// Team match schedule (simulated)
+const teamMatches = {
+  '阿根廷': [
+    { vs: '奥地利', date: '6月11日 21:00', venue: '迈阿密' },
+    { vs: '阿尔及利亚', date: '6月16日 18:00', venue: '亚特兰大' },
+    { vs: '约旦', date: '6月21日 15:00', venue: '达拉斯' },
+  ],
+  '巴西': [
+    { vs: '摩洛哥', date: '6月12日 21:00', venue: '纽约' },
+    { vs: '海地', date: '6月17日 18:00', venue: '波士顿' },
+    { vs: '苏格兰', date: '6月22日 21:00', venue: '费城' },
+  ],
+  '法国': [
+    { vs: '挪威', date: '6月13日 18:00', venue: '洛杉矶' },
+    { vs: '塞内加尔', date: '6月18日 21:00', venue: '旧金山' },
+    { vs: '伊拉克', date: '6月23日 18:00', venue: '西雅图' },
+  ],
+  '英格兰': [
+    { vs: '克罗地亚', date: '6月14日 15:00', venue: '伦敦' },
+    { vs: '加纳', date: '6月19日 21:00', venue: '曼彻斯特' },
+    { vs: '巴拿马', date: '6月24日 18:00', venue: '伯明翰' },
+  ],
+  '西班牙': [
+    { vs: '乌拉圭', date: '6月12日 18:00', venue: '迈阿密' },
+    { vs: '佛得角', date: '6月17日 15:00', venue: '奥兰多' },
+    { vs: '沙特', date: '6月22日 18:00', venue: '休斯顿' },
+  ],
+  '德国': [
+    { vs: '库拉索', date: '6月14日 21:00', venue: '墨西哥城' },
+    { vs: '科特迪瓦', date: '6月19日 18:00', venue: '蒙特雷' },
+    { vs: '厄瓜多尔', date: '6月24日 21:00', venue: '瓜达拉哈拉' },
+  ],
+  '日本': [
+    { vs: '荷兰', date: '6月13日 15:00', venue: '洛杉矶' },
+    { vs: '瑞典', date: '6月18日 18:00', venue: '圣迭戈' },
+    { vs: '突尼斯', date: '6月23日 15:00', venue: '菲尼克斯' },
+  ],
+  '中国': null,
+  '葡萄牙': [
+    { vs: '哥伦比亚', date: '6月12日 15:00', venue: '波士顿' },
+    { vs: '刚果(金)', date: '6月17日 21:00', venue: '纽约' },
+    { vs: '乌兹别克斯坦', date: '6月22日 15:00', venue: '华盛顿' },
+  ],
+};
+
+// Player data
+const players = [
+  { name: '梅西', flag: '🇦🇷', nation: '阿根廷·10号', goals: 821, age: 38, chat: '梅西最后一届世界杯？' },
+  { name: '姆巴佩', flag: '🇫🇷', nation: '法国·7号', goals: 348, age: 27, chat: '姆巴佩能拿金靴吗？' },
+  { name: '维尼修斯', flag: '🇧🇷', nation: '巴西·7号', goals: 112, age: 25, chat: '维尼修斯这届表现预测' },
+  { name: '贝林厄姆', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', nation: '英格兰·10号', goals: 78, age: 22, chat: '贝林厄姆能带英格兰夺冠？' },
+  { name: '亚马尔', flag: '🇪🇸', nation: '西班牙·19号', goals: 32, age: 18, chat: '亚马尔世界杯首秀表现' },
+  { name: '哈兰德', flag: '🇳🇴', nation: '挪威·9号', goals: 298, age: 25, chat: '挪威能走多远？' },
+  { name: '孙兴慜', flag: '🇰🇷', nation: '韩国·7号', goals: 186, age: 33, chat: '韩国队小组赛前景' },
+  { name: '武磊', flag: '🇨🇳', nation: '中国·7号', goals: 158, age: 34, chat: '中国队下届预选赛展望' },
+];
+
+// Fan topics
+const fanTopics = {
+  deep: [
+    { icon:'📐', title:'48队赛制下，小组第三出线的数学概率', meta:'🔥 2.6k讨论 · AI深度报告' },
+    { icon:'📋', title:'阿根廷3-5-2 vs 4-3-3：斯卡洛尼战术演化', meta:'🔥 1.9k讨论 · AI战术拆解' },
+    { icon:'📈', title:'各队预期进球(xG)模型大盘点', meta:'🔥 1.5k讨论 · AI数据' },
+  ],
+  casual: [
+    { icon:'🏆', title:'这届世界杯必看强队速览', meta:'🔥 5.6k讨论 · 新手友好' },
+    { icon:'📖', title:'48队赛制一图看懂（附淘汰赛路径）', meta:'🔥 3.2k讨论 · AI图解' },
+    { icon:'🌏', title:'亚洲军团：日韩伊澳谁能进淘汰赛？', meta:'🔥 2.8k讨论 · AI预测' },
+  ],
+  noob: [
+    { icon:'🤔', title:'"伪球迷"速成指南：这样看球不出糗', meta:'🔥 9.1k讨论 · AI手册' },
+    { icon:'😍', title:'这届世界杯的颜值担当们', meta:'🔥 12.3k讨论 · 图集' },
+    { icon:'🍻', title:'看球夜宵指南：配什么零食饮料？', meta:'🔥 4.2k讨论 · 社区分享' },
+  ],
+  female: [
+    { icon:'📖', title:'球星背后的励志故事', meta:'🔥 6.4k讨论 · 人文专题' },
+    { icon:'👗', title:'观赛穿搭灵感 + 社交话题速成', meta:'🔥 3.8k讨论 · 时尚×足球' },
+    { icon:'🐶', title:'球星的萌宠与隐藏技能', meta:'🔥 7.6k讨论 · 趣味盘点' },
+  ],
+};
+
+let currentFanTab = 'deep';
+let followedTeams = new Set(['阿根廷']);
+let poll1Voted = false, poll2Voted = false;
+
+// ===== Init =====
+function init() {
+  renderTeams();
+  renderTeamDetail();
+  renderGroups();
+  renderAnalysis();
+  renderPlayers();
+  renderFanTabs();
+  renderFanContent();
+  renderPolls();
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+}
+
+// ===== Countdown =====
+function updateCountdown() {
+  const target = new Date('2026-06-11T00:00:00-05:00');
+  const diff = target - Date.now();
+  const el = document.getElementById('cdMini');
+  if (diff <= 0) { el.innerHTML = '<span class="live-dot"></span>进行中'; return; }
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff / 3600000) % 24);
+  el.textContent = `距开幕 ${d}天${h}时`;
+}
+
+// ===== Teams =====
+function renderTeams() {
+  const row = document.getElementById('teamsRow');
+  const allTeams = Object.keys(teamGroup);
+  row.innerHTML = allTeams.map(t => {
+    const active = followedTeams.has(t) ? ' active' : '';
+    const check = followedTeams.has(t) ? '<span class="t-check">✓</span>' : '';
+    const flag = getFlag(t);
+    return `<div class="team-chip${active}" data-team="${t}" onclick="toggleTeam('${t}')">
+      <span class="t-flag">${flag}</span>${t}${check}
+    </div>`;
+  }).join('');
+}
+
+function getFlag(name) {
+  const map = {
+    '阿根廷':'🇦🇷','巴西':'🇧🇷','法国':'🇫🇷','英格兰':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','西班牙':'🇪🇸','德国':'🇩🇪',
+    '日本':'🇯🇵','韩国':'🇰🇷','葡萄牙':'🇵🇹','荷兰':'🇳🇱','意大利':'🇮🇹','克罗地亚':'🇭🇷',
+    '美国':'🇺🇸','加拿大':'🇨🇦','墨西哥':'🇲🇽','乌拉圭':'🇺🇾','哥伦比亚':'🇨🇴',
+    '摩洛哥':'🇲🇦','塞内加尔':'🇸🇳','埃及':'🇪🇬','加纳':'🇬🇭','比利时':'🇧🇪',
+    '挪威':'🇳🇴','瑞典':'🇸🇪','奥地利':'🇦🇹','瑞士':'🇨🇭','土耳其':'🇹🇷',
+    '澳大利亚':'🇦🇺','伊朗':'🇮🇷','卡塔尔':'🇶🇦','沙特':'🇸🇦','中国':'🇨🇳',
+  };
+  return map[name] || '🏳️';
+}
+
+function toggleTeam(name) {
+  if (followedTeams.has(name)) {
+    followedTeams.delete(name);
+    if (followedTeams.size === 0) followedTeams.add('阿根廷'); // keep at least one
+  } else {
+    followedTeams.add(name);
+  }
+  renderTeams();
+  renderTeamDetail();
+  toast(followedTeams.has(name) ? `已关注 ${name}，将收到实时推送` : `已取消关注 ${name}`);
+}
+
+function renderTeamDetail() {
+  const area = document.getElementById('teamDetailArea');
+  let html = '';
+  followedTeams.forEach(name => {
+    const flag = getFlag(name);
+    const group = teamGroup[name] || '—';
+    const matches = teamMatches[name] || [
+      { vs: '待抽签', date: '待定', venue: '待定' },
+    ];
+    html += `<div class="team-detail">
+      <div class="team-detail-header">
+        <span class="team-detail-flag">${flag}</span>
+        <span class="team-detail-name">${name}</span>
+        <span class="team-detail-group">${group}组</span>
+      </div>`;
+    matches.forEach(m => {
+      html += `<div class="team-detail-match" onclick="askAI('分析${name} vs ${m.vs}')">
+        <span style="font-weight:600">vs ${getFlag(m.vs)} ${m.vs}</span>
+        <span class="md-date">${m.date}<br><span style="color:#9ca3af">${m.venue}</span></span>
+        <span style="color:var(--green);font-size:11px;font-weight:600;flex-shrink:0;">💬 AI分析</span>
+      </div>`;
+    });
+    html += `<div class="team-detail-news" onclick="askAI('${name}队有哪些值得关注的新星和战术变化？')">
+      <span class="news-dot">●</span> AI 整理：${name}队近期状态、伤病与战术动态
+      <span style="margin-left:auto;color:var(--green);font-size:11px;font-weight:600">查看 ›</span>
+    </div></div>`;
+  });
+  area.innerHTML = html;
+}
+
+// ===== Groups Grid =====
+function renderGroups() {
+  const grid = document.getElementById('groupsGrid');
+  grid.innerHTML = Object.entries(groups).map(([g, teams]) => {
+    const teamsHtml = teams.map(t => `<div class="g-team">${t.f} ${t.n}</div>`).join('');
+    return `<div class="group-box" onclick="askAI('${g}组出线形势分析')">
+      <div class="g-name">${g} 组</div>${teamsHtml}
+    </div>`;
+  }).join('');
+}
+
+// ===== AI Analysis =====
+function renderAnalysis() {
+  const area = document.getElementById('analysisArea');
+  const analyses = [
+    {
+      badge: 'AI 前瞻', title: '阿根廷 vs 奥地利 — 揭幕战深度预测',
+      body: '阿根廷作为卫冕冠军，揭幕战对阵奥地利。AI综合近20场国际赛数据：阿根廷控球率预期58%，梅西关键传球值仍居世界前5。奥地利高位逼抢效率是变数，预测半场平局概率35%，全场阿根廷胜率52%。',
+      prompts: ['梅西这场状态', '奥地利能爆冷吗', '比分预测'],
+    },
+    {
+      badge: 'AI 数据', title: '48强实力分级：谁在争冠梯队？',
+      body: '第一梯队（夺冠概率>10%）：法国(22%)、阿根廷(18%)、巴西(15%)、英格兰(12%)、西班牙(10%)。第二梯队（8强热门）：德国、葡萄牙、荷兰、哥伦比亚。黑马预警：挪威（哈兰德世界杯首秀）、日本（团队足球进化）。',
+      prompts: ['法国为什么排第一', '挪威黑马前景', '哪些球星是最后一届'],
+    },
+  ];
+  area.innerHTML = analyses.map(a => `
+    <div class="analysis-card">
+      <div class="ac-header">
+        <span class="ac-badge">${a.badge}</span>
+        <span class="ac-title">${a.title}</span>
+      </div>
+      <div class="ac-body">${a.body}</div>
+      <div class="ac-chat-prompts">
+        ${a.prompts.map(p => `<span class="input-capsule" onclick="askAI('${p}')" style="font-size:11px">💬 ${p}</span>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== Players =====
+function renderPlayers() {
+  document.getElementById('playersRow').innerHTML = players.map(p => `
+    <div class="player-mini" onclick="askAI('${p.chat}')">
+      <div class="pm-flag">${p.flag}</div>
+      <div class="pm-name">${p.name}</div>
+      <div class="pm-info">${p.nation}</div>
+      <div style="font-size:11px;margin-bottom:8px">
+        <span style="font-weight:700;color:var(--green)">${p.goals}</span> 球 ·
+        <span style="color:var(--text3)">${p.age}岁</span>
+      </div>
+      <span class="pm-chat">💬 问AI</span>
+    </div>
+  `).join('');
+}
+
+// ===== Fan Zone =====
+function renderFanTabs() {
+  document.getElementById('fanTabs').innerHTML = [
+    { key:'deep', emoji:'📊', label:'深度球迷' },
+    { key:'casual', emoji:'⚽', label:'普通球迷' },
+    { key:'noob', emoji:'🎉', label:'伪球迷' },
+    { key:'female', emoji:'💅', label:'女球迷' },
+  ].map(t => `<div class="fan-tab${t.key===currentFanTab?' active':''}" data-tab="${t.key}" onclick="switchFan('${t.key}', this)">${t.emoji} ${t.label}</div>`).join('');
+}
+
+function renderFanContent() {
+  const topics = fanTopics[currentFanTab];
+  document.getElementById('fanContent').innerHTML = topics.map(t => `
+    <div class="fan-topic" onclick="askAI('${t.title}')">
+      <span class="ft-icon">${t.icon}</span>
+      <span class="ft-text">${t.title}<div class="ft-meta">${t.meta}</div></span>
+      <span class="ft-arrow">›</span>
+    </div>
+  `).join('');
+}
+
+function switchFan(key, el) {
+  currentFanTab = key;
+  document.querySelectorAll('.fan-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderFanContent();
+}
+
+// ===== Polls =====
+function renderPolls() {
+  document.getElementById('pollArea').innerHTML = `
+    <div class="poll-card" id="poll1">
+      <div class="poll-q">🏆 你认为谁会夺得 2026 世界杯冠军？</div>
+      ${[{t:'🇦🇷 阿根廷',p:32},{t:'🇧🇷 巴西',p:28},{t:'🇫🇷 法国',p:18},{t:'🏴󠁧󠁢󠁥󠁮󠁧󠁿 英格兰',p:14},{t:'🤔 黑马逆袭',p:8}].map((o,i) => `
+        <div class="poll-opt" data-opt="${i}" onclick="votePoll1(this, ${i})">
+          <div class="po-bar" style="width:0"></div>
+          <span class="po-text">${o.t}</span><span class="po-pct">--</span>
+        </div>`).join('')}
+      <div class="poll-votes">共 28,416 人参与 · <span style="color:var(--green);cursor:pointer" onclick="askAI('谁最有可能夺冠？')">💬 聊这个话题</span></div>
+    </div>
+    <div class="poll-card" id="poll2">
+      <div class="poll-q">🌟 你更看重球星的哪项特质？</div>
+      ${[{t:'⚡ 技术与天赋',p:38},{t:'💪 领袖气质',p:25},{t:'😎 颜值即正义',p:22},{t:'📖 励志故事',p:15}].map((o,i) => `
+        <div class="poll-opt" data-opt="${i}" onclick="votePoll2(this, ${i})">
+          <div class="po-bar" style="width:0"></div>
+          <span class="po-text">${o.t}</span><span class="po-pct">--</span>
+        </div>`).join('')}
+      <div class="poll-votes">共 15,203 人参与 · <span style="color:var(--green);cursor:pointer" onclick="askAI('为什么大家喜欢技术型球员？')">💬 聊这个话题</span></div>
+    </div>
+  `;
+}
+
+function votePoll1(el, idx) {
+  if (poll1Voted) return; poll1Voted = true;
+  const data = [32,28,18,14,8];
+  document.querySelectorAll('#poll1 .poll-opt').forEach((o, i) => {
+    o.querySelector('.po-bar').style.width = data[i] + '%';
+    o.querySelector('.po-pct').textContent = data[i] + '%';
+  });
+  el.classList.add('voted');
+  el.querySelector('.po-bar').style.width = data[idx] + '%';
+  el.querySelector('.po-pct').textContent = data[idx] + '% ✓';
+  toast('投票成功！');
+}
+
+function votePoll2(el, idx) {
+  if (poll2Voted) return; poll2Voted = true;
+  const data = [38,25,22,15];
+  document.querySelectorAll('#poll2 .poll-opt').forEach((o, i) => {
+    o.querySelector('.po-bar').style.width = data[i] + '%';
+    o.querySelector('.po-pct').textContent = data[i] + '%';
+  });
+  el.classList.add('voted');
+  el.querySelector('.po-bar').style.width = data[idx] + '%';
+  el.querySelector('.po-pct').textContent = data[idx] + '% ✓';
+  toast('投票成功！');
+}
+
+// ===== Chat =====
+const aiKb = {
+  '阿根廷|梅西': '梅西已38岁，2026是他第6届也是最后一届世界杯。在斯卡洛尼的3-5-2体系中，梅西更多扮演组织核心。AI评估其关键传球预期(xA)仍居世界前5。阿根廷卫冕路上的最大挑战：法国和巴西的阵容深度，以及梅西在淘汰赛阶段的体能分配。',
+  '冠军|夺冠': 'AI夺冠概率评估（基于近2年国际赛数据+球队阵容深度+赛程路径）：\n\n1. 🇫🇷 法国 22% — 姆巴佩巅峰期，阵容厚度第一\n2. 🇦🇷 阿根廷 18% — 卫冕冠军体系成熟\n3. 🇧🇷 巴西 15% — 维尼修斯领衔豪华攻击线\n4. 🏴󠁧󠁢󠁥󠁮󠁧󠁿 英格兰 12% — 青年才俊井喷\n5. 🇪🇸 西班牙 10% — 亚马尔现象级\n\n🏆 黑马预警：挪威（哈兰德世界杯首秀）、日本（团队足球进化到新高度）',
+  '赛程|今天|比赛': '获取最新赛程请订阅你的主队！向上滑动到"我的主队"区域，点击关注你感兴趣的球队，即可在每场比赛前收到 AI 推送的专属分析 📲',
+  '赛制|48|怎么踢': '2026世界杯首次扩军至48队！\n\n📋 小组赛：12组×4队，组内单循环\n🏃 晋级：每组前2名（24队）+ 8个成绩最好的小组第三 → 32强\n🔢 淘汰赛：32强 → 16强 → 8强 → 半决赛 → 决赛\n📊 总场次：104场（历史最多）\n⏰ 赛期：6月11日-7月19日\n\n最大变化：小组第三也有机会晋级！这让小组赛每一场都充满悬念。',
+  '越位': '⚽ 越位规则白话版：\n进攻方传球瞬间，接球队友站在比倒数第二名防守球员更靠近对方球门的位置，即为越位。\n\n🍽️ 食堂比喻：排队打饭时，不能趁阿姨不注意插队到别人前面——你得排在至少两个人后面！\n\n🤖 2026世界杯将首次使用AI半自动越位系统，判断精度达到毫米级，越位争议将大幅减少。',
+  '法国|姆巴佩': '法国队被视为2026世界杯头号热门。姆巴佩正值27岁巅峰期，搭配登贝莱、楚阿梅尼等黄金一代，阵容深度冠绝48强。但要注意：法国队在2024欧洲杯后经历了中场重组，新体系磨合程度是关键变量。',
+  '巴西|维尼修斯': '巴西在2026年拥有令人艳羡的攻击线：维尼修斯、罗德里戈、恩德里克组成的新三叉戟速度与技术兼备。但中场创造力依赖帕奎塔的状态，后防线稳定性是隐患。AI预测巴西至少进入四强。',
+  '英格兰|贝林厄姆': '英格兰拥有本届赛事最昂贵的中场：贝林厄姆+赖斯+福登的组合估值超4亿欧元。22岁的贝林厄姆已是皇马核心，他的后插上得分能力是英格兰打破僵局的关键武器。问题在于：索斯盖特之后的新帅体系是否磨合完毕？',
+  '中国|国足': '中国队遗憾未能晋级2026世界杯决赛圈。但不要灰心！下届2030世界杯将扩军至64队（拟议中），亚洲名额进一步增加。年轻一代球员如朱辰杰、戴伟浚正在成长，归化政策也在优化。🇨🇳 中国足球的未来值得期待！',
+  '日本|韩国|孙兴慜': '日本队被分在F组（荷兰/瑞典/突尼斯），出线形势看好。韩国队在A组（墨西哥/南非/捷克），同样有机会。孙兴慜33岁，这将是他职业生涯最后一届世界杯，状态依然出色。',
+};
+
+function getAiReply(text) {
+  for (const [keywords, reply] of Object.entries(aiKb)) {
+    const hasMatch = keywords.split('|').some(kw => text.includes(kw));
+    if (hasMatch) return reply;
+  }
+  return `好问题！💡 "${text}"——让我从多个角度帮你分析：\n\n作为世界杯AI助手，我可以从数据统计、战术演变、历史规律、球员状态等维度帮你深度解读。关于这个话题，你想先了解哪个方面？\n\n你也可以试试问我：\n• "预测一下冠军归属"\n• "今天有什么比赛"\n• "越位规则详解"\n• "某队的战术分析"`;
+}
+
+function askAI(text) {
+  document.getElementById('chatInput').value = '';
+  addChatMsg(text, 'user');
+
+  // Show typing
+  const typingId = 'typing-' + Date.now();
+  const typingEl = document.createElement('div');
+  typingEl.id = typingId;
+  typingEl.className = 'chat-msg ai';
+  typingEl.innerHTML = '<span class="msg-sender">🤖 AI 球友</span>正在输入...';
+  document.getElementById('chatFeed').appendChild(typingEl);
+  scrollFeed();
+
+  setTimeout(() => {
+    const t = document.getElementById(typingId);
+    if (t) t.remove();
+    addChatMsg(getAiReply(text), 'ai');
+    // Update capsules
+    updateCapsules(text);
+  }, 800 + Math.random() * 1200);
+}
+
+function sendMsg() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  askAI(text);
+}
+
+function addChatMsg(text, role) {
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + role;
+  if (role === 'ai') {
+    div.innerHTML = '<span class="msg-sender">🤖 AI 球友</span>' + text.replace(/\n/g, '<br>');
+  } else {
+    div.textContent = text;
+  }
+  document.getElementById('chatFeed').appendChild(div);
+  scrollFeed();
+}
+
+function scrollFeed() {
+  const feed = document.getElementById('chatFeed');
+  setTimeout(() => {
+    feed.lastElementChild?.scrollIntoView({ behavior:'smooth', block:'end' });
+  }, 100);
+}
+
+function updateCapsules(lastQ) {
+  const caps = document.getElementById('capsules');
+  const dynamic = [
+    { text: '💬 继续聊这个话题', cls: 'hot' },
+    { text: '📅 相关赛程', cls: '' },
+  ];
+  const existing = caps.querySelectorAll('.input-capsule');
+  // Only add dynamic ones if not already there
+  caps.innerHTML = '';
+  dynamic.forEach(d => {
+    const s = document.createElement('span');
+    s.className = 'input-capsule ' + d.cls;
+    s.textContent = d.text;
+    s.onclick = () => askAI(d.text.replace(/^[^\s]+\s/, ''));
+    caps.appendChild(s);
+  });
+  // Add some static options back
+  ['🔥 今日赛程', '🔮 冠军预测', '🐐 梅西状态', '📖 赛制科普'].forEach(t => {
+    if (!caps.textContent.includes(t)) {
+      const s = document.createElement('span');
+      s.className = 'input-capsule' + (t.startsWith('🔥') ? ' hot' : '');
+      s.textContent = t;
+      s.onclick = () => askAI(t.replace(/^[^\s]+\s/, ''));
+      caps.appendChild(s);
+    }
+  });
+}
+
+function toast(msg) {
+  const old = document.querySelector('.toast');
+  if (old) old.remove();
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2100);
+}
+
+// ===== Init =====
+init();
+</script>
+</body>
+</html>
