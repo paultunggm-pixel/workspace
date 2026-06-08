@@ -1,0 +1,55 @@
+name: 定时任务
+
+on:
+  schedule:
+    # 每天北京时间 08:00 运行
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+    inputs:
+      task:
+        description: '要运行的任务 (eval | scrape | all)'
+        required: false
+        default: 'all'
+
+jobs:
+  run-tasks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout workspace
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install oss2 requests openpyxl
+
+      - name: Run scheduled tasks
+        env:
+          OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
+          OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+          SOUTI_OSS_ACCESS_KEY_ID: ${{ secrets.SOUTI_OSS_ACCESS_KEY_ID }}
+          SOUTI_OSS_ACCESS_KEY_SECRET: ${{ secrets.SOUTI_OSS_ACCESS_KEY_SECRET }}
+        run: |
+          echo "✅ 定时任务工作流已就绪"
+          echo "可通过 workflow_dispatch 手动触发特定任务"
+          # 示例：python3 解题答案一致性评测/analyze_v3.py
+
+  notify:
+    needs: run-tasks
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+      - name: Notify on failure
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `⚠️ 定时任务失败 - ${new Date().toISOString().split('T')[0]}`,
+              body: `定时任务执行失败，请查看 [workflow run](${process.env.GITHUB_SERVER_URL}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) 了解详情。`
+            });
