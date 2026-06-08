@@ -19,6 +19,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - 日常执行任务时，只要不违反上述文件访问安全规则，且不涉及删除或篡改与此任务无直接对象关系的本地/线上文件，则无需频繁询问确认，可直接执行（视为已授权"Yes"）
 - 涉及敏感操作（如删除文件、修改系统配置、操作外部服务、涉及 git 历史改写等）仍需确认
+- 常用命令自动放行清单在 `.claude/settings.json` 的 `permissions.allow` 中维护
 
 ## GitHub 工作流
 
