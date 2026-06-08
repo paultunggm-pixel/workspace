@@ -35,6 +35,9 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install dependencies
+        run: pip install openpyxl
+
       - name: Run evaluation analysis
         id: eval
         run: |
