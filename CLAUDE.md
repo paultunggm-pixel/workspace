@@ -61,6 +61,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `security-guidance` | 代码安全审查、敏感信息扫描 |
 | `commit-commands` | 标准化 Git 提交工作流（commit/push/PR） |
 | `code-review` | 多代理自动化代码审查 |
+| `runway-api` | Runway AI 视频/图像生成（批量封面、产品图） |
+| `adobe-for-creativity` | Adobe 创意工具（图片编辑、去背景、设计自动化） |
+| `togetherai-skills` | Together AI 推理平台（调用 Stable Diffusion/Flux 等开源生图模型） |
 
 ### 关键 Skill 调用规则
 
