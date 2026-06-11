@@ -64,6 +64,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `runway-api` | Runway AI 视频/图像生成（批量封面、产品图） |
 | `adobe-for-creativity` | Adobe 创意工具（图片编辑、去背景、设计自动化） |
 | `togetherai-skills` | Together AI 推理平台（调用 Stable Diffusion/Flux 等开源生图模型） |
+| `exa` | AI 深度搜索与调研（全网信息检索、研究报告） |
+| `firecrawl` | 网站爬取与结构化数据提取（批量抓取网页内容） |
+| `sourcegraph` | 跨仓库代码搜索与引用追踪 |
 
 ### 关键 Skill 调用规则
 
