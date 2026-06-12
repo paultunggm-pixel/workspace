@@ -1,0 +1,132 @@
+{
+  "https://www.fourfourtwo.com/us/news": {
+    "site": "442足球",
+    "source_url": "https://www.fourfourtwo.com/us/news",
+    "articles": [
+      {
+        "title": "England's World Cup 2026 squad in full: Thomas Tuchel's 26 men, notable omissions and predicted starting XI",
+        "url": "https://www.fourfourtwo.com/features/england-world-cup-2026-squad-thomas-tuchel-roster-line-up-xi-final-uk",
+        "time": "2026-06-05T08:43:09"
+      },
+      {
+        "title": "Where is ITV World Cup studio? Outrageous first look leaves BBC blushing",
+        "url": "https://www.fourfourtwo.com/competition/where-is-itv-world-cup-studio-outrageous-first-look-leaves-bbc-blushing",
+        "time": "2026-06-10T20:42:50"
+      },
+      {
+        "title": "World Cup 2026 odds: Who are the favourites to lift the trophy?",
+        "url": "https://www.fourfourtwo.com/competition/world-cup-2026-odds-who-are-the-favourites-to-lift-the-trophy",
+        "time": "2026-06-10T17:00:00"
+      },
+      {
+        "title": "Liverpool suffer transfer disaster as wonderkid makes shock decision: report",
+        "url": "https://www.fourfourtwo.com/team/liverpool-suffer-transfer-disaster-as-wonderkid-makes-shock-decision-report",
+        "time": "2026-06-10T16:00:00"
+      }
+    ],
+    "status": "✅ 4篇验证通过"
+  },
+  "https://www.nytimes.com/athletic/football/world-cup/": {
+    "site": "纽约时报-世界杯",
+    "source_url": "https://www.nytimes.com/athletic/football/world-cup/",
+    "articles": [],
+    "status": "错误: HTTPSConnectionPool(host='www.nytimes.com', port=443): Max r"
+  },
+  "https://theanalyst.com/competition/fifa-world-cup/articles": {
+    "site": "opta-世界杯",
+    "source_url": "https://theanalyst.com/competition/fifa-world-cup/articles",
+    "articles": [
+      {
+        "title": "World Cup 2026",
+        "url": "https://theanalyst.com/competition/fifa-world-cup",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "World Cup Newsletter",
+        "url": "https://theanalyst.com/sign-up",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "World Cup Predictions",
+        "url": "https://theanalyst.com/competition/fifa-world-cup/predictions",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "World Cup Stats",
+        "url": "https://theanalyst.com/competition/fifa-world-cup/stats",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "More Football",
+        "url": "https://theanalyst.com/competition/football/articles",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "Premier League",
+        "url": "https://theanalyst.com/competition/premier-league",
+        "time": "2026-06-11"
+      }
+    ],
+    "status": "✅ 6篇(重抓)"
+  },
+  "https://leaguelane.com/category/articles/": {
+    "site": "leaguelane",
+    "source_url": "https://leaguelane.com/category/articles/",
+    "articles": [
+      {
+        "title": "Football Tips: Daily World Cup 2026 Bets, Accumulators & Special Tips",
+        "url": "https://leaguelane.com/world-cup-2026-football-tips/",
+        "time": "2026-06-10T22:18:02"
+      },
+      {
+        "title": "Football Predictions Today & Tomorrow | Free Expert Tips – LeagueLane",
+        "url": "https://leaguelane.com/predictions/",
+        "time": "2026-06-10T22:40:13"
+      },
+      {
+        "title": "Daily Football Tips and Accumulators from Experts",
+        "url": "https://leaguelane.com/football-tips/",
+        "time": "2026-06-10T22:41:06"
+      },
+      {
+        "title": "Bet of the Day: Football tips with Highest Win Probability",
+        "url": "https://leaguelane.com/bet-of-the-day/",
+        "time": "2026-06-10T22:41:21"
+      },
+      {
+        "title": "Daily Football Accumulator Tips: Win Big with Small Stakes",
+        "url": "https://leaguelane.com/daily-football-accumulator-tips/",
+        "time": "2026-06-10T22:43:15"
+      }
+    ],
+    "status": "✅ 6篇验证通过"
+  },
+  "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/news": {
+    "site": "FIFA官网",
+    "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/news",
+    "articles": [
+      {
+        "title": "USA at the FIFA World Cup: Team profile and history",
+        "url": "https://www.fifa.com/en/articles/usa-team-profile-history",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "Canada at the FIFA World Cup: Team profile and history",
+        "url": "https://www.fifa.com/en/articles/canada-team-profile-history",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "Mexico at the FIFA World Cup: Team profile and history",
+        "url": "https://www.fifa.com/en/articles/mexico-team-profile-history",
+        "time": "2026-06-11"
+      }
+    ],
+    "status": "✅ Chrome MCP 3篇(境外站,云壳限制)"
+  },
+  "https://kickoff.guide/blog/tag/worldcup-2026": {
+    "site": "kickoff",
+    "source_url": "https://kickoff.guide/blog/tag/worldcup-2026",
+    "articles": [],
+    "status": "✅ 0篇验证通过"
+  }
+}

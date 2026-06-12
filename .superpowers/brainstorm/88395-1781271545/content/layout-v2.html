@@ -1,0 +1,247 @@
+<h2>整体布局 v2 — 调整后方案</h2>
+<p class="subtitle">左上角 Claude Code 官方 Logo · 模型切换整合至左侧栏顶部 · 展示用量/余额</p>
+
+<div class="mockup">
+  <div class="mockup-header">Claude Code Studio — 主窗口布局 (1400×900)</div>
+  <div class="mockup-body" style="display:flex;flex-direction:column;gap:0;padding:0;background:#1a1a2e;border-radius:8px;overflow:hidden;font-family:'SF Pro Display',system-ui,sans-serif;min-height:620px;">
+
+    <!-- Top Bar: 精简 header，仅 Logo + 全局操作 -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.06);min-height:40px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <!-- Claude Code 官方 Logo -->
+        <div style="display:flex;align-items:center;gap:8px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect width="24" height="24" rx="6" fill="#D97706"/>
+            <path d="M6 16V8l3 4 3-4v8M14 8v8l3-4 3 4V8" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span style="font-weight:700;font-size:14px;color:#fff;">Claude Code Studio</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-size:10px;color:#64748b;">🟢 已连接 · 延迟 320ms</span>
+        <button class="mock-button" style="font-size:12px;padding:4px 10px;">⚙️ 设置</button>
+        <button class="mock-button" style="font-size:12px;padding:4px 10px;">🌙</button>
+      </div>
+    </div>
+
+    <!-- Main Content Row -->
+    <div style="display:flex;flex:1;min-height:0;">
+
+      <!-- ===== LEFT SIDEBAR (280px) ===== -->
+      <div style="width:280px;background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;overflow-y:auto;">
+
+        <!-- ── 模型切换区（左上方顶部）── -->
+        <div style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);">
+          <span style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;">🧠 模型引擎</span>
+
+          <!-- 主模型选择 -->
+          <div style="margin-top:10px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;cursor:pointer;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:18px;">🧠</span>
+                <div>
+                  <div style="font-size:13px;font-weight:600;color:#fff;">DeepSeek v4-pro</div>
+                  <div style="font-size:10px;color:#64748b;">主力模型 · 推理 & 创作</div>
+                </div>
+              </div>
+              <span style="color:#64748b;font-size:11px;">▼</span>
+            </div>
+          </div>
+
+          <!-- 快切模型 -->
+          <div style="margin-top:8px;display:flex;gap:6px;">
+            <div style="flex:1;padding:8px 6px;border-radius:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);text-align:center;cursor:pointer;">
+              <div style="font-size:11px;color:#94a3b8;">⚡ Flash</div>
+              <div style="font-size:9px;color:#64748b;">快速任务</div>
+            </div>
+            <div style="flex:1;padding:8px 6px;border-radius:6px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);text-align:center;cursor:pointer;">
+              <div style="font-size:11px;color:#60a5fa;">🧠 Pro</div>
+              <div style="font-size:9px;color:#64748b;">复杂推理</div>
+            </div>
+            <div style="flex:1;padding:8px 6px;border-radius:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);text-align:center;cursor:pointer;">
+              <div style="font-size:11px;color:#94a3b8;">🔮 Opus</div>
+              <div style="font-size:9px;color:#64748b;">最强</div>
+            </div>
+          </div>
+
+          <!-- 💰 用量/余额信息 — 从 platform.deepseek.com 拉取 -->
+          <div style="margin-top:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:10px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <span style="font-size:10px;font-weight:600;color:#94a3b8;">💰 账户余额</span>
+              <span style="font-size:10px;color:#64748b;">🔄 实时同步</span>
+            </div>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;">
+              <span style="font-size:20px;font-weight:700;color:#22c55e;">$18.42</span>
+              <span style="font-size:10px;color:#64748b;">剩余额度</span>
+            </div>
+            <!-- 用量进度条 -->
+            <div style="margin-top:8px;">
+              <div style="display:flex;justify-content:space-between;font-size:9px;color:#64748b;margin-bottom:3px;">
+                <span>本月已用</span><span>$11.58 / $30.00</span>
+              </div>
+              <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;">
+                <div style="height:100%;width:38.6%;background:linear-gradient(90deg,#3b82f6,#22c55e);border-radius:2px;"></div>
+              </div>
+            </div>
+            <div style="margin-top:8px;display:flex;justify-content:space-between;font-size:9px;">
+              <span style="color:#64748b;">📊 今日调用: <span style="color:#cbd5e1;">347 次</span></span>
+              <span style="color:#64748b;">📊 今日 Token: <span style="color:#cbd5e1;">48.2K</span></span>
+            </div>
+            <div style="margin-top:6px;font-size:9px;color:#94a3b8;text-align:right;cursor:pointer;">
+              查看完整用量 → platform.deepseek.com
+            </div>
+          </div>
+        </div>
+
+        <!-- ── 项目列表区 ── -->
+        <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.06);">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;">📁 项目</span>
+            <span style="font-size:15px;cursor:pointer;color:#64748b;line-height:1;">+</span>
+          </div>
+        </div>
+        <!-- Project items -->
+        <div style="padding:8px;">
+          <div style="padding:8px 10px;border-radius:6px;background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.25);margin-bottom:3px;cursor:pointer;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:12px;font-weight:600;color:#fff;">🏆 2026世界杯</span>
+              <span style="width:6px;height:6px;border-radius:50%;background:#22c55e;"></span>
+            </div>
+            <div style="font-size:9px;color:#94a3b8;margin-top:2px;">3 个会话 · 10分钟前</div>
+          </div>
+          <div style="padding:8px 10px;border-radius:6px;margin-bottom:3px;cursor:pointer;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:12px;font-weight:500;color:#cbd5e1;">📊 解题一致性评测</span>
+              <span style="width:6px;height:6px;border-radius:50%;background:#f59e0b;"></span>
+            </div>
+            <div style="font-size:9px;color:#94a3b8;margin-top:2px;">1 个会话 · 2小时前</div>
+          </div>
+          <div style="padding:8px 10px;border-radius:6px;margin-bottom:3px;cursor:pointer;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:12px;font-weight:500;color:#cbd5e1;">🎨 封面工具</span>
+            </div>
+            <div style="font-size:9px;color:#94a3b8;margin-top:2px;">2 个会话 · 昨天</div>
+          </div>
+          <div style="padding:8px 10px;border-radius:6px;margin-bottom:3px;cursor:pointer;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:12px;font-weight:500;color:#cbd5e1;">🔧 Claude Code Studio</span>
+              <span style="width:6px;height:6px;border-radius:50%;background:#3b82f6;"></span>
+            </div>
+            <div style="font-size:9px;color:#94a3b8;margin-top:2px;">1 个会话 · 活跃</div>
+          </div>
+          <div style="padding:8px 10px;border-radius:6px;margin-bottom:3px;cursor:pointer;">
+            <div style="display:flex;align-items:center;justice-content:space-between;">
+              <span style="font-size:12px;font-weight:500;color:#cbd5e1;">📝 报告生成</span>
+            </div>
+            <div style="font-size:9px;color:#94a3b8;margin-top:2px;">归档 · 上周</div>
+          </div>
+        </div>
+
+        <!-- 当前项目会话 -->
+        <div style="border-top:1px solid rgba(255,255,255,0.06);padding:12px 16px;margin-top:auto;">
+          <span style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;">💬 当前项目会话</span>
+          <div style="margin-top:8px;display:flex;flex-direction:column;gap:3px;">
+            <div style="padding:6px 8px;border-radius:4px;background:rgba(59,130,246,0.1);font-size:11px;color:#cbd5e1;">▸ 小组赛预测模型优化</div>
+            <div style="padding:6px 8px;border-radius:4px;font-size:11px;color:#94a3b8;">  淘汰赛对阵分析</div>
+            <div style="padding:6px 8px;border-radius:4px;font-size:11px;color:#94a3b8;">  数据源调研</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== CENTER: 预览区 ===== -->
+      <div style="flex:1;display:flex;flex-direction:column;background:rgba(255,255,255,0.01);">
+        <!-- Tabs -->
+        <div style="display:flex;border-bottom:1px solid rgba(255,255,255,0.06);padding:0 16px;">
+          <div style="padding:10px 16px;border-bottom:2px solid #3b82f6;color:#fff;font-size:12px;font-weight:600;cursor:pointer;">💬 对话</div>
+          <div style="padding:10px 16px;color:#64748b;font-size:12px;cursor:pointer;">📋 方案</div>
+          <div style="padding:10px 16px;color:#64748b;font-size:12px;cursor:pointer;">🎨 预览</div>
+          <div style="padding:10px 16px;color:#64748b;font-size:12px;cursor:pointer;">📝 代码</div>
+        </div>
+        <!-- Chat content -->
+        <div style="flex:1;padding:20px;overflow-y:auto;">
+          <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:16px;margin-bottom:12px;border:1px solid rgba(255,255,255,0.06);">
+            <div style="font-size:11px;color:#3b82f6;margin-bottom:6px;">🤖 Claude · 刚才</div>
+            <div style="font-size:13px;color:#cbd5e1;line-height:1.6;">小组赛预测模型已根据最新赔率数据更新，E组和H组的出线概率有显著变化。建议查看完整分析报告...</div>
+            <div style="margin-top:10px;display:flex;gap:6px;">
+              <span style="font-size:10px;padding:4px 10px;border-radius:4px;background:rgba(59,130,246,0.2);color:#60a5fa;cursor:pointer;">📊 查看报告</span>
+              <span style="font-size:10px;padding:4px 10px;border-radius:4px;background:rgba(255,255,255,0.06);color:#94a3b8;cursor:pointer;">📋 复制</span>
+            </div>
+          </div>
+          <div style="background:rgba(255,255,255,0.02);border-radius:8px;padding:16px;margin-bottom:12px;">
+            <div style="font-size:11px;color:#22c55e;margin-bottom:6px;">👤 你 · 2分钟前</div>
+            <div style="font-size:13px;color:#cbd5e1;line-height:1.6;">把报告部署到 OSS 上，同时更新 GitHub Pages</div>
+          </div>
+        </div>
+        <!-- Input -->
+        <div style="padding:12px 20px;border-top:1px solid rgba(255,255,255,0.06);">
+          <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 14px;">
+            <input class="mock-input" placeholder="输入消息或命令... (⌘↵ 发送)" style="flex:1;background:none;border:none;color:#fff;font-size:13px;outline:none;">
+            <span style="font-size:11px;color:#64748b;">⌘K 命令</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== RIGHT PANEL: 部署管理 ===== -->
+      <div style="width:300px;background:rgba(255,255,255,0.02);border-left:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;">
+        <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;">🚀 部署管理</span>
+        </div>
+        <div style="flex:1;padding:12px;overflow-y:auto;">
+          <!-- Deploy targets -->
+          <div style="margin-bottom:14px;">
+            <div style="font-size:10px;color:#94a3b8;margin-bottom:6px;">部署目标</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <span style="font-size:10px;padding:5px 10px;border-radius:12px;background:rgba(59,130,246,0.2);color:#60a5fa;border:1px solid rgba(59,130,246,0.3);cursor:pointer;">☁️ 阿里云 OSS</span>
+              <span style="font-size:10px;padding:5px 10px;border-radius:12px;background:rgba(255,255,255,0.06);color:#94a3b8;cursor:pointer;">🌐 GitHub Pages</span>
+            </div>
+          </div>
+          <!-- History -->
+          <div style="margin-bottom:14px;">
+            <div style="font-size:10px;color:#94a3b8;margin-bottom:8px;">最近部署</div>
+            <div style="font-size:11px;color:#cbd5e1;padding:8px;border-radius:4px;background:rgba(34,197,94,0.08);border-left:3px solid #22c55e;margin-bottom:4px;">
+              <div style="font-weight:600;">✅ evaluation_report.html</div>
+              <div style="color:#64748b;font-size:9px;">OSS + Pages · 2小时前</div>
+            </div>
+            <div style="font-size:11px;color:#cbd5e1;padding:8px;border-radius:4px;background:rgba(255,255,255,0.03);border-left:3px solid #f59e0b;margin-bottom:4px;">
+              <div style="font-weight:600;">⏳ polymarket_report.html</div>
+              <div style="color:#64748b;font-size:9px;">OSS · 排队中</div>
+            </div>
+          </div>
+          <!-- Actions -->
+          <div>
+            <div style="font-size:10px;color:#94a3b8;margin-bottom:6px;">快捷操作</div>
+            <button class="mock-button" style="width:100%;margin-bottom:4px;text-align:left;font-size:11px;">🚀 一键部署当前项目</button>
+            <button class="mock-button" style="width:100%;margin-bottom:4px;text-align:left;font-size:11px;">🔗 复制线上链接</button>
+            <button class="mock-button" style="width:100%;margin-bottom:4px;text-align:left;font-size:11px;">📋 查看部署日志</button>
+            <button class="mock-button" style="width:100%;margin-bottom:4px;text-align:left;font-size:11px;">🔄 刷新 OSS 缓存</button>
+          </div>
+        </div>
+        <!-- Online status -->
+        <div style="padding:10px 16px;border-top:1px solid rgba(255,255,255,0.06);">
+          <div style="display:flex;align-items:center;justify-content:space-between;font-size:10px;">
+            <span style="color:#64748b;">🌐 线上状态</span>
+            <span style="color:#22c55e;">🟢 正常运行</span>
+          </div>
+          <div style="font-size:9px;color:#94a3b8;margin-top:3px;">
+            consistency-eval.paultunggm-pixel.page
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Status Bar -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:5px 16px;background:rgba(255,255,255,0.03);border-top:1px solid rgba(255,255,255,0.06);font-size:10px;color:#64748b;">
+      <div style="display:flex;align-items:center;gap:16px;">
+        <span>📁 workspace/2026世界杯</span>
+        <span>💾 自动保存</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span>会话: 12分钟</span>
+        <span>Tokens: 1.2K / 200K</span>
+        <span>🟢 DeepSeek v4-pro</span>
+      </div>
+    </div>
+
+  </div>
+</div>

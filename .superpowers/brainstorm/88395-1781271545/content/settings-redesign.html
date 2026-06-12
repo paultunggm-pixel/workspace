@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+  :root {
+    --bg: #f2f2f7;
+    --row: #ffffff;
+    --text: #1d1d1f; --t2: #6e6e73; --t3: #aeaeb2;
+    --accent: #0071e3; --abg: rgba(0,113,227,0.06); --div: rgba(0,0,0,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, 'SF Pro Display', sans-serif;
+    -webkit-font-smoothing: antialiased; background: var(--bg); color: var(--text);
+    font-size: 13px; line-height: 1.5;
+  }
+
+  /* ── Sheet container ── */
+  .sheet {
+    max-width: 620px; margin: 30px auto;
+    background: var(--bg); border-radius: 10px;
+    overflow: hidden;
+  }
+
+  /* ── Group (like iOS Settings group) ── */
+  .group {
+    margin: 0 16px 20px;
+  }
+  .group-header {
+    font-size: 11px; font-weight: 600; color: var(--t2);
+    text-transform: none; letter-spacing: 0;
+    padding: 16px 16px 6px; margin: 0 -16px;
+  }
+  .group-body {
+    background: var(--row); border-radius: 10px;
+    overflow: hidden;
+  }
+  .sub-section {
+    display: flex; align-items: flex-start; gap: 0;
+  }
+  .sub-section + .sub-section { border-top: 1px solid rgba(0,0,0,0.06); }
+  .sub-label {
+    width: 90px; flex-shrink: 0;
+    font-size: 12px; font-weight: 600; color: var(--text);
+    padding: 14px 16px;
+  }
+  .sub-content { flex: 1; min-width: 0; }
+
+  /* ── Row types ── */
+  .row {
+    display: flex; align-items: center; padding: 10px 16px;
+    min-height: 44px;
+  }
+  .row + .row { border-top: 1px solid var(--div); }
+  .row-left { flex: 1; min-width: 0; }
+  .row-label { font-size: 13px; font-weight: 400; color: var(--text); }
+  .row-hint { font-size: 11px; color: var(--t3); margin-top: 1px; }
+  .row-right { flex-shrink: 0; margin-left: 12px; display: flex; align-items: center; gap: 8px; }
+
+  /* ── Tags in row ── */
+  .tags { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+  .tag {
+    padding: 4px 10px; border-radius: 6px; font-size: 11px; cursor: pointer;
+    border: 1px solid var(--div); color: var(--t2); background: var(--row);
+    transition: all 0.12s; user-select: none; white-space: nowrap;
+  }
+  .tag:hover { border-color: var(--accent); color: var(--accent); }
+  .tag.on { background: var(--abg); border-color: var(--accent); color: var(--accent); font-weight: 500; }
+  .tag.on::before { content: '✓ '; font-size: 10px; }
+
+  /* ── Toggle ── */
+  .switch {
+    width: 44px; height: 24px; border-radius: 12px; cursor: pointer; flex-shrink: 0;
+    background: rgba(0,0,0,0.12); position: relative; transition: all 0.2s; border: none;
+  }
+  .switch.on { background: var(--accent); }
+  .switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 20px; height: 20px; border-radius: 50%; background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12); transition: all 0.2s;
+  }
+  .switch.on::after { left: 22px; }
+
+  /* ── Radio ── */
+  .radio-group { display: flex; flex-direction: column; }
+  .radio-row {
+    display: flex; align-items: center; padding: 9px 16px; cursor: pointer;
+  }
+  .radio-row + .radio-row { border-top: 1px solid var(--div); }
+  .radio-dot {
+    width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--div);
+    flex-shrink: 0; margin-right: 10px; position: relative; transition: all 0.15s;
+  }
+  .radio-row.on .radio-dot { border-color: var(--accent); }
+  .radio-row.on .radio-dot::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 10px; height: 10px; border-radius: 50%; background: var(--accent);
+  }
+  .radio-info { flex: 1; }
+  .radio-label { font-size: 13px; }
+  .radio-desc { font-size: 11px; color: var(--t3); margin-top: 1px; }
+
+  /* ── Text field row ── */
+  .text-row {
+    display: flex; align-items: center; padding: 0 16px 10px;
+  }
+  .text-row .row-left { padding-right: 0; }
+  .text-field {
+    flex: 1; padding: 6px 10px; border: 1px solid var(--div); border-radius: 6px;
+    font-size: 12px; font-family: 'SF Mono', monospace; color: var(--text);
+    background: rgba(0,0,0,0.02); outline: none;
+  }
+  .text-field:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,113,227,0.06); }
+
+  /* ── Inline actions ── */
+  .row-action {
+    font-size: 11px; color: var(--accent); cursor: pointer; font-weight: 400;
+    padding: 4px 8px; border-radius: 5px; white-space: nowrap;
+  }
+  .row-action:hover { background: var(--abg); }
+  .row-action.danger { color: #ff3b30; }
+  .row-action.danger:hover { background: rgba(255,59,48,0.06); }
+
+  /* ── Textarea ── */
+  .textarea-row { padding: 0 16px 12px; }
+  textarea {
+    width: 100%; padding: 8px 10px; border: 1px solid var(--div); border-radius: 8px;
+    font-size: 12px; font-family: inherit; color: var(--text); outline: none; line-height: 1.6;
+    resize: vertical; min-height: 72px; background: rgba(0,0,0,0.02);
+  }
+  textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,113,227,0.06); }
+
+  /* ── Footer ── */
+  .footer { padding: 8px 16px 30px; display: flex; gap: 8px; justify-content: flex-end; }
+  .btn {
+    padding: 7px 16px; border-radius: 7px; font-size: 12px; font-weight: 500;
+    cursor: pointer; font-family: inherit; border: 1px solid var(--div);
+    background: var(--row); color: var(--t2); transition: all 0.15s;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn.primary:hover { background: #0077ed; }
+
+  /* ── Title bar ── */
+  .titlebar {
+    padding: 20px 16px 8px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .titlebar h1 { font-size: 20px; font-weight: 700; }
+  .titlebar .scope {
+    font-size: 11px; color: var(--t2); background: rgba(0,0,0,0.03);
+    padding: 3px 10px; border-radius: 12px; font-weight: 500;
+  }
+
+  /* ── Sub-row (indented info under a row) ── */
+  .sub-row {
+    padding: 2px 16px 10px; font-size: 11px; color: var(--t3);
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+
+  <!-- ═══════════ GLOBAL SETTINGS ═══════════ -->
+  <div class="titlebar">
+    <h1>CLAUDE.md</h1>
+    <span class="scope">全局设置</span>
+  </div>
+
+  <!-- ── Group: 交流偏好 ── -->
+  <div class="group">
+    <div class="group-header">交流偏好</div>
+    <div class="group-body">
+
+      <!-- 工作语言 -->
+      <div class="row" style="align-items:flex-start;padding-bottom:12px;">
+        <div class="row-left">
+          <div class="row-label">工作语言</div>
+          <div class="row-hint">Claude 回复使用的语言</div>
+        </div>
+        <div class="row-right" style="flex:1;justify-content:flex-end;">
+          <div class="tags">
+            <span class="tag on">简体中文</span>
+            <span class="tag">繁體中文</span>
+            <span class="tag">English</span>
+            <span class="tag">+ 其他</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 回复风格 -->
+      <div class="row">
+        <div class="row-left">
+          <div class="row-label">回复风格</div>
+          <div class="row-hint">简洁还是详细</div>
+        </div>
+        <div class="row-right" style="flex:1;justify-content:flex-end;">
+          <div class="tags">
+            <span class="tag">简洁</span>
+            <span class="tag on">适度</span>
+            <span class="tag">详尽</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Group: 权限与安全 ── -->
+  <div class="group">
+    <div class="group-header">权限与安全</div>
+    <div class="group-body">
+
+      <div class="sub-section">
+        <div class="sub-label">询问频率</div>
+        <div class="sub-content">
+
+      <div class="radio-row on" style="align-items:center;">
+        <div class="radio-dot"></div>
+        <div class="radio-info" style="display:flex;align-items:baseline;gap:10px;">
+          <span class="radio-label" style="white-space:nowrap;">关键确认</span>
+          <span class="radio-desc" style="flex:1;">隐私、安全、文件删除等敏感操作询问，常规操作自主执行</span>
+        </div>
+      </div>
+      <div class="radio-row" style="align-items:center;">
+        <div class="radio-dot"></div>
+        <div class="radio-info" style="display:flex;align-items:baseline;gap:10px;">
+          <span class="radio-label" style="white-space:nowrap;">每步询问</span>
+          <span class="radio-desc" style="flex:1;">所有操作执行前都向你确认</span>
+        </div>
+      </div>
+      <div class="radio-row" style="align-items:center;">
+        <div class="radio-dot"></div>
+        <div class="radio-info" style="display:flex;align-items:baseline;gap:10px;">
+          <span class="radio-label" style="white-space:nowrap;">高度自主</span>
+          <span class="radio-desc" style="flex:1;">AI 全权执行，你可随时暂停或回滚</span>
+        </div>
+      </div>
+
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <div class="sub-label">读写权限</div>
+        <div class="sub-content">
+
+      <div class="radio-row on" style="align-items:flex-start;">
+        <div class="radio-dot" style="margin-top:3px;"></div>
+        <div class="radio-info" style="flex:1;">
+          <div style="display:flex;align-items:baseline;gap:10px;">
+            <span class="radio-label" style="white-space:nowrap;">指定授权读写单一目录</span>
+            <span class="radio-desc" style="flex:1;">Claude 仅能读写下方指定的文件夹</span>
+          </div>
+          <div class="text-row" style="padding:0;margin-top:8px;">
+            <input class="text-field" value="~/Documents/Claude/" readonly style="color:var(--t2);">
+            <button class="btn" style="margin-left:6px;padding:5px 10px;font-size:10px;">📂 选择…</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="radio-row">
+        <div class="radio-dot"></div>
+        <div class="radio-info" style="display:flex;align-items:baseline;gap:10px;">
+          <span class="radio-label" style="white-space:nowrap;">全局授权读写本地文件数据</span>
+          <span class="radio-desc" style="flex:1;">Claude 可访问用户目录下的任意文件</span>
+        </div>
+      </div>
+
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <div class="sub-label">安全策略</div>
+        <div class="sub-content">
+
+      <div class="row">
+        <div class="row-left">
+          <div class="row-label">已启用策略</div>
+        </div>
+        <div class="row-right" style="flex:1;justify-content:flex-start;">
+          <div class="tags">
+            <span class="tag on">不存储密钥</span>
+            <span class="tag on">外发前确认</span>
+          </div>
+        </div>
+      </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Group: 编码风格 ── -->
+  <div class="group">
+    <div class="group-header">编码风格</div>
+    <div class="group-body">
+
+      <div class="row">
+        <div class="row-left" style="display:flex;align-items:baseline;gap:8px;">
+          <span class="row-label">动手前先对齐需求</span>
+          <span class="row-hint">不确定时先问清楚，不自行假设</span>
+        </div>
+        <button class="switch on"></button>
+      </div>
+      <div class="row">
+        <div class="row-left" style="display:flex;align-items:baseline;gap:8px;">
+          <span class="row-label">简单优先</span>
+          <span class="row-hint">最少代码解决问题，不过度设计</span>
+        </div>
+        <button class="switch on"></button>
+      </div>
+      <div class="row">
+        <div class="row-left" style="display:flex;align-items:baseline;gap:8px;">
+          <span class="row-label">精准修改</span>
+          <span class="row-hint">只改相关部分，不顺手格式化</span>
+        </div>
+        <button class="switch on"></button>
+      </div>
+      <div class="row">
+        <div class="row-left" style="display:flex;align-items:baseline;gap:8px;">
+          <span class="row-label">修改后自动代码审查</span>
+          <span class="row-hint">每次代码变更后自动运行审查</span>
+        </div>
+        <button class="switch on"></button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Group: 自定义规则 ── -->
+  <div class="group">
+    <div class="group-header">自定义规则</div>
+    <div class="group-body">
+      <div class="textarea-row" style="padding-top:12px;">
+        <textarea placeholder="用自然语言补充你希望 Claude 遵守的全局规则..." style="min-height:144px;">- 每日北京时间 08:00 自动运行定时任务
+- 所有网页部署需同时推送 OSS 和 GitHub Pages
+- 数据分析任务完成后自动生成 HTML 报告</textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <button class="btn">查看原始 MD</button>
+    <button class="btn primary">保存更改</button>
+  </div>
+
+
+  <!-- ═══════════ PROJECT SETTINGS ═══════════ -->
+  <div class="titlebar" style="margin-top:8px;">
+    <h1>项目概览</h1>
+    <span class="scope">🏆 2026世界杯</span>
+  </div>
+
+  <!-- ── Group: 基本信息 ── -->
+  <div class="group">
+    <div class="group-header">基本信息</div>
+    <div class="group-body">
+
+      <div class="row" style="align-items:center;">
+        <div class="row-left" style="display:flex;align-items:center;gap:10px;flex:1;">
+          <span class="row-label" style="flex-shrink:0;width:58px;">项目名称</span>
+          <input type="text" class="text-field" value="2026世界杯预测分析" style="flex:1;">
+        </div>
+      </div>
+      <div class="sub-row">
+        基于 Polymarket 赔率和 FIFA 排名，泊松回归 + 蒙特卡洛模拟预测 104 场比赛结果。
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Group: 项目配置 ── -->
+  <div class="group">
+    <div class="group-header">项目配置</div>
+    <div class="group-body">
+
+      <div class="row" style="align-items:center;">
+        <div class="row-left" style="display:flex;align-items:center;gap:10px;flex:1;">
+          <span class="row-label" style="flex-shrink:0;width:58px;">数据源</span>
+          <div class="tags">
+            <span class="tag on">Polymarket API</span>
+            <span class="tag on">FIFA 排名</span>
+          </div>
+        </div>
+        <span class="tag" style="margin-left:auto;flex-shrink:0;">+ 添加</span>
+      </div>
+
+      <div class="row" style="align-items:center;">
+        <div class="row-left" style="display:flex;align-items:center;flex:1;gap:10px;">
+          <span class="row-label" style="flex-shrink:0;width:58px;">技术栈</span>
+          <div class="tags">
+            <span class="tag on">Python</span>
+            <span class="tag on">NumPy/Pandas</span>
+          </div>
+        </div>
+        <span class="tag" style="margin-left:auto;flex-shrink:0;">+ 添加</span>
+      </div>
+
+      <div class="row" style="align-items:center;">
+        <div class="row-left" style="display:flex;align-items:center;flex:1;gap:10px;">
+          <span class="row-label" style="flex-shrink:0;width:58px;">产物类型</span>
+          <div class="tags">
+            <span class="tag on">HTML 报告</span>
+            <span class="tag on">Python 脚本</span>
+          </div>
+        </div>
+        <span class="tag" style="margin-left:auto;flex-shrink:0;">+ 添加</span>
+      </div>
+
+      <div class="row" style="align-items:center;">
+        <div class="row-left" style="display:flex;align-items:center;flex:1;gap:10px;">
+          <span class="row-label" style="flex-shrink:0;width:58px;">部署目标</span>
+          <div class="tags">
+            <span class="tag on">☁️ OSS</span>
+            <span class="tag on">🌐 Pages</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Group: 项目规则 ── -->
+  <div class="group">
+    <div class="group-header">项目规则</div>
+    <div class="group-body">
+      <div class="textarea-row" style="padding-top:12px;">
+        <textarea placeholder="仅在本项目内生效的额外指令..." style="min-height:144px;">- 赔率数据每日至少更新一次，更新后重新运行预测模型
+- HTML 报告使用暗色主题，概率保留一位小数
+- 预测结果变更超过 5% 时重点标注</textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <button class="btn">查看原始 MD</button>
+    <button class="btn primary">保存更改</button>
+  </div>
+
+</div>
+
+</body>
+</html>

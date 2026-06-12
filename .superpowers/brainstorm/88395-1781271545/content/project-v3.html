@@ -1,0 +1,181 @@
+<h2>项目管理区 v3 — 两级结构：分类 → 项目</h2>
+<p class="subtitle">以项目为中心 · 分类归拢 · 移动/删除有安全机制</p>
+
+<div class="mockup">
+  <div class="mockup-header">左侧栏完整层级：模型引擎 → 分类 → 项目 → 会话</div>
+  <div class="mockup-body" style="background:#1a1a2e;padding:0;font-family:'SF Pro Display',system-ui,sans-serif;font-size:12px;">
+
+    <!-- MODEL (fixed, compact) -->
+    <div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.01);">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span>🧠</span>
+        <span style="font-size:11px;font-weight:600;color:#fff;">DeepSeek v4-pro</span>
+        <span style="width:6px;height:6px;border-radius:50%;background:#22c55e;"></span>
+        <span style="font-size:9px;color:#64748b;margin-left:auto;">$18.42</span>
+      </div>
+    </div>
+
+    <!-- SECTION: 项目分类 + 操作栏 -->
+    <div style="padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.04);">
+      <span style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;">📁 项目管理</span>
+      <div style="display:flex;gap:8px;">
+        <span style="font-size:9px;color:#64748b;cursor:pointer;" title="新建分类">+ 📂</span>
+        <span style="font-size:9px;color:#64748b;cursor:pointer;" title="新建项目">+ 📁</span>
+      </div>
+    </div>
+
+    <!-- CATEGORY 1: 数据分析 (expanded) -->
+    <div style="border-bottom:1px solid rgba(255,255,255,0.03);">
+      <div style="padding:7px 14px;display:flex;align-items:center;gap:6px;cursor:pointer;">
+        <span style="font-size:9px;color:#64748b;">▼</span>
+        <span style="font-size:12px;">📂</span>
+        <span style="font-size:11px;font-weight:600;color:#cbd5e1;flex:1;">数据分析</span>
+        <span style="font-size:9px;color:#64748b;">3 项目</span>
+      </div>
+      <!-- Projects under 数据分析 -->
+      <div style="padding-left:30px;">
+        <!-- Project: 2026世界杯 (selected, expanded) -->
+        <div style="margin-bottom:2px;">
+          <div style="padding:6px 10px;display:flex;align-items:center;gap:6px;cursor:pointer;background:rgba(59,130,246,0.1);border-left:2px solid #3b82f6;border-radius:0 6px 6px 0;">
+            <span style="font-size:9px;color:#60a5fa;">▼</span>
+            <span style="font-size:13px;">🏆</span>
+            <span style="font-size:11px;font-weight:600;color:#fff;flex:1;">2026世界杯</span>
+            <span style="width:6px;height:6px;border-radius:50%;background:#22c55e;"></span>
+            <span style="font-size:15px;color:#64748b;cursor:pointer;">⋯</span>
+          </div>
+          <!-- Sessions -->
+          <div style="padding-left:20px;">
+            <div style="padding:5px 8px;font-size:10px;color:#cbd5e1;cursor:pointer;background:rgba(59,130,246,0.08);border-radius:4px;margin-bottom:1px;">
+              ▸ 小组赛预测模型优化 <span style="color:#64748b;font-size:9px;">24条</span>
+            </div>
+            <div style="padding:5px 8px;font-size:10px;color:#94a3b8;cursor:pointer;border-radius:4px;margin-bottom:1px;">
+                淘汰赛对阵分析 <span style="color:#64748b;font-size:9px;">31条</span>
+            </div>
+            <div style="padding:5px 8px;font-size:10px;color:#94a3b8;cursor:pointer;border-radius:4px;">
+                数据源调研 <span style="color:#64748b;font-size:9px;">18条</span>
+            </div>
+            <div style="padding:3px 8px;font-size:9px;color:#64748b;cursor:pointer;">+ 新建会话</div>
+          </div>
+        </div>
+        <!-- Project: 解题一致性评测 (collapsed) -->
+        <div style="padding:6px 10px;display:flex;align-items:center;gap:6px;cursor:pointer;border-radius:0 6px 6px 0;margin-bottom:2px;">
+          <span style="font-size:9px;color:#64748b;">▶</span>
+          <span style="font-size:13px;">📊</span>
+          <span style="font-size:11px;color:#cbd5e1;flex:1;">解题一致性评测</span>
+          <span style="width:6px;height:6px;border-radius:50%;background:#f59e0b;"></span>
+        </div>
+        <!-- Project: 锐评话题PK -->
+        <div style="padding:6px 10px;display:flex;align-items:center;gap:6px;cursor:pointer;border-radius:0 6px 6px 0;">
+          <span style="font-size:9px;color:#64748b;">▶</span>
+          <span style="font-size:13px;">⚔️</span>
+          <span style="font-size:11px;color:#cbd5e1;flex:1;">锐评话题PK清单</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CATEGORY 2: 产品开发 (expanded) -->
+    <div style="border-bottom:1px solid rgba(255,255,255,0.03);">
+      <div style="padding:7px 14px;display:flex;align-items:center;gap:6px;cursor:pointer;">
+        <span style="font-size:9px;color:#64748b;">▼</span>
+        <span style="font-size:12px;">📂</span>
+        <span style="font-size:11px;font-weight:600;color:#cbd5e1;flex:1;">产品开发</span>
+        <span style="font-size:9px;color:#64748b;">2 项目</span>
+      </div>
+      <div style="padding-left:30px;">
+        <div style="padding:6px 10px;display:flex;align-items:center;gap:6px;cursor:pointer;border-radius:0 6px 6px 0;margin-bottom:2px;">
+          <span style="font-size:9px;color:#64748b;">▶</span>
+          <span style="font-size:13px;">🔧</span>
+          <span style="font-size:11px;color:#cbd5e1;flex:1;">Claude Code Studio</span>
+          <span style="width:6px;height:6px;border-radius:50%;background:#3b82f6;"></span>
+        </div>
+        <div style="padding:6px 10px;display:flex;align-items:center;gap:6px;cursor:pointer;border-radius:0 6px 6px 0;">
+          <span style="font-size:9px;color:#64748b;">▶</span>
+          <span style="font-size:13px;">🎨</span>
+          <span style="font-size:11px;color:#cbd5e1;flex:1;">封面工具</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CATEGORY 3: 未分类 (collapsed) -->
+    <div style="border-bottom:1px solid rgba(255,255,255,0.03);">
+      <div style="padding:7px 14px;display:flex;align-items:center;gap:6px;cursor:pointer;">
+        <span style="font-size:9px;color:#64748b;">▶</span>
+        <span style="font-size:12px;">📂</span>
+        <span style="font-size:11px;font-weight:600;color:#cbd5e1;flex:1;">未分类</span>
+        <span style="font-size:9px;color:#64748b;">1 项目</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 交互规则 -->
+<div class="section">
+  <h3>🔧 关键交互规则</h3>
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px;font-size:11px;">
+
+    <div style="padding:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;">
+      <div style="font-weight:600;color:#22c55e;margin-bottom:6px;">✅ 允许</div>
+      <ul style="color:#cbd5e1;padding-left:16px;line-height:1.8;margin:0;">
+        <li>新建分类、新建项目</li>
+        <li>项目可以在分类间移动</li>
+        <li>空分类可以删除</li>
+        <li>项目展开后看到会话列表</li>
+      </ul>
+    </div>
+    <div style="padding:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;">
+      <div style="font-weight:600;color:#ef4444;margin-bottom:6px;">🚫 限制</div>
+      <ul style="color:#cbd5e1;padding-left:16px;line-height:1.8;margin:0;">
+        <li>分类内有项目 → 不可删除</li>
+        <li>删除项目 → 三次确认</li>
+        <li>未分类是默认分类，不可删除</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 删除项目三次确认 -->
+<div class="section">
+  <h3>🗑️ 删除项目 — 三次确认流程</h3>
+  <div style="padding:14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;margin-top:12px;font-size:11px;">
+    <div style="display:flex;gap:12px;align-items:center;">
+      <div style="flex:1;text-align:center;padding:12px;background:rgba(255,255,255,0.02);border-radius:6px;">
+        <div style="font-size:10px;color:#64748b;margin-bottom:6px;">第1次</div>
+        <div style="color:#cbd5e1;margin-bottom:4px;">右键 → 删除项目</div>
+        <div style="padding:6px 10px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.15);border-radius:6px;color:#ef4444;font-size:10px;">⚠️ 确认删除「2026世界杯」？<br>输入项目名称确认</div>
+      </div>
+      <span style="color:#64748b;">→</span>
+      <div style="flex:1;text-align:center;padding:12px;background:rgba(255,255,255,0.02);border-radius:6px;">
+        <div style="font-size:10px;color:#64748b;margin-bottom:6px;">第2次</div>
+        <div style="color:#cbd5e1;margin-bottom:4px;">系统再次确认</div>
+        <div style="padding:6px 10px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.25);border-radius:6px;color:#ef4444;font-size:10px;">⚠️ 项目包含 3 个会话<br>删除后不可恢复！继续？</div>
+      </div>
+      <span style="color:#64748b;">→</span>
+      <div style="flex:1;text-align:center;padding:12px;background:rgba(255,255,255,0.02);border-radius:6px;">
+        <div style="font-size:10px;color:#64748b;margin-bottom:6px;">第3次</div>
+        <div style="color:#cbd5e1;margin-bottom:4px;">倒计时确认</div>
+        <div style="padding:6px 10px;background:rgba(239,68,68,0.16);border:1px solid rgba(239,68,68,0.35);border-radius:6px;color:#fff;font-size:10px;">⏳ 5秒后确认删除<br>[取消] [确认删除]</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 项目移动 -->
+<div class="section">
+  <h3>📦 移动项目到其他分类</h3>
+  <div style="padding:14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;margin-top:12px;">
+    <div style="display:flex;gap:16px;align-items:center;">
+      <div style="padding:10px 16px;background:rgba(255,255,255,0.03);border-radius:6px;font-size:11px;color:#cbd5e1;">
+        右键「2026世界杯」<br>→ 移动到...
+      </div>
+      <span style="color:#64748b;">→</span>
+      <div style="padding:10px 16px;background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.15);border-radius:6px;">
+        <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;">选择目标分类：</div>
+        <div style="font-size:11px;color:#cbd5e1;padding:3px 0;">📂 数据分析 ✓ 当前</div>
+        <div style="font-size:11px;color:#60a5fa;padding:3px 0;background:rgba(59,130,246,0.1);">📂 产品开发 ←</div>
+        <div style="font-size:11px;color:#cbd5e1;padding:3px 0;">📂 未分类</div>
+        <div style="border-top:1px solid rgba(255,255,255,0.04);margin-top:4px;padding-top:4px;font-size:10px;color:#64748b;">+ 新建分类...</div>
+      </div>
+    </div>
+  </div>
+</div>

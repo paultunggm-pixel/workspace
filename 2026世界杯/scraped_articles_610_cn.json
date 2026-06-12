@@ -1,0 +1,225 @@
+{
+  "https://sports.cctv.com/football/": {
+    "site": "央视体育-世界杯",
+    "source_url": "https://sports.cctv.com/football/",
+    "articles": [
+      {
+        "title": "美加墨世界杯开赛派对在洛杉矶举行",
+        "url": "https://tv.cctv.com/2026/06/11/VIDEFiZGvZLHWPeyJplEZFS5260611.shtml",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "法国队抵达波士顿",
+        "url": "https://tv.cctv.com/2026/06/11/VIDEY2XTKro1InlPKCymSNBr260611.shtml",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "探访法国队大本营",
+        "url": "https://tv.cctv.com/2026/06/11/VIDEyda0V8UBBJH7twzmCwoL260611.shtml",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "高温天气训练 瑞典队蓄势待发",
+        "url": "https://tv.cctv.com/2026/06/11/VIDELbokmka0nepb4OIdPegx260611.shtml",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "赛前拍摄全家福 德国队完成美国第二练",
+        "url": "https://tv.cctv.com/2026/06/11/VIDE28KUvbp1qRnys1pOxLzl260611.shtml",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "安切洛蒂过生日 巴西队轻松备战",
+        "url": "https://tv.cctv.com/2026/06/11/VIDEVPG1QvXfAZUyglao5DpP260611.shtml",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "克罗地亚队：老将与新秀共谱新篇章",
+        "url": "https://tv.cctv.com/2026/06/11/VIDE602gxCKJ3m7tpBW8w90a260611.shtml",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "木塔力甫进球 足球邀请赛U23国足三球完胜",
+        "url": "https://sports.cctv.com/2026/06/09/PHOARs8T9mHYPCLzvodqwu99260609.shtml",
+        "time": "2026-06-09"
+      }
+    ],
+    "status": "✅ Chrome MCP 13篇"
+  },
+  "https://worldcup2026.sohu.com/": {
+    "site": "搜狐体育-国际足球",
+    "source_url": "https://worldcup2026.sohu.com/",
+    "articles": [
+      {
+        "title": "英格兰队召开新闻发布会 图赫尔携格伊出席",
+        "url": "https://www.sohu.com/a/1034606902_461392",
+        "time": "2026-06-10 10:49"
+      },
+      {
+        "title": "热身赛葡萄牙2-1尼日利亚 C罗失良机表情懊恼",
+        "url": "https://www.sohu.com/a/1035032204_461392",
+        "time": "2026-06-11 09:00"
+      },
+      {
+        "title": "热身赛英格兰3-0哥斯达黎加 赖斯进球后送飞吻",
+        "url": "https://www.sohu.com/a/1035031970_461392",
+        "time": "2026-06-11 09:00"
+      },
+      {
+        "title": "韩国队召开新闻发布会 洪明甫携孙兴慜出席",
+        "url": "https://www.sohu.com/a/1035101151_461392",
+        "time": "2026-06-11 11:00"
+      },
+      {
+        "title": "热身赛阿根廷3-0冰岛 梅西点射破门握拳庆祝",
+        "url": "https://www.sohu.com/a/1034675012_461392",
+        "time": "2026-06-10 12:45"
+      },
+      {
+        "title": "墨西哥队备战训练 世界杯揭幕战对阵南非",
+        "url": "https://www.sohu.com/a/1034552190_461392",
+        "time": "2026-06-10 09:32"
+      },
+      {
+        "title": "【竞界】忠诚的代价：通胀下的世界杯门票",
+        "url": "https://www.sohu.com/a/1034595891_114977",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "当青春撞击美加墨世界杯 亚马尔奥利塞领衔超新星风暴",
+        "url": "https://www.sohu.com/a/1034279377_461392",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "热身赛-孔塞桑制胜C罗丢射门靴 葡萄牙2-1尼日利亚",
+        "url": "https://www.sohu.com/a/1034998871_461392",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "热身赛-赖斯沃特金斯破门戈登点射 英格兰3-0哥斯达黎加",
+        "url": "https://www.sohu.com/a/1034999363_461392",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "热身赛-梅西替补点射建功劳塔罗造点 阿根廷3-0冰岛",
+        "url": "https://www.sohu.com/a/1034613037_461392",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "梅罗谢幕！2026世界杯迎诸神黄昏 我们与青春的终极告别",
+        "url": "https://www.sohu.com/a/1034273989_461392",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "8.8万人只为这20分钟！叔侄同场梅西直言享受世界杯",
+        "url": "https://www.sohu.com/a/1034749580_461392",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "帮队员解压！图赫尔：英格兰并非夺冠热门 不要把胜利看太重",
+        "url": "https://www.sohu.com/a/1034840760_461392",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "孙兴慜备战世界杯遭韩记者嘲讽：没服过兵役的家伙瞎跑什么呢？",
+        "url": "https://www.sohu.com/a/1034507616_461392",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "歧视？亚非球队疑似遭美国区别对待 乌兹被缉毒犬检查",
+        "url": "https://www.sohu.com/a/1034514763_461392",
+        "time": "2026-06-11"
+      }
+    ],
+    "status": "✅ Chrome MCP 18篇"
+  },
+  "https://soccer.hupu.com/": {
+    "site": "虎扑-世界杯",
+    "source_url": "https://soccer.hupu.com/",
+    "articles": [
+      {
+        "title": "伊拉克主帅：对挪威了如指掌；防哈兰德？上场就是真刀真枪",
+        "url": "https://bbs.hupu.com/639870682.html",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "波切蒂诺：美国疑惑为何没11个詹姆斯；球场一建就要梅西C罗",
+        "url": "https://bbs.hupu.com/639868790.html",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "今晚揭幕！世界杯开赛前先来测测谁最适合成为你的主队？",
+        "url": "https://bbs.hupu.com/639863141.html",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "马德兴：从我98年采访世界杯开始，这届体验感是最差的",
+        "url": "https://bbs.hupu.com/639870730.html",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "波切蒂诺：特朗普问美国能否拿世界杯，我若说不就该被换掉",
+        "url": "https://bbs.hupu.com/639869296.html",
+        "time": "2026-06-11"
+      },
+      {
+        "title": "波切蒂诺：离开切尔西我以为要错过世界杯，但美国等队要我",
+        "url": "https://bbs.hupu.com/639868506.html",
+        "time": "2026-06-11"
+      }
+    ],
+    "status": "✅ Chrome MCP 6篇(官方资讯账号)"
+  },
+  "http://www.news.cn/sports/": {
+    "site": "新华社体育",
+    "source_url": "http://www.news.cn/sports/",
+    "articles": [
+      {
+        "title": "追光丨世界杯揭幕战看什么？",
+        "url": "http://www.news.cn/sports/20260611/35487c0f336b44219eb0b37d6d4e5cad/c.html",
+        "time": "2026-06-11 10:45"
+      },
+      {
+        "title": "世界杯｜莫德里奇或将佩戴保护面具迎战英格兰队",
+        "url": "http://www.news.cn/sports/20260611/66ffdb1a94084b27b86876600cfa5834/c.html",
+        "time": "2026-06-11 09:44"
+      },
+      {
+        "title": "世界男排联赛：中国队2:3不敌斯洛文尼亚队",
+        "url": "http://www.news.cn/sports/20260611/fcb92e22105c40bcafe2e6d847ea99d0/c.html",
+        "time": "2026-06-11 09:23"
+      },
+      {
+        "title": "中国男篮公布备战世预赛集训名单 多位“00后”球员入选",
+        "url": "http://www.news.cn/sports/20260610/db1da082066f4d2c84b79328ae463972/c.html",
+        "time": "2026-06-10 20:49"
+      },
+      {
+        "title": "同一个足球，同一个世界——写在美加墨世界杯揭幕前",
+        "url": "http://www.news.cn/sports/20260610/26ae256e9a6c4ef799149fe886d826ea/c.html",
+        "time": "2026-06-10 17:50"
+      },
+      {
+        "title": "新华社出图丨那些年，我们追过的世界杯",
+        "url": "http://www.news.cn/sports/20260610/d18de0bd96b84903bcccf3f5768dc8d8/c.html",
+        "time": "2026-06-10 15:53"
+      },
+      {
+        "title": "皇马官宣主教练阿韦洛亚离队 穆里尼奥回归倒计时",
+        "url": "http://www.news.cn/sports/20260610/be59a2ae67a94eeb9399f3eeee24cdb5/c.html",
+        "time": "2026-06-10 11:19"
+      },
+      {
+        "title": "世界杯｜墨西哥政府宣布世界杯揭幕日停课并推行远程办公",
+        "url": "http://www.news.cn/sports/20260610/8c3f7fac361f4e72aaf27928675d86c6/c.html",
+        "time": "2026-06-10 11:19"
+      },
+      {
+        "title": "伊朗国足将在世界杯首战前一日飞抵美国",
+        "url": "http://www.news.cn/sports/20260610/4afda11a4fb84c9c91b81eed6ed3ea3a/c.html",
+        "time": "2026-06-10 11:19"
+      }
+    ],
+    "status": "✅ 20篇"
+  }
+}

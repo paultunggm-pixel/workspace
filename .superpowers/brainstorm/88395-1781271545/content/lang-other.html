@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+  :root {
+    --bg: #f5f5f7; --card: #ffffff; --text: #1d1d1f; --t2: #6e6e73; --t3: #aeaeb2;
+    --accent: #0071e3; --abg: rgba(0,113,227,0.06); --div: rgba(0,0,0,0.08);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, 'SF Pro Display', sans-serif;
+    -webkit-font-smoothing: antialiased; background: #f0f0f2; color: var(--text);
+    font-size: 13px; line-height: 1.5; padding: 30px;
+  }
+
+  .section { margin-bottom: 40px; }
+  .section-title { font-size: 14px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
+  .step-label { font-size: 10px; font-weight: 600; color: var(--t2); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 8px; }
+
+  .h2-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+  .h2-label { font-size: 12px; font-weight: 600; color: var(--text); }
+  .h2-hint { font-size: 10px; color: var(--t3); }
+
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .tag {
+    padding: 5px 12px; border-radius: 14px; font-size: 11px; cursor: pointer;
+    border: 1px solid var(--div); color: var(--t2); background: var(--card);
+    transition: all 0.15s; user-select: none;
+  }
+  .tag:hover { border-color: var(--accent); color: var(--accent); }
+  .tag.on { background: var(--abg); border-color: var(--accent); color: var(--accent); font-weight: 500; }
+
+  .inline-input {
+    padding: 5px 10px; border: 1px solid var(--accent); border-radius: 7px;
+    font-size: 11px; font-family: inherit; color: var(--text); outline: none;
+    width: 120px; box-shadow: 0 0 0 3px rgba(0,113,227,0.06);
+  }
+  .inline-input::placeholder { color: var(--t3); }
+  .btn {
+    padding: 5px 10px; border-radius: 7px; font-size: 10px; font-weight: 500;
+    cursor: pointer; font-family: inherit; border: 1px solid var(--div);
+    background: var(--card); color: var(--t2); transition: all 0.15s;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.primary { background: var(--accent); color: white; border-color: var(--accent); }
+
+  .demo-box {
+    background: var(--card); border-radius: 12px; padding: 20px;
+    border: 1px solid var(--div); box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .arrow-down { text-align: center; font-size: 20px; color: var(--t3); margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<div class="section">
+  <div class="section-title">「+ 其他」语言输入 — 交互流程演示</div>
+
+  <!-- Step 1: 默认状态 -->
+  <div class="step-label">状态 ① 默认 — 用户选择了「简体中文」</div>
+  <div class="demo-box" style="margin-bottom:14px;">
+    <div class="h2-row"><span class="h2-label">工作语言</span><span class="h2-hint">Claude 回复时使用的语言</span></div>
+    <div class="tags">
+      <span class="tag on">简体中文</span>
+      <span class="tag">繁體中文</span>
+      <span class="tag">English</span>
+      <span class="tag">+ 其他</span>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓ 用户点击「+ 其他」</div>
+
+  <!-- Step 2: 点击"其他"后 -->
+  <div class="step-label">状态 ② 「+ 其他」被选中 → 自动弹出输入框</div>
+  <div class="demo-box">
+    <div class="h2-row"><span class="h2-label">工作语言</span><span class="h2-hint">Claude 回复时使用的语言</span></div>
+    <div class="tags" style="margin-bottom:10px;">
+      <span class="tag">简体中文</span>
+      <span class="tag">繁體中文</span>
+      <span class="tag">English</span>
+      <span class="tag on">+ 其他</span>
+    </div>
+    <!-- 内联输入区域 -->
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f9f9fb;border-radius:8px;border:1px solid var(--div);">
+      <span style="font-size:10px;color:var(--t3);">输入语言名称：</span>
+      <input class="inline-input" placeholder="例如：Français" value="" autofocus>
+      <button class="btn primary">确认</button>
+      <button class="btn">取消</button>
+    </div>
+    <div style="font-size:10px;color:var(--t3);margin-top:6px;">确认后该语言会添加到标签列表中，下次直接点选</div>
+  </div>
+
+  <div class="arrow-down">↓ 用户输入「Français」并点击确认</div>
+
+  <!-- Step 3: 确认后 -->
+  <div class="step-label">状态 ③ 确认后 — 新语言成为已选标签，下次可选</div>
+  <div class="demo-box">
+    <div class="h2-row"><span class="h2-label">工作语言</span><span class="h2-hint">Claude 回复时使用的语言</span></div>
+    <div class="tags">
+      <span class="tag">简体中文</span>
+      <span class="tag">繁體中文</span>
+      <span class="tag">English</span>
+      <span class="tag on">Français</span>
+      <span class="tag">+ 其他</span>
+    </div>
+    <div style="font-size:10px;color:var(--t3);margin-top:8px;">
+      💡 「Français」已保存到你的语言列表，下次可直接点选。不再需要时可右键移除。
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

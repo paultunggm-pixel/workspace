@@ -75,6 +75,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - CLAUDE.md 维护 → `/claude-md-improver`
 - 复杂多步骤任务 → `/plan` 后执行
 
+### 底层能力 Skill（供其他 skill 按需调用）
+
+| Skill | 用途 | 调用方 |
+|-------|------|--------|
+| `deploy-static-site` | 静态网页部署到 OSS + GitHub Pages | `model-answer-consistency-eval`、任何部署任务 |
+| `model-answer-consistency-eval` | 多模型解题答案一致性评测全流程 | 用户直接触发 |
+
+- `deploy-static-site` 封装了 OSS + GitHub Pages + data.json 提取的完整部署流水线
+- 其他 skill 需要部署网页时，应调用 `deploy-static-site` 而非内联部署代码
+- `deploy-static-site` 使用固定配置（Bucket/Repo/凭据），不随调用方变化
+
 ## 编码行为准则
 
 *基于 Andrej Karpathy 的结构化提示词方法论，适配本项目的实际场景*
@@ -112,15 +123,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 网页部署
 
-- 静态 HTML 网页通过 `deploy-static-site` skill 部署，同时推送至：
-  - **阿里云 OSS**：`consistency-eval` bucket（`oss-cn-hangzhou`）
-  - **GitHub Pages**：`paultunggm-pixel/consistency-eval` → `https://paultunggm-pixel.github.io/consistency-eval/`
+- 静态 HTML 网页通过 `deploy-static-site` skill 部署（底层能力），同时推送至：
+  - **阿里云 OSS**：`consistency-eval` bucket（`oss-cn-hangzhou`）— 存储 `data.json` 供国内加速，不直接提供 HTML 访问（因强制下载限制）
+  - **GitHub Pages**：`paultunggm-pixel/consistency-eval` → `https://paultunggm-pixel.github.io/consistency-eval/` — 主发布 URL
 - 以下情况应自动调用 `deploy-static-site` skill：
   - 用户要求「部署」「上线」「发布」「更新网页/页面」
   - 评测报告等 HTML 输出更新后需要同步到线上
   - 用户说「替换页面资源」或「刷新线上版本」
 - 部署前确认源 HTML 文件路径（默认 `~/Documents/Claude/解题答案一致性评测/outputs/evaluation_report.html`）
-- 如钉钉文档也需同步，参考 skill 中「钉钉文档同步」章节
+- 如钉钉文档也需同步，参考 `deploy-static-site` skill 中「钉钉文档同步」章节
 
 ## macOS 环境
 

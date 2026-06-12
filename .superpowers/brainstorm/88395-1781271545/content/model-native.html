@@ -1,0 +1,144 @@
+<h2>完全内建方案 — 模型设置面板详细设计</h2>
+<p class="subtitle">零依赖 · 自有配置格式 + cc 兼容 · 密钥入 Keychain</p>
+
+<div class="mockup">
+  <div class="mockup-header">⚙️ 模型设置面板（从左侧栏「⚙️ 管理」入口打开）</div>
+  <div class="mockup-body" style="background:#1a1a2e;padding:0;font-family:'SF Pro Display',system-ui,sans-serif;font-size:12px;">
+
+    <!-- Panel header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.06);">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:18px;">⚙️</span>
+        <div>
+          <div style="font-weight:700;color:#fff;font-size:13px;">模型设置</div>
+          <div style="font-size:9px;color:#94a3b8;">管理提供商 · 切换模型 · 查看用量</div>
+        </div>
+      </div>
+      <span style="font-size:16px;color:#64748b;cursor:pointer;">✕</span>
+    </div>
+
+    <!-- Provider list -->
+    <div style="padding:16px 18px;">
+
+      <!-- Provider 1: DeepSeek (active) -->
+      <div style="margin-bottom:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(59,130,246,0.25);border-radius:10px;overflow:hidden;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:rgba(59,130,246,0.06);">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:20px;">🧠</span>
+            <div>
+              <div style="color:#fff;font-weight:600;font-size:12px;">DeepSeek</div>
+              <div style="font-size:9px;color:#94a3b8;">api.deepseek.com · 主力提供商</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <span style="font-size:9px;padding:3px 8px;border-radius:10px;background:rgba(34,197,94,0.12);color:#22c55e;">● 已连接</span>
+            <span style="font-size:10px;color:#64748b;cursor:pointer;">▼</span>
+          </div>
+        </div>
+        <!-- Expanded: model list + key management -->
+        <div style="padding:12px 14px;">
+          <!-- Key status -->
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:8px 10px;background:rgba(34,197,94,0.04);border-radius:6px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="font-size:10px;">🔐</span>
+              <span style="font-size:10px;color:#94a3b8;">API Key</span>
+              <code style="font-size:10px;color:#22c55e;">sk-●●●●●●●●●●d8f2</code>
+            </div>
+            <div style="display:flex;gap:6px;">
+              <span style="font-size:9px;color:#64748b;cursor:pointer;">👁️ 显示</span>
+              <span style="font-size:9px;color:#ef4444;cursor:pointer;">删除</span>
+            </div>
+          </div>
+          <!-- Model selector -->
+          <div style="margin-bottom:8px;">
+            <div style="font-size:9px;color:#94a3b8;margin-bottom:4px;">默认模型</div>
+            <select style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:#fff;font-size:11px;">
+              <option>deepseek-v4-pro（推理优先）</option>
+              <option>deepseek-v4-flash（速度优先）</option>
+            </select>
+          </div>
+          <div style="font-size:9px;color:#64748b;">💰 余额 $18.42 · 本月已用 38.6%</div>
+        </div>
+      </div>
+
+      <!-- Provider 2: Anthropic -->
+      <div style="margin-bottom:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;overflow:hidden;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:20px;">🔮</span>
+            <div>
+              <div style="color:#cbd5e1;font-weight:600;font-size:12px;">Anthropic</div>
+              <div style="font-size:9px;color:#94a3b8;">api.anthropic.com · 备用</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <span style="font-size:9px;padding:3px 8px;border-radius:10px;background:rgba(245,158,11,0.12);color:#f59e0b;">⚠️ 未配置 Key</span>
+            <span style="font-size:10px;color:#64748b;">▶</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- + Add Provider button -->
+      <div style="padding:10px;border:1px dashed rgba(255,255,255,0.08);border-radius:8px;text-align:center;cursor:pointer;">
+        <span style="font-size:12px;color:#64748b;">+ 添加模型提供商</span>
+      </div>
+
+    </div>
+
+    <!-- Footer actions -->
+    <div style="padding:12px 18px;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:9px;color:#64748b;">🔐 所有密钥托管于 macOS Keychain · 与 cc switch 配置互通</span>
+      <button class="mock-button" style="font-size:11px;padding:6px 14px;">✅ 完成</button>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>➕ 添加提供商 — 引导流程</h3>
+  <div style="padding:14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;margin-top:12px;">
+    <div style="display:flex;gap:20px;align-items:center;">
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:10px;color:#64748b;margin-bottom:8px;">步骤 ①</div>
+        <div style="font-size:32px;margin-bottom:6px;">🧠</div>
+        <div style="font-size:11px;color:#fff;font-weight:600;">选择提供商</div>
+        <div style="font-size:9px;color:#94a3b8;margin-top:3px;">DeepSeek / Anthropic<br>OpenAI 兼容 / 自定义</div>
+      </div>
+      <div style="color:#64748b;font-size:16px;">→</div>
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:10px;color:#64748b;margin-bottom:8px;">步骤 ②</div>
+        <div style="font-size:32px;margin-bottom:6px;">🔑</div>
+        <div style="font-size:11px;color:#fff;font-weight:600;">输入 API Key</div>
+        <div style="font-size:9px;color:#94a3b8;margin-top:3px;">粘贴后立即入 Keychain<br>不落盘、不可见</div>
+      </div>
+      <div style="color:#64748b;font-size:16px;">→</div>
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:10px;color:#64748b;margin-bottom:8px;">步骤 ③</div>
+        <div style="font-size:32px;margin-bottom:6px;">✅</div>
+        <div style="font-size:11px;color:#fff;font-weight:600;">验证 & 启用</div>
+        <div style="font-size:9px;color:#94a3b8;margin-top:3px;">自动测试连接<br>拉取余额 & 模型列表</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>🏗️ 技术架构 — 配置层设计</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;">
+    <div style="padding:14px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);">
+      <div style="font-size:12px;font-weight:600;color:#60a5fa;margin-bottom:8px;">App 自有配置</div>
+      <pre style="font-size:10px;color:#cbd5e1;line-height:1.6;margin:0;">~/.claude-code-studio/
+├── providers.json    ← 提供商列表 + 模型偏好
+├── preferences.json  ← 用户界面偏好
+└── (Keychain)        ← API Key 🔐</pre>
+    </div>
+    <div style="padding:14px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);">
+      <div style="font-size:12px;font-weight:600;color:#22c55e;margin-bottom:8px;">cc switch 兼容桥</div>
+      <pre style="font-size:10px;color:#cbd5e1;line-height:1.6;margin:0;">首次启动时：
+→ 检测 ~/.claude/settings.json
+→ 自动导入已有模型配置
+→ 每次修改时双向同步
+
+用户无需安装 cc switch</pre>
+    </div>
+  </div>
+</div>

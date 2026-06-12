@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+  :root {
+    --bg: #f5f5f7; --card: #ffffff; --text: #1d1d1f; --t2: #6e6e73; --t3: #aeaeb2;
+    --accent: #0071e3; --abg: rgba(0,113,227,0.06); --div: rgba(0,0,0,0.07);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, 'SF Pro Display', sans-serif;
+    -webkit-font-smoothing: antialiased; background: #f0f0f2; color: var(--text);
+    font-size: 13px; line-height: 1.5; padding: 30px;
+  }
+  h2 { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+  .demo-row { display: flex; gap: 24px; }
+  .demo-col { flex: 1; }
+  .col-label { font-size: 11px; font-weight: 600; color: var(--t2); text-align: center; margin-bottom: 10px; }
+  .arrow { text-align: center; font-size: 20px; color: var(--t3); padding: 12px 0; }
+
+  .card {
+    background: var(--card); border-radius: 12px; border: 1px solid var(--div);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04); padding: 16px;
+  }
+
+  .btn {
+    padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 500;
+    cursor: pointer; font-family: inherit; border: none; transition: all 0.15s;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #0077ed; }
+  .btn-ghost { background: transparent; color: var(--t2); border: 1px solid var(--div); }
+  .btn-ghost:hover { background: rgba(0,0,0,0.03); }
+
+  .provider-card {
+    padding: 12px; border-radius: 10px; border: 1px solid var(--div); cursor: pointer;
+    display: flex; align-items: center; gap: 12px; margin-bottom: 8px; transition: all 0.15s;
+  }
+  .provider-card:hover { border-color: var(--accent); background: var(--abg); }
+  .provider-icon { font-size: 28px; flex-shrink: 0; }
+  .provider-info { flex: 1; }
+  .provider-name { font-weight: 600; font-size: 13px; }
+  .provider-desc { font-size: 10px; color: var(--t3); margin-top: 1px; }
+
+  .step-indicator { display: flex; gap: 6px; align-items: center; margin-bottom: 14px; }
+  .step-dot {
+    width: 24px; height: 24px; border-radius: 50%; font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .step-dot.active { background: var(--accent); color: #fff; }
+  .step-dot.done { background: var(--accent); color: #fff; }
+  .step-dot.wait { background: rgba(0,0,0,0.06); color: var(--t3); }
+  .step-line { flex: 1; height: 1.5px; background: var(--div); }
+  .step-line.done { background: var(--accent); }
+  .step-label { font-size: 10px; color: var(--t2); text-align: center; margin-top: 2px; }
+
+  .key-input {
+    display: flex; align-items: center; gap: 8px; padding: 10px 12px;
+    border: 1px solid var(--div); border-radius: 8px; background: #f9f9fb;
+  }
+  .key-input input {
+    flex: 1; border: none; background: transparent; font-size: 12px; font-family: 'SF Mono', monospace;
+    color: var(--text); outline: none;
+  }
+  .key-input input::placeholder { color: var(--t3); }
+
+  .info-box {
+    padding: 10px 12px; border-radius: 8px; background: rgba(0,113,227,0.04);
+    border: 1px solid rgba(0,113,227,0.08); font-size: 10px; color: var(--t2);
+    display: flex; align-items: center; gap: 6px; margin-top: 8px;
+  }
+  .info-box.warn { background: rgba(255,149,0,0.04); border-color: rgba(255,149,0,0.12); }
+</style>
+</head>
+<body>
+
+<h2>模型初始化 — 三步授权流程</h2>
+
+<div class="demo-row">
+
+  <!-- Step 1: 选择提供商 -->
+  <div class="demo-col">
+    <div class="col-label">步骤 ① 选择提供商</div>
+    <div class="card">
+      <div class="step-indicator">
+        <div class="step-dot active">1</div><div class="step-line"></div>
+        <div class="step-dot wait">2</div><div class="step-line"></div>
+        <div class="step-dot wait">3</div>
+      </div>
+      <div style="font-size:11px;color:var(--t2);margin-bottom:10px;">选择你的 AI 模型服务商</div>
+
+      <div class="provider-card">
+        <div class="provider-icon"><img src="/files/deepseek.svg" width="32" height="32" style="object-fit:contain;" alt="DeepSeek"></div>
+        <div class="provider-info">
+          <div class="provider-name">DeepSeek</div>
+          <div class="provider-desc">v4-pro · v4-flash · 高性价比</div>
+        </div>
+      </div>
+      <div class="provider-card">
+        <div class="provider-icon"><img src="/files/qwen-logo.png" width="32" height="32" style="object-fit:contain;" alt="Qwen"></div>
+        <div class="provider-info">
+          <div class="provider-name">Qwen</div>
+          <div class="provider-desc">通义千问 · Qwen3 · 阿里云</div>
+        </div>
+      </div>
+      <div class="provider-card">
+        <div class="provider-icon"><img src="/files/anthropic.svg" width="32" height="32" style="object-fit:contain;" alt="Anthropic"></div>
+        <div class="provider-info">
+          <div class="provider-name">Anthropic</div>
+          <div class="provider-desc">Claude Opus · Sonnet · 官方</div>
+        </div>
+      </div>
+      <div class="provider-card">
+        <div class="provider-icon"><img src="/files/openai.svg" width="32" height="32" style="object-fit:contain;" alt="OpenAI"></div>
+        <div class="provider-info">
+          <div class="provider-name">OpenAI 兼容</div>
+          <div class="provider-desc">GPT · 自定义端点 · 自部署模型</div>
+        </div>
+      </div>
+    </div>
+    <div style="font-size:9px;color:var(--t3);text-align:center;margin-top:6px;">系统浏览器跳转到提供商官网登录 →</div>
+  </div>
+
+  <!-- Step 2: 输入 Key -->
+  <div class="demo-col">
+    <div class="col-label">步骤 ② 授权密钥</div>
+    <div class="card">
+      <div class="step-indicator">
+        <div class="step-dot done">✓</div><div class="step-line done"></div>
+        <div class="step-dot active">2</div><div class="step-line"></div>
+        <div class="step-dot wait">3</div>
+      </div>
+
+      <div style="font-size:11px;color:var(--t2);margin-bottom:2px;">粘贴你的 API Key</div>
+      <div style="margin-bottom:10px;">
+        <div class="key-input">
+          <span>🔑</span>
+          <input type="password" value="sk-xxxxxxxxxxxxxxxxd8f2" placeholder="sk-...">
+          <span style="font-size:10px;color:var(--t3);cursor:pointer;">👁</span>
+        </div>
+      </div>
+
+      <div class="info-box">
+        🔐 Key 仅存储于 macOS 钥匙串，App 不落盘、不上传
+      </div>
+      <div class="info-box" style="margin-top:4px;">
+        📋 从 <span style="color:var(--accent);cursor:pointer;">platform.deepseek.com/api_keys</span> 获取
+      </div>
+    </div>
+    <div style="font-size:9px;color:var(--t3);text-align:center;margin-top:6px;">用户粘贴 Key → 立即入 Keychain →</div>
+  </div>
+
+  <!-- Step 3: 验证 -->
+  <div class="demo-col">
+    <div class="col-label">步骤 ③ 验证启用</div>
+    <div class="card">
+      <div class="step-indicator">
+        <div class="step-dot done">✓</div><div class="step-line done"></div>
+        <div class="step-dot done">✓</div><div class="step-line done"></div>
+        <div class="step-dot active">3</div>
+      </div>
+
+      <div style="text-align:center;padding:12px 0 8px;">
+        <div style="font-size:36px;margin-bottom:4px;">⏳</div>
+        <div style="font-weight:600;font-size:13px;">正在验证连接…</div>
+      </div>
+      <div style="font-size:10px;color:var(--t2);text-align:center;">
+        自动测试 API 连通性 · 拉取可用模型列表 · 获取账户余额
+      </div>
+
+      <div class="info-box" style="margin-top:10px;justify-content:center;color:var(--accent);">
+        ✅ 验证成功！DeepSeek v4-pro 已就绪
+      </div>
+    </div>
+    <div style="font-size:9px;color:var(--t3);text-align:center;margin-top:6px;">验证通过 → 模型引擎卡片自动生成</div>
+  </div>
+
+</div>
+
+<div style="margin-top:24px;">
+  <h2>完成后 — 模型引擎卡片自动填充</h2>
+  <div class="card" style="max-width:320px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;display:flex;align-items:center;justify-content:center;font-size:13px;">🧠</div>
+      <div style="flex:1;">
+        <div style="font-weight:600;font-size:12px;">DeepSeek v4-pro</div>
+        <div style="font-size:10px;color:var(--t3);">主力推理模型 · 已连接</div>
+      </div>
+      <div style="width:6px;height:6px;border-radius:50%;background:#34c759;"></div>
+    </div>
+    <div style="display:flex;gap:5px;margin-bottom:10px;">
+      <div style="flex:1;padding:5px 0;border-radius:6px;text-align:center;font-size:10px;border:1px solid var(--div);color:var(--t2);">⚡ Flash</div>
+      <div style="flex:1;padding:5px 0;border-radius:6px;text-align:center;font-size:10px;background:var(--abg);color:var(--accent);font-weight:500;">🧠 Pro</div>
+      <div style="flex:1;padding:5px 0;border-radius:6px;text-align:center;font-size:10px;border:1px solid var(--div);color:var(--t2);">🔮 Opus</div>
+    </div>
+    <div style="border-top:1px solid var(--div);padding-top:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:10px;color:var(--t3);">💰 DeepSeek 余额</span>
+        <span style="font-size:9px;color:#34c759;">🟢 实时</span>
+      </div>
+      <div style="font-size:20px;font-weight:700;">¥18.42</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+  :root {
+    --bg: #f2f2f7; --row: #ffffff; --text: #1d1d1f; --t2: #6e6e73; --t3: #aeaeb2;
+    --accent: #0071e3; --abg: rgba(0,113,227,0.06); --div: rgba(0,0,0,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, 'SF Pro Display', sans-serif;
+    -webkit-font-smoothing: antialiased; background: var(--bg); color: var(--text);
+    font-size: 13px; line-height: 1.5; padding: 30px;
+  }
+  h2 { font-size: 14px; font-weight: 700; margin-bottom: 14px; }
+  .demo-row { display: flex; gap: 20px; }
+  .demo-col { flex: 1; }
+  .label { font-size: 11px; font-weight: 600; color: var(--t2); margin-bottom: 8px; text-align: center; }
+
+  .group-body {
+    background: var(--row); border-radius: 10px; overflow: hidden;
+  }
+  .row {
+    display: flex; align-items: center; padding: 10px 16px; min-height: 44px;
+  }
+  .row + .row { border-top: 1px solid var(--div); }
+  .row-left { flex: 1; }
+  .row-label { font-size: 13px; }
+  .row-hint { font-size: 11px; color: var(--t3); margin-top: 1px; }
+
+  .switch {
+    width: 44px; height: 24px; border-radius: 12px; cursor: pointer; flex-shrink: 0;
+    background: rgba(0,0,0,0.12); position: relative; transition: all 0.2s; border: none;
+  }
+  .switch.on { background: var(--accent); }
+  .switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 20px; height: 20px; border-radius: 50%; background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12); transition: all 0.2s;
+  }
+  .switch.on::after { left: 22px; }
+
+  .text-row {
+    display: flex; align-items: center; padding: 0 16px 10px;
+  }
+  .text-field {
+    flex: 1; padding: 6px 10px; border: 1px solid var(--div); border-radius: 6px;
+    font-size: 12px; font-family: 'SF Mono', monospace; color: var(--t2);
+    background: rgba(0,0,0,0.02); outline: none;
+  }
+  .btn {
+    padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: 500;
+    cursor: pointer; font-family: inherit; border: 1px solid var(--div);
+    background: var(--row); color: var(--t2); margin-left:6px; white-space:nowrap;
+  }
+  .tags { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+  .tag {
+    padding: 4px 10px; border-radius: 6px; font-size: 11px;
+    border: 1px solid var(--div); color: var(--t2); background: var(--row);
+  }
+  .tag.on {
+    background: var(--abg); border-color: var(--accent); color: var(--accent); font-weight: 500;
+  }
+  .tag.on::before { content: '✓ '; font-size: 10px; }
+
+  .group-header { font-size: 11px; font-weight: 600; color: var(--t2); margin-bottom: 6px; }
+  .arrow { text-align: center; font-size: 18px; color: var(--t3); margin: 10px 0; }
+
+  .disabled-hint {
+    font-size: 11px; color: var(--t3); padding: 4px 16px 10px;
+    display: flex; align-items: center; gap: 4px;
+  }
+</style>
+</head>
+<body>
+
+<h2>「本地文件路径授权」开关状态对比</h2>
+
+<div class="demo-row">
+
+  <!-- ON state -->
+  <div class="demo-col">
+    <div class="label">开启</div>
+    <div class="group-body">
+
+      <div class="row">
+        <div class="row-left">
+          <div class="row-label">本地文件路径授权</div>
+          <div class="row-hint">限制 Claude 仅读写指定目录</div>
+        </div>
+        <button class="switch on"></button>
+      </div>
+      <div class="text-row">
+        <input class="text-field" value="~/Documents/Claude/" readonly>
+        <button class="btn">📂 选择…</button>
+      </div>
+
+      <div class="row">
+        <div class="row-left">
+          <div class="row-label">安全策略</div>
+        </div>
+        <div class="row-right" style="flex-shrink:0;margin-left:12px;">
+          <div class="tags">
+            <span class="tag on">不存储密钥</span>
+            <span class="tag on">仅读写授权目录</span>
+            <span class="tag on">外发前确认</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div style="font-size:10px;color:var(--t3);margin-top:6px;text-align:center;">
+      Claude 只能在 ~/Documents/Claude/ 内读写
+    </div>
+  </div>
+
+  <!-- OFF state -->
+  <div class="demo-col">
+    <div class="label">关闭</div>
+    <div class="group-body">
+
+      <div class="row">
+        <div class="row-left">
+          <div class="row-label">本地文件路径授权</div>
+          <div class="row-hint">限制 Claude 仅读写指定目录</div>
+        </div>
+        <button class="switch"></button>
+      </div>
+      <!-- 关闭后：路径行隐藏，取而代之是一条说明 -->
+      <div class="disabled-hint">
+        ⓘ 已关闭 — Claude 可访问用户目录下的任意文件
+      </div>
+
+      <div class="row">
+        <div class="row-left">
+          <div class="row-label">安全策略</div>
+        </div>
+        <div class="row-right" style="flex-shrink:0;margin-left:12px;">
+          <div class="tags">
+            <span class="tag on">不存储密钥</span>
+            <span class="tag">仅读写授权目录</span>
+            <span class="tag on">外发前确认</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div style="font-size:10px;color:var(--t3);margin-top:6px;text-align:center;">
+      「仅读写授权目录」安全策略自动失效
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

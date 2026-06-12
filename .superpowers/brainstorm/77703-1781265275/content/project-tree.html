@@ -1,0 +1,148 @@
+<h2>左侧栏层级结构 — 树形展开</h2>
+<p class="subtitle">项目 → 会话，两级树形，点击项目展开/收起其会话列表</p>
+
+<div class="mockup">
+  <div class="mockup-header">左侧栏完整层级：模型引擎 → 项目列表 → 会话列表</div>
+  <div class="mockup-body" style="background:#1a1a2e;padding:0;font-family:'SF Pro Display',system-ui,sans-serif;font-size:12px;">
+
+    <!-- MODEL ENGINE (fixed) -->
+    <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.01);">
+      <span style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;">🧠 模型引擎</span>
+      <div style="margin-top:8px;padding:8px 10px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);border-radius:6px;display:flex;align-items:center;gap:8px;">
+        <span>🧠</span>
+        <div>
+          <div style="color:#fff;font-weight:600;">DeepSeek v4-pro</div>
+          <div style="font-size:10px;color:#94a3b8;">余额 $18.42 · 已用 38.6%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION HEADER: 项目 -->
+    <div style="padding:10px 14px;display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;">📁 项目</span>
+      <span style="font-size:14px;color:#64748b;cursor:pointer;">+</span>
+    </div>
+
+    <!-- PROJECT 1: 世界杯 (expanded) -->
+    <div style="border-bottom:1px solid rgba(255,255,255,0.04);">
+      <!-- Project row -->
+      <div style="padding:8px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;background:rgba(59,130,246,0.06);">
+        <span style="font-size:10px;color:#64748b;transition:0.2s;">▼</span>
+        <span style="font-size:14px;">🏆</span>
+        <div style="flex:1;">
+          <div style="color:#fff;font-weight:600;">2026世界杯</div>
+        </div>
+        <span style="width:6px;height:6px;border-radius:50%;background:#22c55e;"></span>
+      </div>
+      <!-- SESSIONS (children, indented) -->
+      <div style="padding-left:34px;">
+        <div style="padding:7px 10px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background:rgba(59,130,246,0.12);border-left:2px solid #3b82f6;">
+          <div>
+            <div style="color:#fff;font-weight:500;">小组赛预测模型优化</div>
+            <div style="font-size:10px;color:#94a3b8;">💬 24 条 · 10分钟前</div>
+          </div>
+          <span style="font-size:9px;color:#22c55e;">● 活跃</span>
+        </div>
+        <div style="padding:7px 10px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <div>
+            <div style="color:#cbd5e1;">淘汰赛对阵分析</div>
+            <div style="font-size:10px;color:#94a3b8;">💬 31 条 · 5月28日</div>
+          </div>
+        </div>
+        <div style="padding:7px 10px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <div>
+            <div style="color:#cbd5e1;">数据源调研</div>
+            <div style="font-size:10px;color:#94a3b8;">💬 18 条 · 5月27日</div>
+          </div>
+        </div>
+        <div style="padding:4px 10px;font-size:10px;color:#64748b;cursor:pointer;">+ 新建会话</div>
+      </div>
+    </div>
+
+    <!-- PROJECT 2: 解题一致性评测 (collapsed) -->
+    <div style="border-bottom:1px solid rgba(255,255,255,0.04);">
+      <div style="padding:8px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <span style="font-size:10px;color:#64748b;">▶</span>
+        <span style="font-size:14px;">📊</span>
+        <div style="flex:1;">
+          <div style="color:#cbd5e1;font-weight:500;">解题一致性评测</div>
+          <div style="font-size:9px;color:#94a3b8;">2 个会话</div>
+        </div>
+        <span style="width:6px;height:6px;border-radius:50%;background:#f59e0b;"></span>
+      </div>
+    </div>
+
+    <!-- PROJECT 3: Claude Code Studio (expanded) -->
+    <div style="border-bottom:1px solid rgba(255,255,255,0.04);">
+      <div style="padding:8px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;background:rgba(59,130,246,0.06);">
+        <span style="font-size:10px;color:#64748b;">▼</span>
+        <span style="font-size:14px;">🔧</span>
+        <div style="flex:1;">
+          <div style="color:#fff;font-weight:600;">Claude Code Studio</div>
+        </div>
+        <span style="width:6px;height:6px;border-radius:50%;background:#3b82f6;"></span>
+      </div>
+      <div style="padding-left:34px;">
+        <div style="padding:7px 10px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background:rgba(59,130,246,0.12);border-left:2px solid #3b82f6;">
+          <div>
+            <div style="color:#fff;font-weight:500;">产品方案设计</div>
+            <div style="font-size:10px;color:#94a3b8;">💬 8 条 · 活跃</div>
+          </div>
+          <span style="font-size:9px;color:#22c55e;">● 活跃</span>
+        </div>
+        <div style="padding:4px 10px;font-size:10px;color:#64748b;cursor:pointer;">+ 新建会话</div>
+      </div>
+    </div>
+
+    <!-- PROJECT 4 (collapsed) -->
+    <div style="border-bottom:1px solid rgba(255,255,255,0.04);">
+      <div style="padding:8px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <span style="font-size:10px;color:#64748b;">▶</span>
+        <span style="font-size:14px;">🎨</span>
+        <div style="flex:1;">
+          <div style="color:#cbd5e1;font-weight:500;">封面工具</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT 5 (collapsed) -->
+    <div style="border-bottom:1px solid rgba(255,255,255,0.04);">
+      <div style="padding:8px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <span style="font-size:10px;color:#64748b;">▶</span>
+        <span style="font-size:14px;">📝</span>
+        <div style="flex:1;">
+          <div style="color:#cbd5e1;font-weight:500;">报告生成</div>
+          <div style="font-size:9px;color:#94a3b8;">归档</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Legend -->
+<div style="display:flex;gap:16px;margin-top:14px;align-items:center;font-size:11px;">
+  <span style="color:#64748b;">图例：</span>
+  <span>▶ 收起</span>
+  <span>▼ 展开</span>
+  <span style="display:inline-block;width:2px;height:14px;background:#3b82f6;vertical-align:middle;margin:0 4px;"></span> <span>当前选中会话</span>
+  <span style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block;"></span> <span>有活跃会话</span>
+</div>
+
+<div class="section">
+  <h3 style="margin-top:20px;">交互规则</h3>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px;">
+    <div style="padding:12px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);">
+      <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:6px;">点击项目</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">展开/收起该项目的会话列表。不影响其他项目的展开状态。</div>
+    </div>
+    <div style="padding:12px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);">
+      <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:6px;">点击会话</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">切换到该会话 → 中央区加载对话历史，右侧部署面板同步刷新为该会话关联的部署。</div>
+    </div>
+    <div style="padding:12px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);">
+      <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:6px;">+ 新建会话</div>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.6;">在展开的项目下出现，点击后创建空白会话，中央区显示欢迎页。</div>
+    </div>
+  </div>
+</div>

@@ -6,6 +6,10 @@ description: >-
   当用户提到课程封面、3-case、挂载封面、style3、科普妙题、学名确认版、url确认版、run_kepu 时使用。
 ---
 
+> **🆕 新工具已上线**：链路 B（挂载压图 + OSS 上传 + CDN URL 回写）已产品化为网页工具，
+> 无需 Python 脚本和 ossutil。访问 `https://paultunggm-pixel.github.io/consistency-eval/cover-tool/`
+> 即可在浏览器中完成全流程。详见 `consistency-eval` 仓库的 `.omc/skills/cover-tool.md`。
+
 # 千问小讲堂 · 封面生产 Skill
 
 启动包根目录：`output/cover-generator/千问小讲堂-封面生产启动包/`  

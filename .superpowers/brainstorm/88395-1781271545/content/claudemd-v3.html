@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+  :root {
+    --bg: #f5f5f7; --card: #ffffff; --text: #1d1d1f; --t2: #6e6e73; --t3: #aeaeb2;
+    --accent: #0071e3; --abg: rgba(0,113,227,0.06); --div: rgba(0,0,0,0.07);
+    --green: #34c759; --red: #ff3b30;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, 'SF Pro Display', sans-serif;
+    -webkit-font-smoothing: antialiased; background: #f0f0f2; color: var(--text);
+    font-size: 13px; line-height: 1.5;
+  }
+  .container { max-width: 860px; margin: 24px auto; display: flex; flex-direction: column; gap: 20px; }
+
+  .card {
+    background: var(--card); border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04); border: 1px solid var(--div);
+  }
+  .card-head {
+    padding: 14px 20px; border-bottom: 1px solid var(--div);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-head h2 { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .card-head .sub { font-size: 10px; color: var(--t3); font-weight: 400; }
+  .card-body { padding: 20px; }
+
+  /* ── Heading hierarchy ── */
+  .h1 {
+    font-size: 13px; font-weight: 700; color: var(--text);
+    display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
+  }
+  .h2-row {
+    display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px;
+  }
+  .h2-label { font-size: 12px; font-weight: 600; color: var(--text); }
+  .h2-hint { font-size: 10px; color: var(--t3); }
+  .divider { border: none; border-top: 1px solid var(--div); margin: 20px 0; }
+
+  /* ── Grid ── */
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .row:last-child { margin-bottom: 0; }
+
+  /* ── Tags ── */
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .tag {
+    padding: 5px 12px; border-radius: 14px; font-size: 11px; cursor: pointer;
+    border: 1px solid var(--div); color: var(--t2); background: var(--card);
+    transition: all 0.15s; user-select: none;
+  }
+  .tag:hover { border-color: var(--accent); color: var(--accent); }
+  .tag.on { background: var(--abg); border-color: var(--accent); color: var(--accent); font-weight: 500; }
+
+  /* ── Segmented control ── */
+  .segmented { display: flex; margin-top: 6px; }
+  .seg-opt {
+    flex: 1; padding: 7px 0; text-align: center; font-size: 11px; cursor: pointer;
+    border: 1px solid var(--div); background: var(--card); color: var(--t2);
+    font-family: inherit; transition: all 0.15s;
+  }
+  .seg-opt:first-child { border-radius: 7px 0 0 7px; }
+  .seg-opt:last-child { border-radius: 0 7px 7px 0; }
+  .seg-opt:not(:first-child) { margin-left: -1px; }
+  .seg-opt:hover { border-color: var(--accent); color: var(--accent); z-index: 1; position: relative; }
+  .seg-opt.on { background: var(--abg); border-color: var(--accent); color: var(--accent); font-weight: 600; z-index: 2; position: relative; }
+
+  /* ── Autonomy: radio list ── */
+  .radio-list { margin-top: 6px; display: flex; flex-direction: column; gap: 0; }
+  .radio-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 12px; cursor: pointer; border-radius: 8px; transition: all 0.15s;
+    border: 1px solid transparent;
+  }
+  .radio-item:hover { background: rgba(0,0,0,0.02); }
+  .radio-item.on { background: var(--abg); border-color: rgba(0,113,227,0.1); }
+  .radio-dot {
+    width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--div);
+    flex-shrink: 0; margin-top: 1px; position: relative; transition: all 0.15s;
+  }
+  .radio-item.on .radio-dot { border-color: var(--accent); }
+  .radio-item.on .radio-dot::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+  }
+  .radio-title { font-size: 12px; font-weight: 500; }
+  .radio-desc { font-size: 10px; color: var(--t3); margin-top: 1px; line-height: 1.5; }
+
+  /* ── Toggle ── */
+  .toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 0;
+  }
+  .toggle-row + .toggle-row { border-top: 1px solid var(--div); }
+  .tl-left { display: flex; align-items: baseline; gap: 8px; }
+  .tl-label { font-size: 12px; font-weight: 500; }
+  .tl-desc { font-size: 10px; color: var(--t3); }
+  .switch {
+    width: 44px; height: 24px; border-radius: 12px; cursor: pointer; flex-shrink: 0;
+    background: rgba(0,0,0,0.12); position: relative; transition: all 0.2s; border: none;
+  }
+  .switch.on { background: var(--accent); }
+  .switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 20px; height: 20px; border-radius: 50%; background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12); transition: all 0.2s;
+  }
+  .switch.on::after { left: 22px; }
+
+  /* ── Folder picker ── */
+  .folder-row {
+    display: flex; align-items: center; gap: 8px; margin-top: 6px;
+  }
+  .folder-path {
+    flex: 1; padding: 7px 10px; border: 1px solid var(--div); border-radius: 7px;
+    font-size: 12px; color: var(--text); font-family: 'SF Mono', monospace;
+    background: rgba(0,0,0,0.02);
+  }
+  .folder-btn {
+    padding: 7px 14px; border-radius: 7px; font-size: 11px; font-weight: 500;
+    border: 1px solid var(--div); background: var(--card); color: var(--t2);
+    cursor: pointer; font-family: inherit; transition: all 0.15s; white-space: nowrap;
+  }
+  .folder-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── Buttons (unified) ── */
+  .btn {
+    padding: 7px 14px; border-radius: 7px; font-size: 11px; font-weight: 500;
+    cursor: pointer; font-family: inherit; border: 1px solid var(--div);
+    background: var(--card); color: var(--t2); transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.primary { background: var(--accent); color: white; border-color: var(--accent); }
+  .btn.primary:hover { background: #0077ed; }
+
+  /* ── Custom input ── */
+  .custom-lang { display: flex; gap: 6px; margin-top: 6px; align-items: center; }
+  .custom-lang input {
+    padding: 6px 10px; border: 1px solid var(--accent); border-radius: 7px;
+    font-size: 11px; font-family: inherit; outline: none; width: 140px;
+    box-shadow: 0 0 0 3px rgba(0,113,227,0.06);
+  }
+  .custom-lang .btn { font-size: 10px; padding: 6px 10px; }
+
+  /* ── Concept cards ── */
+  .concept-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .concept {
+    padding: 16px; border-radius: 10px; background: #f9f9fb; text-align: center;
+  }
+  .concept.highlight { background: var(--abg); border: 1px solid rgba(0,113,227,0.08); }
+  .concept .icon { font-size: 26px; margin-bottom: 6px; }
+  .concept .ctitle { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .concept .cdesc { font-size: 11px; color: var(--t3); line-height: 1.5; }
+
+  /* Textarea */
+  textarea {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--div); border-radius: 8px;
+    font-size: 12px; font-family: inherit; color: var(--text); outline: none; line-height: 1.6;
+    resize: vertical; min-height: 70px; margin-top: 6px; background: var(--card);
+  }
+  textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,113,227,0.06); }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ═══════════ CLAUDE.md ═══════════ -->
+  <div class="card">
+    <div class="card-head">
+      <h2>📜 CLAUDE.md<span class="sub"> · 全局生效，定义 Claude 在所有项目中的底层行为</span></h2>
+      <div style="display:flex;gap:6px;">
+        <button class="btn">查看原始 MD</button>
+        <button class="btn primary">保存更改</button>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <!-- ── 交流偏好 ── -->
+      <div class="h1">🗣 交流偏好</div>
+
+      <div class="row">
+        <div>
+          <div class="h2-row"><span class="h2-label">工作语言</span><span class="h2-hint">Claude 回复时使用的语言</span></div>
+          <div class="tags">
+            <span class="tag on">简体中文</span>
+            <span class="tag">繁體中文</span>
+            <span class="tag">English</span>
+            <span class="tag" id="otherLang">+ 其他</span>
+          </div>
+          <!-- Custom language input (hidden unless "其他" selected) -->
+          <div class="custom-lang" style="display:none;" id="customLangRow">
+            <input type="text" placeholder="输入语言名称..." value="">
+            <button class="btn primary" style="padding:5px 10px;">确认</button>
+            <button class="btn" style="padding:5px 10px;">取消</button>
+          </div>
+        </div>
+        <div>
+          <div class="h2-row"><span class="h2-label">回复风格</span><span class="h2-hint">简洁还是详细</span></div>
+          <div class="tags" style="margin-top:6px;">
+            <span class="tag">简洁</span>
+            <span class="tag on">适度</span>
+            <span class="tag">详尽</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- ── 自主程度 ── -->
+      <div class="h1">🛡 自主程度</div>
+      <div class="radio-list">
+        <div class="radio-item">
+          <div class="radio-dot"></div>
+          <div>
+            <div class="radio-title">每步询问</div>
+            <div class="radio-desc">所有操作执行前都需要向你确认，适合高敏感项目</div>
+          </div>
+        </div>
+        <div class="radio-item on">
+          <div class="radio-dot"></div>
+          <div>
+            <div class="radio-title">关键确认</div>
+            <div class="radio-desc">涉及隐私、安全、文件删除、外部服务等敏感操作时询问，常规操作自主执行</div>
+          </div>
+        </div>
+        <div class="radio-item">
+          <div class="radio-dot"></div>
+          <div>
+            <div class="radio-title">高度自主</div>
+            <div class="radio-desc">AI 全权执行，你可随时暂停、终止或回滚任何操作</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- ── 安全与权限 ── -->
+      <div class="h1">🔐 安全与权限</div>
+
+      <div class="toggle-row">
+        <div class="tl-left"><span class="tl-label">本地文件路径授权</span><span class="tl-desc">限制 Claude 只能读写指定目录</span></div>
+        <button class="switch on"></button>
+      </div>
+      <div class="folder-row" style="margin-bottom:8px;">
+        <span class="folder-path">~/Documents/Claude/</span>
+        <button class="folder-btn">📂 选择文件夹…</button>
+        <button class="folder-btn">✕ 清除</button>
+      </div>
+
+      <div class="toggle-row">
+        <div class="tl-left"><span class="tl-label">安全策略</span></div>
+      </div>
+      <div class="tags" style="margin-top:4px;">
+        <span class="tag on">不存储 API 密钥</span>
+        <span class="tag on">仅读写授权目录</span>
+        <span class="tag on">外发前确认</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- ── 编码风格 ── -->
+      <div class="h1">💻 编码风格</div>
+      <div class="toggle-row">
+        <div class="tl-left"><span class="tl-label">动手前先对齐需求</span><span class="tl-desc">不确定时先问清楚，不自行假设</span></div>
+        <button class="switch on"></button>
+      </div>
+      <div class="toggle-row">
+        <div class="tl-left"><span class="tl-label">简单优先</span><span class="tl-desc">最少代码解决问题，不为"未来可能需要"过度设计</span></div>
+        <button class="switch on"></button>
+      </div>
+      <div class="toggle-row">
+        <div class="tl-left"><span class="tl-label">精准修改</span><span class="tl-desc">只改任务相关部分，不顺手格式化或重构无关代码</span></div>
+        <button class="switch on"></button>
+      </div>
+      <div class="toggle-row">
+        <div class="tl-left"><span class="tl-label">修改后自动代码审查</span><span class="tl-desc">每次代码变更后自动运行审查</span></div>
+        <button class="switch on"></button>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- ── 自定义 ── -->
+      <div class="h1">📝 自定义规则</div>
+      <div class="h2-hint" style="margin-bottom:2px;">用自然语言补充任何你希望 Claude 遵守的全局规则</div>
+      <textarea placeholder="例如：每日 08:00 自动运行定时任务、所有网页部署需同时推送 OSS 和 GitHub Pages...">- 每日北京时间 08:00 自动运行定时任务
+- 所有网页部署需同时推送 OSS 和 GitHub Pages
+- 数据分析任务完成后自动生成 HTML 报告</textarea>
+
+    </div>
+  </div>
+
+  <!-- ═══════════ 项目概览 ═══════════ -->
+  <div class="card">
+    <div class="card-head">
+      <h2>📋 项目概览<span class="sub"> · 仅「🏆 2026世界杯」内生效</span></h2>
+      <div style="display:flex;gap:6px;">
+        <button class="btn">查看原始 MD</button>
+        <button class="btn primary">保存更改</button>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <div class="h1">📖 基本信息</div>
+      <div class="row">
+        <div>
+          <div class="h2-row"><span class="h2-label">项目名称</span></div>
+          <div class="folder-row" style="margin-top:0;">
+            <span class="folder-path">2026世界杯预测分析</span>
+          </div>
+        </div>
+        <div>
+          <div class="h2-row"><span class="h2-label">项目描述</span><span class="h2-hint">自然语言描述背景，Claude 进入项目时自动加载</span></div>
+          <textarea style="min-height:62px;margin-top:4px;">基于 Polymarket 赔率和 FIFA 排名，泊松回归 + 蒙特卡洛模拟预测 104 场比赛结果。</textarea>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h1">⚙️ 项目配置</div>
+      <div class="row">
+        <div>
+          <div class="h2-row"><span class="h2-label">数据源</span></div>
+          <div class="tags" style="margin-top:2px;">
+            <span class="tag on">Polymarket API</span>
+            <span class="tag on">FIFA 排名</span>
+            <span class="tag">+ 添加</span>
+          </div>
+        </div>
+        <div>
+          <div class="h2-row"><span class="h2-label">技术栈</span></div>
+          <div class="tags" style="margin-top:2px;">
+            <span class="tag on">Python</span>
+            <span class="tag on">NumPy/Pandas</span>
+            <span class="tag">+ 添加</span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <div class="h2-row"><span class="h2-label">产物类型</span></div>
+          <div class="tags" style="margin-top:2px;">
+            <span class="tag on">HTML 报告</span>
+            <span class="tag on">Python 脚本</span>
+            <span class="tag">+ 添加</span>
+          </div>
+        </div>
+        <div>
+          <div class="h2-row"><span class="h2-label">部署目标</span></div>
+          <div class="tags" style="margin-top:2px;">
+            <span class="tag on">☁️ OSS</span>
+            <span class="tag on">🌐 Pages</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="h1">📝 项目规则</div>
+      <div class="h2-hint" style="margin-bottom:2px;">仅在本项目内叠加生效的额外指令</div>
+      <textarea placeholder="例如：数据每日更新并重新运行模型、HTML 报告使用暗色主题...">- 赔率数据每日至少更新一次，更新后重新运行预测模型
+- HTML 报告使用暗色主题，概率保留一位小数
+- 预测结果变更超过 5% 时重点标注</textarea>
+
+    </div>
+  </div>
+
+  <!-- ═══════════ 概念速查 ═══════════ -->
+  <div class="card">
+    <div class="card-body">
+      <div class="concept-grid">
+        <div class="concept">
+          <div class="icon">📜</div>
+          <div class="ctitle">CLAUDE.md</div>
+          <div class="cdesc">全局生效 · 定义底层行为<br>员工手册 · 设一次全适用</div>
+        </div>
+        <div class="concept highlight">
+          <div class="icon">📋</div>
+          <div class="ctitle">项目概览 .md</div>
+          <div class="cdesc">项目内生效 · 定义背景约束<br>立项书 · 每项目各一份</div>
+        </div>
+        <div class="concept">
+          <div class="icon">⚡</div>
+          <div class="ctitle">Skill 技能</div>
+          <div class="cdesc">调用时生效 · 定义任务流程<br>SOP · 插件提供或自建</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

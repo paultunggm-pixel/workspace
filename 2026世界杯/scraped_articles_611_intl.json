@@ -1,0 +1,113 @@
+{
+  "https://www.theringer.com/soccer": {
+    "site": "The Ringer-足球",
+    "source_url": "https://www.theringer.com/soccer",
+    "articles": [],
+    "status": "云壳拦截(境外,Chrome超时)"
+  },
+  "https://soccer.nbcsports.com/": {
+    "site": "ProSoccerTalk-NBC",
+    "source_url": "https://soccer.nbcsports.com/",
+    "articles": [
+      {
+        "title": "Premier League",
+        "url": "https://www.nbcsports.com/soccer/premier-league",
+        "time": "2026-06-04T17:30:50"
+      },
+      {
+        "title": "College Football",
+        "url": "https://www.nbcsports.com/college-football",
+        "time": "2026-06-10T18:30:07"
+      },
+      {
+        "title": "Men's College Basketball",
+        "url": "https://www.nbcsports.com/mens-college-basketball",
+        "time": "2026-06-10T19:50:42"
+      },
+      {
+        "title": "Fantasy Baseball Closer Report: Josh Hader off to strong start in return from injury",
+        "url": "https://www.nbcsports.com/news/fantasy-baseball-closer-report-josh-hader-off-to-strong-start-in-return-from-injury",
+        "time": "2026-06-11T05:41:38"
+      },
+      {
+        "title": "Ja'Kobe Tharp breaks 110m hurdles world record at NCAA Track and Field Championships",
+        "url": "https://www.nbcsports.com/olympics/news/jakobe-tharp-world-record-110-meter-hurdles-ncaa-championships",
+        "time": "2026-06-11T05:16:32"
+      },
+      {
+        "title": "HLs: Tempo edge out win vs Sun in OT thriller",
+        "url": "https://www.nbcsports.com/watch/wnba/highlights-brittney-sykes-turns-it-on-for-tempos-ot-thriller-vs-sun",
+        "time": "2026-06-11T05:00:01"
+      },
+      {
+        "title": "HLs: Knicks' historic comeback in Game 4",
+        "url": "https://www.nbcsports.com/watch/nba/highlights-new-york-knicks-historic-fourth-quarter-comeback-in-game-4",
+        "time": "2026-06-11T04:30:03"
+      },
+      {
+        "title": "What are the Knicks keys to success in Game 4?",
+        "url": "https://www.nbcsports.com/watch/nba/what-are-the-knicks-keys-to-success-in-nba-finals-game-4-vs-spurs",
+        "time": "2026-06-11T00:15:04"
+      },
+      {
+        "title": "News: Scores, Stats, Headlines, Injury Updates, Transactions & More",
+        "url": "https://www.nbcsports.com/nfl/washington-commanders",
+        "time": "2026-06-10T14:43:22"
+      },
+      {
+        "title": "St. Louis Cardinals - Overview",
+        "url": "https://www.nbcsports.com/mlb/st-louis-cardinals",
+        "time": "2026-06-11T07:18:21"
+      },
+      {
+        "title": "New York Yankees - Overview",
+        "url": "https://www.nbcsports.com/mlb/new-york-yankees",
+        "time": "2026-06-10T20:40:35"
+      },
+      {
+        "title": "USMNT lineup versus Paraguay — Who will Pochettino choose for USA in World Cup opener?",
+        "url": "https://www.nbcsports.com/soccer/news/usmnt-lineup-versus-paraguay-who-will-pochettino-choose-for-usa-in-world-cup-opener",
+        "time": "2026-06-10T14:23:16"
+      },
+      {
+        "title": "2026 World Cup preview: Key storylines, predictions as epic tournament set to begin",
+        "url": "https://www.nbcsports.com/soccer/news/2026-mens-world-cup-preview-the-key-storylines-as-epic-tournament-set-to-begin",
+        "time": "2026-06-10T12:34:25"
+      },
+      {
+        "title": "Who are the favorites to win the 2026 World Cup? Which top teams are in the best form?",
+        "url": "https://www.nbcsports.com/soccer/news/who-are-the-favorites-to-win-the-2026-world-cup-which-top-teams-are-in-the-best-form",
+        "time": "2026-06-09T17:04:57"
+      },
+      {
+        "title": "Brazil women shown eight red cards in stoppage time as USWNT win 1-0",
+        "url": "https://www.nbcsports.com/soccer/news/brazil-women-shown-eight-red-cards-in-stoppage-time-as-uswnt-win-1-0",
+        "time": "2026-06-10T11:47:03"
+      },
+      {
+        "title": "2026 World Cup daily schedule, how to watch live: What games are on today?",
+        "url": "https://www.nbcsports.com/soccer/news/2026-world-cup-daily-schedule-how-to-watch-live-what-games-are-on-today",
+        "time": "2026-06-09T15:43:53"
+      }
+    ],
+    "status": "✅ 16篇"
+  },
+  "https://www.concacaf.com/competitions/fifa-world-cup/news/": {
+    "site": "CONCACAF-世界杯新闻",
+    "source_url": "https://www.concacaf.com/competitions/fifa-world-cup/news/",
+    "articles": [],
+    "status": "云壳拦截(境外,Chrome超时)"
+  },
+  "https://inside.fifa.com/organisation/media/all-media-releases": {
+    "site": "FIFA媒体发布",
+    "source_url": "https://inside.fifa.com/organisation/media/all-media-releases",
+    "articles": [],
+    "status": "云壳拦截(境外,Chrome超时)"
+  },
+  "https://www.worldsoccer.com/world-cup": {
+    "site": "World Soccer-世界杯",
+    "source_url": "https://www.worldsoccer.com/world-cup",
+    "articles": [],
+    "status": "云壳拦截(境外,Chrome超时)"
+  }
+}

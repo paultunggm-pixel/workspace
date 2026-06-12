@@ -1,0 +1,193 @@
+<h2>右侧部署管理面板 — 详细设计</h2>
+<p class="subtitle">操作执行枢纽 · 一键部署 · 双目标同步 · 与中央部署 Tab 分工</p>
+
+<div class="mockup">
+  <div class="mockup-header">右侧栏 (300px) — 部署管理面板完整视图</div>
+  <div class="mockup-body" style="display:flex;background:#1a1a2e;font-family:'SF Pro Display',system-ui,sans-serif;">
+
+    <!-- Right Panel -->
+    <div style="width:300px;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.04);min-height:520px;">
+
+      <!-- Header -->
+      <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span>🚀</span>
+          <span style="font-size:11px;font-weight:700;color:#fff;">部署管理</span>
+        </div>
+        <span style="font-size:10px;color:#64748b;">⚙️</span>
+      </div>
+
+      <div style="flex:1;overflow-y:auto;padding:12px;">
+
+        <!-- ── 部署目标选择 ── -->
+        <div style="margin-bottom:16px;">
+          <div style="font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">📍 部署目标</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <label style="display:flex;align-items:center;gap:5px;padding:8px 10px;background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.3);border-radius:8px;cursor:pointer;flex:1;min-width:100px;">
+              <input type="checkbox" checked style="accent-color:#3b82f6;width:12px;height:12px;">
+              <div>
+                <div style="font-size:10px;font-weight:600;color:#fff;">☁️ OSS</div>
+                <div style="font-size:8px;color:#94a3b8;">阿里云</div>
+              </div>
+            </label>
+            <label style="display:flex;align-items:center;gap:5px;padding:8px 10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;cursor:pointer;flex:1;min-width:100px;">
+              <input type="checkbox" checked style="accent-color:#3b82f6;width:12px;height:12px;">
+              <div>
+                <div style="font-size:10px;font-weight:600;color:#fff;">🌐 Pages</div>
+                <div style="font-size:8px;color:#94a3b8;">GitHub</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- ── 当前部署文件 ── -->
+        <div style="margin-bottom:16px;">
+          <div style="font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">📦 待部署文件</div>
+          <div style="padding:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span>📊</span>
+                <div>
+                  <div style="font-size:10px;color:#cbd5e1;">evaluation_report.html</div>
+                  <div style="font-size:8px;color:#64748b;">46KB · OSS+Pages</div>
+                </div>
+              </div>
+              <span style="font-size:9px;color:#64748b;cursor:pointer;">✕</span>
+            </div>
+            <div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:8px;color:#64748b;">+ 拖入文件或选择</span>
+              <span style="font-size:10px;color:#64748b;cursor:pointer;">📎</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── 一键部署按钮 ── -->
+        <div style="margin-bottom:16px;">
+          <button class="mock-button" style="width:100%;padding:12px;font-size:13px;font-weight:700;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+            🚀 一键部署
+          </button>
+          <div style="display:flex;gap:6px;margin-top:6px;">
+            <button class="mock-button" style="flex:1;font-size:9px;padding:6px;">👁️ 预览</button>
+            <button class="mock-button" style="flex:1;font-size:9px;padding:6px;">🔄 仅刷新缓存</button>
+          </div>
+        </div>
+
+        <!-- ── 部署进度（进行中时显示）── -->
+        <div style="margin-bottom:16px;padding:12px;background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.15);border-radius:8px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <span style="font-size:10px;font-weight:600;color:#60a5fa;">⏳ 部署中...</span>
+            <span style="font-size:9px;color:#94a3b8;">2/3</span>
+          </div>
+          <div style="margin-bottom:6px;">
+            <div style="display:flex;align-items:center;gap:6px;font-size:9px;margin-bottom:2px;">
+              <span style="color:#22c55e;">✅</span>
+              <span style="color:#cbd5e1;">上传 OSS</span>
+              <span style="color:#64748b;">1.2s</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:9px;margin-bottom:2px;">
+              <span style="color:#f59e0b;">⏳</span>
+              <span style="color:#cbd5e1;">GitHub Pages 构建</span>
+              <span style="color:#f59e0b;">进行中...</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:9px;">
+              <span style="color:#64748b;">○</span>
+              <span style="color:#64748b;">刷新 CDN 缓存</span>
+            </div>
+          </div>
+          <div style="height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;">
+            <div style="height:100%;width:66%;background:#3b82f6;border-radius:2px;"></div>
+          </div>
+        </div>
+
+        <!-- ── 最近部署摘要 ── -->
+        <div style="margin-bottom:16px;">
+          <div style="font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">📜 最近 3 次部署</div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <div style="padding:6px 8px;border-radius:4px;background:rgba(34,197,94,0.06);font-size:9px;display:flex;align-items:center;justify-content:space-between;">
+              <span style="color:#22c55e;">✅</span>
+              <span style="color:#cbd5e1;">report.html</span>
+              <span style="color:#64748b;">2h前</span>
+            </div>
+            <div style="padding:6px 8px;border-radius:4px;font-size:9px;display:flex;align-items:center;justify-content:space-between;">
+              <span style="color:#22c55e;">✅</span>
+              <span style="color:#cbd5e1;">report.html</span>
+              <span style="color:#64748b;">昨天</span>
+            </div>
+            <div style="padding:6px 8px;border-radius:4px;font-size:9px;display:flex;align-items:center;justify-content:space-between;">
+              <span style="color:#ef4444;">❌</span>
+              <span style="color:#cbd5e1;">report.html</span>
+              <span style="color:#64748b;">6/10</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── 快捷链接 ── -->
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">🔗 快捷链接</div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <button class="mock-button" style="font-size:10px;text-align:left;padding:8px 10px;">📋 复制 OSS 链接</button>
+            <button class="mock-button" style="font-size:10px;text-align:left;padding:8px 10px;">📋 复制 Pages 链接</button>
+            <button class="mock-button" style="font-size:10px;text-align:left;padding:8px 10px;">📋 查看部署日志</button>
+            <button class="mock-button" style="font-size:10px;text-align:left;padding:8px 10px;">🔄 清除 CDN 缓存</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom status -->
+      <div style="padding:8px 14px;border-top:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;font-size:9px;">
+        <span style="color:#64748b;">🟢 OSS</span>
+        <span style="color:#64748b;">🟢 Pages</span>
+        <span style="color:#64748b;">自动部署 ON</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <h3>🔄 一次部署的完整生命周期</h3>
+  <div style="padding:14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;margin-top:12px;font-size:11px;">
+    <table style="width:100%;color:#cbd5e1;border-collapse:collapse;">
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+        <td style="padding:8px 10px;width:30px;text-align:center;">1</td>
+        <td style="padding:8px 10px;font-size:10px;">用户勾选目标 + 确认文件 → 点击 🚀 一键部署</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+        <td style="padding:8px 10px;text-align:center;">2</td>
+        <td style="padding:8px 10px;font-size:10px;">面板显示进度条（OSS上传 → Pages构建 → CDN刷新）</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+        <td style="padding:8px 10px;text-align:center;">3</td>
+        <td style="padding:8px 10px;font-size:10px;">成功后 → 面板显示 ✅ · 快捷链接自动更新 · 中央 🚀 Tab 可查看完整记录</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 10px;text-align:center;">4</td>
+        <td style="padding:8px 10px;font-size:10px;">失败 → 面板显示 ❌ + 错误原因 · 支持一键重试</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<div class="section">
+  <h3>📊 全窗口布局确认</h3>
+  <div style="padding:14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;margin-top:12px;font-size:10px;">
+    <pre style="color:#cbd5e1;line-height:1.8;margin:0;font-family:'SF Mono',monospace;">
+┌──────────────┬──────────────────────────────┬─────────────┐
+│  左侧栏 280px │       中央区 (flex)           │ 右侧栏 300px │
+│              │                              │             │
+│ 🧠 模型引擎    │ 💬📋🎨📝🚀  Tab 切换         │ 🚀 部署管理  │
+│ ├ 下拉选择    │                              │ ├ 目标勾选   │
+│ ├ 快切按钮    │  当前 Tab 内容                │ ├ 文件确认   │
+│ └ 余额卡片    │  (对话/方案/预览/代码/部署)     │ ├ 一键部署   │
+│              │                              │ ├ 进度面板   │
+│ 📁 项目列表    │                              │ ├ 最近部署   │
+│ ├ 🏆 世界杯   │                              │ └ 快捷链接   │
+│ │ ├ 会话1    │                              │             │
+│ │ └ 会话2    │                              │             │
+│ ├ 📊 评测    │                              │             │
+│ └ ...        │                              │             │
+└──────────────┴──────────────────────────────┴─────────────┘
+    </pre>
+  </div>
+</div>

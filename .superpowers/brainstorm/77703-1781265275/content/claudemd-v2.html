@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+  :root {
+    --bg: #f5f5f7; --card: #ffffff; --text: #1d1d1f; --t2: #6e6e73; --t3: #aeaeb2;
+    --accent: #0071e3; --abg: rgba(0,113,227,0.06); --div: rgba(0,0,0,0.07);
+    --green: #34c759; --red: #ff3b30; --orange: #ff9500;
+    --r: 12px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, 'SF Pro Display', sans-serif;
+    -webkit-font-smoothing: antialiased; background: #f0f0f2; color: var(--text);
+    font-size: 13px; line-height: 1.5;
+  }
+  .container { max-width: 960px; margin: 24px auto; display: flex; flex-direction: column; gap: 20px; }
+
+  .card {
+    background: var(--card); border-radius: var(--r);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04); border: 1px solid var(--div);
+  }
+  .card-head {
+    padding: 14px 20px; border-bottom: 1px solid var(--div);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-head h2 { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .card-head .sub { font-size: 10px; color: var(--t3); font-weight: 400; margin-left: 6px; }
+  .card-body { padding: 20px; }
+
+  .section-title {
+    font-size: 11px; font-weight: 600; color: var(--t2); letter-spacing: 0.01em;
+    margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+  }
+
+  /* Row layout */
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .row.single { grid-template-columns: 1fr; }
+  .row.triple { grid-template-columns: 1fr 1fr 1fr; }
+
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field-label { font-size: 12px; font-weight: 600; color: var(--text); }
+  .field-hint { font-size: 10px; color: var(--t3); }
+
+  /* Input */
+  input[type="text"], textarea {
+    width: 100%; padding: 8px 12px; border: 1px solid var(--div); border-radius: 8px;
+    font-size: 12px; font-family: inherit; color: var(--text); outline: none;
+    background: var(--card); transition: all 0.15s;
+  }
+  input[type="text"]:focus, textarea:focus {
+    border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,113,227,0.08);
+  }
+  textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+  /* Tags */
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag {
+    padding: 5px 12px; border-radius: 14px; font-size: 11px; cursor: pointer;
+    border: 1px solid var(--div); color: var(--t2); background: var(--card);
+    transition: all 0.15s; user-select: none;
+  }
+  .tag:hover { border-color: var(--accent); color: var(--accent); }
+  .tag.on { background: var(--abg); border-color: var(--accent); color: var(--accent); font-weight: 500; }
+
+  /* Select style tag */
+  .select-row { display: flex; gap: 0; }
+  .select-opt {
+    flex: 1; padding: 8px 0; text-align: center; font-size: 11px; cursor: pointer;
+    border: 1px solid var(--div); background: var(--card); color: var(--t2);
+    font-family: inherit; transition: all 0.15s;
+  }
+  .select-opt:first-child { border-radius: 8px 0 0 8px; }
+  .select-opt:last-child { border-radius: 0 8px 8px 0; }
+  .select-opt:not(:first-child) { margin-left: -1px; }
+  .select-opt:hover { border-color: var(--accent); color: var(--accent); z-index: 1; }
+  .select-opt.on { background: var(--abg); border-color: var(--accent); color: var(--accent); font-weight: 600; z-index: 2; position: relative; }
+
+  /* Autonomy slider */
+  .autonomy-options { display: flex; gap: 10px; }
+  .autonomy-card {
+    flex: 1; padding: 14px; border-radius: 10px; border: 2px solid var(--div);
+    cursor: pointer; text-align: center; transition: all 0.2s; background: var(--card);
+  }
+  .autonomy-card:hover { border-color: rgba(0,113,227,0.3); }
+  .autonomy-card.on { border-color: var(--accent); background: var(--abg); }
+  .autonomy-card .icon { font-size: 24px; margin-bottom: 6px; }
+  .autonomy-card .title { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+  .autonomy-card .desc { font-size: 10px; color: var(--t3); line-height: 1.5; }
+
+  /* Toggle */
+  .toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 0;
+  }
+  .toggle-row + .toggle-row { border-top: 1px solid var(--div); }
+  .toggle-label { font-size: 12px; font-weight: 500; }
+  .toggle-desc { font-size: 10px; color: var(--t3); margin-top: 1px; }
+  .switch {
+    width: 44px; height: 24px; border-radius: 12px; cursor: pointer; flex-shrink: 0;
+    background: rgba(0,0,0,0.12); position: relative; transition: all 0.2s; border: none;
+  }
+  .switch.on { background: var(--accent); }
+  .switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 20px; height: 20px; border-radius: 50%; background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12); transition: all 0.2s;
+  }
+  .switch.on::after { left: 22px; }
+
+  .divider { border: none; border-top: 1px solid var(--div); margin: 18px 0; }
+
+  /* Button */
+  .btn {
+    padding: 7px 16px; border-radius: 8px; font-size: 12px; font-weight: 500;
+    cursor: pointer; font-family: inherit; border: none; transition: all 0.15s;
+  }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: #0077ed; }
+  .btn-ghost { background: transparent; color: var(--t2); border: 1px solid var(--div); }
+  .btn-ghost:hover { background: rgba(0,0,0,0.03); }
+
+  /* Concept cards */
+  .concept-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .concept {
+    padding: 16px; border-radius: 10px; background: #f9f9fb; text-align: center;
+  }
+  .concept.highlight { background: var(--abg); border: 1px solid rgba(0,113,227,0.08); }
+  .concept .icon { font-size: 26px; margin-bottom: 6px; }
+  .concept .title { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .concept .desc { font-size: 11px; color: var(--t3); line-height: 1.5; }
+
+  .hint-row { font-size: 10px; color: var(--t3); margin-top: 12px; display: flex; align-items: center; gap: 4px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ═══════════ CLAUDE.md 全局设置 ═══════════ -->
+  <div class="card">
+    <div class="card-head">
+      <h2>📜 CLAUDE.md<span class="sub">全局生效 · 定义 Claude 在所有项目中的行为方式</span></h2>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-ghost">查看原始 MD</button>
+        <button class="btn btn-primary">保存更改</button>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <!-- ── 交流偏好 ── -->
+      <div class="section-title">🗣 交流偏好</div>
+      <div class="row">
+        <div class="field">
+          <div class="field-label">工作语言</div>
+          <div class="field-hint">Claude 回复时使用的语言</div>
+          <div class="tags" style="margin-top:4px;">
+            <span class="tag on">简体中文</span>
+            <span class="tag">繁體中文</span>
+            <span class="tag">English</span>
+            <span class="tag">日本語</span>
+            <span class="tag">+ 其他</span>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">回复风格</div>
+          <div class="field-hint">偏好简洁还是详细</div>
+          <div class="select-row" style="margin-top:4px;">
+            <span class="select-opt">简洁</span>
+            <span class="select-opt on">适度</span>
+            <span class="select-opt">详尽</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- ── 询问频率（新增） ── -->
+      <div class="section-title">🛡 自主程度</div>
+      <div class="field-hint" style="margin-bottom:10px;">设定 Claude 在执行操作时的询问策略</div>
+      <div class="autonomy-options">
+        <div class="autonomy-card">
+          <div class="icon">🤝</div>
+          <div class="title">每步询问</div>
+          <div class="desc">所有操作执行前<br>都向你确认</div>
+        </div>
+        <div class="autonomy-card on">
+          <div class="icon">⚖️</div>
+          <div class="title">关键确认</div>
+          <div class="desc">涉及隐私、安全、<br>文件删除等重要操作<br>必须询问，其余自主</div>
+        </div>
+        <div class="autonomy-card">
+          <div class="icon">🚀</div>
+          <div class="title">高度自主</div>
+          <div class="desc">AI 全权执行<br>你可随时暂停或回滚</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- ── 安全与权限 ── -->
+      <div class="section-title">🔐 安全与权限</div>
+      <div class="row">
+        <div class="field">
+          <div class="field-label">授权读写本地目录</div>
+          <div class="field-hint">Claude 只能访问此目录内的文件</div>
+          <input type="text" value="~/Documents/Claude/" style="margin-top:4px;">
+        </div>
+        <div class="field">
+          <div class="field-label">安全策略</div>
+          <div class="field-hint">已启用的保护措施</div>
+          <div class="tags" style="margin-top:4px;">
+            <span class="tag on">不存储密钥</span>
+            <span class="tag on">仅访问授权目录</span>
+            <span class="tag on">外发前确认</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- ── 编码风格 ── -->
+      <div class="section-title">💻 编码风格</div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">动手前先对齐需求</div>
+          <div class="toggle-desc">不确定时先问清楚，不自行假设</div>
+        </div>
+        <button class="switch on"></button>
+      </div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">简单优先</div>
+          <div class="toggle-desc">最少代码解决问题，不为"未来可能需要"过度设计</div>
+        </div>
+        <button class="switch on"></button>
+      </div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">精准修改</div>
+          <div class="toggle-desc">只改任务相关部分，不顺手格式化或重构无关代码</div>
+        </div>
+        <button class="switch on"></button>
+      </div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">修改后自动代码审查</div>
+          <div class="toggle-desc">每次代码变更后自动运行审查流程</div>
+        </div>
+        <button class="switch on"></button>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- ── 自定义 ── -->
+      <div class="section-title">📝 自定义规则</div>
+      <div class="field">
+        <div class="field-hint">用自然语言补充任何你希望 Claude 遵守的规则</div>
+        <textarea style="margin-top:4px;min-height:90px;" placeholder="例如：每日 08:00 自动运行定时任务、部署需同时推送 OSS 和 GitHub Pages...">- 每日北京时间 08:00 自动运行定时任务
+- 所有网页部署需同时推送 OSS 和 GitHub Pages
+- 数据分析任务完成后自动生成 HTML 报告</textarea>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════ 项目概览 .md ═══════════ -->
+  <div class="card">
+    <div class="card-head">
+      <h2>📋 项目概览<span class="sub">仅「🏆 2026世界杯」内生效 · 定义项目背景与约束</span></h2>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-ghost">查看原始 MD</button>
+        <button class="btn btn-primary">保存更改</button>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <div class="row">
+        <div class="field">
+          <div class="field-label">项目名称</div>
+          <input type="text" value="2026世界杯预测分析" style="margin-top:4px;">
+        </div>
+        <div class="field">
+          <div class="field-label">项目描述</div>
+          <input type="text" value="基于 Polymarket 赔率和 FIFA 排名，泊松回归 + 蒙特卡洛模拟预测 104 场比赛" style="margin-top:4px;">
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="section-title">⚙️ 项目配置</div>
+      <div class="row">
+        <div class="field">
+          <div class="field-label">数据源</div>
+          <div class="tags" style="margin-top:4px;">
+            <span class="tag on">Polymarket API</span>
+            <span class="tag on">FIFA 排名</span>
+            <span class="tag">+ 添加</span>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">技术栈</div>
+          <div class="tags" style="margin-top:4px;">
+            <span class="tag on">Python</span>
+            <span class="tag on">NumPy/Pandas</span>
+            <span class="tag">+ 添加</span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <div class="field-label">产物类型</div>
+          <div class="tags" style="margin-top:4px;">
+            <span class="tag on">HTML 报告</span>
+            <span class="tag on">Python 脚本</span>
+            <span class="tag">+ 添加</span>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">部署目标</div>
+          <div class="tags" style="margin-top:4px;">
+            <span class="tag on">☁️ OSS</span>
+            <span class="tag on">🌐 Pages</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="section-title">📝 项目规则</div>
+      <div class="field">
+        <div class="field-hint">仅在当前项目内叠加生效的额外指令</div>
+        <textarea style="margin-top:4px;min-height:70px;" placeholder="例如：数据每日更新并重新运行模型、HTML 报告使用暗色主题...">- 赔率数据每日至少更新一次，更新后重新运行预测模型
+- HTML 报告使用暗色主题，概率保留一位小数
+- 预测结果变更超过 5% 时重点标注</textarea>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════ 概念速查 ═══════════ -->
+  <div class="card">
+    <div class="card-body">
+      <div class="concept-grid">
+        <div class="concept">
+          <div class="icon">📜</div>
+          <div class="title">CLAUDE.md</div>
+          <div class="desc">全局生效 · 定义底层行为<br>员工手册 · 设一次全适用</div>
+        </div>
+        <div class="concept highlight">
+          <div class="icon">📋</div>
+          <div class="title">项目概览 .md</div>
+          <div class="desc">项目内生效 · 定义背景约束<br>立项书 · 每项目各一份</div>
+        </div>
+        <div class="concept">
+          <div class="icon">⚡</div>
+          <div class="title">Skill 技能</div>
+          <div class="desc">调用时生效 · 定义任务流程<br>SOP · 插件提供或自建</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

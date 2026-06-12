@@ -1,0 +1,40 @@
+<h2>模型配置方案对比 — 从引导到完全集成</h2>
+<p class="subtitle">三种实现深度：引导安装 cc switch → 唤起本地 cc switch → 完全内建</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>🔗 引导式 — 检测 + 引导安装 cc switch</h3>
+      <p>App 检测 cc switch 是否可用 → 引导用户安装 → 用户安装后回到 App 自动识别。</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>优势</h4><ul><li>实现最简单（1天内）</li><li>零安全风险，凭据完全由 cc 管理</li><li>配置文件格式兼容天然保证</li></ul></div>
+        <div class="cons"><h4>代价</h4><ul><li>依赖外部工具，用户体验割裂</li><li>需切到终端操作，不是产品化体验</li><li>未安装 cc switch 的用户卡住</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>🤝 桥接式 — 内嵌 cc switch 能力</h3>
+      <p>App 自带 cc switch 核心逻辑，但保留其配置格式。用户在 App 内完成配置，同时与 CLI cc 互通。</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>优势</h4><ul><li>原生 UI 体验，无需离开 App</li><li>与 CLI cc 双向兼容（同配置文件）</li><li>渐进式——先支持核心功能</li></ul></div>
+        <div class="cons"><h4>代价</h4><ul><li>需维护配置文件读写兼容层</li><li>cc switch 功能更新需跟进</li><li>中等开发量（3-5天）</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>🚀 完全内建 — 模型设置彻底集成 ⭐ 推荐</h3>
+      <p>App 完全取代 cc switch 的模型管理职责。自有配置文件 + UI 管理面板。同时兼容现有 cc 用户（导入兼容）。</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>优势</h4><ul><li>最佳用户体验——全在 App 内完成</li><li>不依赖任何外部工具</li><li>可扩展 cc switch 不具备的功能</li><li>最"产品化"的方案</li></ul></div>
+        <div class="cons"><h4>代价</h4><ul><li>开发量最大（5-7天）</li><li>需设计自有配置格式 + cc 兼容导出</li><li>密钥管理需极谨慎（Keychain）</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -27,6 +27,7 @@ triggers:
 
 | 版本 | 日期 | 改进内容 | 效果 |
 |------|------|----------|------|
+| v1.10.0 | 2026-06-10 | 防缓存过期：HTML 加 `<meta>` no-cache 头 + 页面显示构建时间戳 + `version.json` 自动版本检测 + `sessionStorage` 锁防死循环；`extract_final_answer_line` 修复「解答」优先提取全文而非文末「答案」 | 任何人打开页面3秒内自动最新版 |
 | v1.8.1 | 2026-06-03 | 详情弹窗截图与解题doc改为左右并排布局（截图固定280px左列、doc右列自适应、窄屏自动堆叠）；异动分析面板改为紧凑双列网格布局（inline badge指标 + 左右分栏诊断/建议，垂直空间减少约40%） | 详情弹窗和异动面板布局大幅优化 |
 | v1.8.0 | 2026-06-03 | 详情弹窗新增模型解题截图展示（千问/豆包/豆包深思/元宝的 image_url 字段，Gemini 无独立截图）；截图 max-height 800px；disagreements 数据新增 qw_image_url/comp_image_url 字段 | 可直观对比原始截图 |
 | v1.7.0 | 2026-06-03 | HTML 报告新增一致率异动分析面板：概览卡片下方自动显示异动指标、模型空文本率诊断、提取失败诊断、排查建议；history.json 增加 `model_stats` 字段 | 报告可读性大幅提升 |
@@ -182,9 +183,9 @@ python3 gen_uncomparable_excel.py
 
 上传方式：三步流程（`get_file_upload_info` → `curl PUT` → `commit_uploaded_file(folderId=子目录ID)`），按日期命名追加。上传后使用 `get_document_info` 验证 `folderId`。不可依赖 `list_nodes`（bug）。
 
-### Step 7: 同步 GitHub Pages（MANDATORY）
+### Step 7: 同步 GitHub Pages + OSS（MANDATORY）
 
-HTML 报告**仅**发布到 GitHub Pages。发布前需注入「下载评测明细记录」按钮：
+HTML 报告**仅**发布到 GitHub Pages。`data.json` 需同步上传 OSS 以保证国内访问速度。
 
 ```bash
 cd ~/Documents/Claude/解题答案一致性评测/
@@ -201,16 +202,54 @@ with open('outputs/evaluation_report_github.html', 'w') as f:
 "
 
 # 2. 推送到 GitHub Pages
-cd ~/Documents/Claude/vercel-deploy
+cd ~/Documents/Claude/consistency-eval-gh
 cp ~/Documents/Claude/解题答案一致性评测/outputs/evaluation_report_github.html index.html
-git add index.html
+
+# 3. 提取 data.json 并上传 OSS（国内加速）
+python3 -c "
+import json, re
+with open('index.html', 'r') as f:
+    html = f.read()
+# 提取 historyData 内联变量为独立 JSON 文件
+match = re.search(r'const historyData = (\[.+?\]);', html, re.DOTALL)
+if match:
+    with open('data.json', 'w') as out:
+        json.dump(json.loads(match.group(1)), out, ensure_ascii=False)
+    print('data.json extracted')
+"
+
+# 4. 生成 version.json（自动版本检测用，32字节）
+python3 -c "
+import json, datetime
+with open('version.json', 'w') as f:
+    json.dump({'build_time': datetime.datetime.now().strftime('%Y%m%d%H%M%S')}, f)
+"
+
+# 5. 上传 data.json 到阿里云 OSS（国内加速）
+python3 -c "
+import os, oss2
+auth = oss2.Auth(os.environ['OSS_ACCESS_KEY_ID'], os.environ['OSS_ACCESS_KEY_SECRET'])
+bucket = oss2.Bucket(auth, 'oss-cn-hangzhou.aliyuncs.com', 'consistency-eval')
+with open('data.json', 'rb') as f:
+    bucket.put_object('data.json', f, headers={
+        'Content-Type': 'application/json; charset=utf-8',
+        'Cache-Control': 'public, max-age=86400'
+    })
+print('data.json uploaded to OSS')
+"
+
+# 6. 提交并推送
+git add index.html data.json version.json
 git commit -m "更新评测报告至 {日期}"
-git pull --rebase origin main && git push origin main
+git push origin main
 ```
 
-**仓库**: `paultunggm-pixel/consistency-eval`
+**仓库**: `paultunggm-pixel/consistency-eval`（本地目录 `~/Documents/Claude/consistency-eval-gh/`）
 **URL**: `https://paultunggm-pixel.github.io/consistency-eval/`
+**OSS data.json**: `https://consistency-eval.oss-cn-hangzhou.aliyuncs.com/data.json`
 **下载按钮**: 固定跳转 `https://alidocs.dingtalk.com/i/nodes/r1R7q3QmWew5lo02fZNnXl01JxkXOEP2?utm_scene=person_space`
+
+**防缓存机制** (v1.10): HTML 内 `<meta>` no-cache + 构建时间戳显示 + `version.json`(32字节)。JS 加载时请求 `version.json?t=随机数` 绕过 CDN，比较远程 build_time，若更新则 `location.reload()`。`sessionStorage` 锁每会话最多刷新一次防死循环。任何人打开页面 3 秒内自动最新版。
 
 ### Step 9: 确认输出
 
@@ -264,10 +303,37 @@ COMPARISON_PAIRS = [
 - `renderDocContent()`: 渲染完整解题过程 doc（详情弹窗内）。前置 strip markdown → wrapNakedLatex → 整体 KaTeX 渲染
 - `renderAnswerContent()`: 渲染答案标签（明细表答案抽取列）。按 `，`（全角逗号）分段，逐段判断是否为公式再渲染。不能用 renderDocContent——后者会把含中文混合行整行 `$$` 包裹导致中文渲染失败
 
-### CDN 依赖
+### 静态资源加载策略（2026-06-08 全面优化）
 
-- Chart.js 4.4.1 — 优先 bootcdn.cn 备选 cdnjs.cloudflare.com
-- KaTeX 0.16.9 — katex.min.js + auto-render 直接内联到 HTML 中（钉钉文档查看器无法访问外部 CDN）。CSS 用 link 标签 bootcdn 优先+onerror 备选 cloudflare
+**所有 JS/CSS 已本地化**，不再依赖任何外部 CDN（bootcdn/cloudflare 等）：
+
+- `js/vendor/chart.umd.min.js` — Chart.js 4.4.1 (200KB)，`defer` 加载
+- `js/vendor/katex.min.css` — KaTeX 样式 (23KB)
+- `js/vendor/katex.min.js` — KaTeX 0.16.9 (271KB)，`defer` 加载
+- `js/vendor/auto-render.min.js` — KaTeX 自动渲染 (3.4KB)，`defer` 加载
+- `cover-tool/js/vendor/cover-bundle.js` — SheetJS + JSZip 合并 (1MB)，`defer` 加载
+
+**关键优化原则**（历经 4 轮迭代沉淀）：
+
+| # | 坑 | 解决方案 |
+|---|-----|---------|
+| 1 | `<script>` 在 `<head>` 中同步加载会完全阻塞渲染 | 所有 `<script>` 移到 `<body>` 末尾或加 `defer` |
+| 2 | 多个独立 vendor 文件可能被 GitHub Pages CDN 限制并发导致 pending | 已改回独立文件（之前合并 bundle 导致 Chart 未定义） |
+| 3 | `defer` 脚本执行晚于 `fetch().then()` 回调，导致 `typeof Chart === 'undefined'` | `initAll()` 前轮询检查：`setTimeout(tryInit, 100)` 直到 Chart/katex 就绪 |
+| 4 | `currentDateIdx = historyData.length - 1` 在异步加载时计算为 -1 | 移入 `initAll()` 中数据就绪后重新计算 |
+| 5 | GitHub Pages gzip Content-Length 与实际解压后大小偏差导致进度条超 100% | 使用已知文件大小 `KNOWN_SIZE = 7122203`，`Math.min(pct, 100)` |
+| 6 | GitHub Pages 国内访问极慢（跨境 CDN） | `data.json` 同步上传 OSS（`consistency-eval.oss-cn-hangzhou.aliyuncs.com`），优先从 OSS 加载，失败回退 GitHub Pages |
+| 7 | OSS 跨域 fetch 需要 CORS 头 | OSS Bucket CORS 配置：`allowed_origins=['*']`, `allowed_methods=['GET','HEAD']` |
+
+### 数据加载架构
+
+```
+页面打开 → 57KB HTML 秒渲染 → loading 紫色渐变+转圈+实时进度条
+         → fetch('https://consistency-eval.oss-cn-hangzhou.aliyuncs.com/data.json')
+         → 实时进度 "正在下载 3.5 / 7.1 MB (50%)"
+         → 解析 JSON → 轮询等待 Chart/katex 就绪 → initAll() → 淡出 loading
+         → (OSS 失败时自动回退 GitHub Pages data.json)
+```
 
 ## 答案提取流水线（核心逻辑摘要）
 
@@ -430,6 +496,14 @@ done
 ### 工具链
 - Node.js v26 `node --check` 不支持 .html 扩展名，须先用 Python 提取 `<script>` 块到临时 .js 文件
 
+### Web 页面性能（2026-06-08 沉淀）
+- **defer 脚本时序竞争**: `fetch().then()` 可能先于 `defer` 脚本执行完成，此时 `typeof Chart === 'undefined'`。必须轮询等待
+- **GitHub Pages 并发限制**: 多个独立 script 文件可能被 CDN 限制导致部分 pending，但合并 bundle 可能导致 UMD 模块初始化失败。目前方案：独立文件 + defer + 轮询
+- **gzip Content-Length 陷阱**: GitHub Pages gzip 后 Content-Length 是压缩后大小（~2.1MB），ReadableStream 读到的是解压后数据（~7.1MB），进度条计算要用已知实际大小
+- **OSS CORS**: 跨域 fetch OSS 需要配置 Bucket CORS 规则
+- **GitHub Pages 国内慢**: 数据文件应从 OSS 加载（国内节点），GitHub Pages 作为备用
+- **`vercel-deploy` 目录已删除**: 不再使用，统一用 `consistency-eval-gh` 目录对接 `paultunggm-pixel/consistency-eval` 仓库
+
 ## Verification
 
 执行完成后必须验证：
@@ -441,6 +515,9 @@ done
 - [ ] 每个日期的无法判断明细条数与 HTML 概览中"无法判断 N 题"一致
 - [ ] 钉钉各子目录文件已确认在正确位置
 - [ ] 数据完整性: 每组"可比对数 + 无法判断数 = 总 query 数"
+- [ ] **Web**: 趋势图正常显示（非 Chart.js CDN 加载失败）
+- [ ] **Web**: `data.json` 已上传 OSS 并可从国内访问
+- [ ] **Web**: `git push` 后 GitHub Actions 自动部署成功
 
 ## badcase 修复原则
 

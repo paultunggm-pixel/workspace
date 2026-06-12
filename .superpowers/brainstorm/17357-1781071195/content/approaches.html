@@ -1,0 +1,81 @@
+<h2>三种产品架构方案对比</h2>
+<p class="subtitle">基于你的需求（4-5 项目并行、SwiftUI 原生、Codex 式产品体验），选择最合适的架构范式</p>
+
+<div class="options" data-multiselect>
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>🏠 Dashboard Hub（仪表盘中枢）<span style="color:#3b82f6;font-size:0.85rem;margin-left:8px;">⭐ 推荐</span></h3>
+      <p>单窗口、信息聚合型布局。所有四个功能区在一个视图中可见，像驾驶舱一样掌控全局。</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>优势</h4>
+          <ul>
+            <li>信息一目了然，无需切换视图</li>
+            <li>Codex 式"掌控感"，所有进度可见</li>
+            <li>项目切换即时，侧栏始终可见</li>
+            <li>最"酷炫"——适合展示和日常使用</li>
+          </ul>
+        </div>
+        <div class="cons"><h4>代价</h4>
+          <ul>
+            <li>单窗口信息密度较高</li>
+            <li>小屏（13"）可能需要折叠某些面板</li>
+            <li>开发工作量最大</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>🎯 Focus Flow（专注流）</h3>
+      <p>极简主义，每次只展示当前需要的功能区。通过底部 Tab 或侧边胶囊按钮切换模式。</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>优势</h4>
+          <ul>
+            <li>极度专注，无干扰</li>
+            <li>适合长时间深度工作</li>
+            <li>界面简洁，学习成本低</li>
+            <li>性能最优，渲染内容最少</li>
+          </ul>
+        </div>
+        <div class="cons"><h4>代价</h4>
+          <ul>
+            <li>无法同时看到多个信息区</li>
+            <li>模式切换频繁（4-5 项目时尤其明显）</li>
+            <li>缺乏"全局掌控感"</li>
+            <li>不太"酷炫"，更像工具而非产品</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>⚡ Command Palette（命令中枢）</h3>
+      <p>以键盘为中心的 Spotlight 风格交互。 ⌘K 唤起命令面板，所有功能通过命令触发，面板按需浮层展示。</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>优势</h4>
+          <ul>
+            <li>键盘流极致效率</li>
+            <li>界面最简洁（几乎无 UI chrome）</li>
+            <li>Superhuman/Linear 式现代感</li>
+            <li>开发量最小</li>
+          </ul>
+        </div>
+        <div class="cons"><h4>代价</h4>
+          <ul>
+            <li>不可发现——功能藏在命令后</li>
+            <li>和"信息聚合"需求矛盾</li>
+            <li>预览/部署进度无法常驻可见</li>
+            <li>对非键盘流用户不友好</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

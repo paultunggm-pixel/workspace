@@ -1,0 +1,189 @@
+<h2>模型切换区 — 完整交互设计</h2>
+<p class="subtitle">下拉切换 · 初始化引导 · 与 cc switch 数据双向同步</p>
+
+<div class="mockup">
+  <div class="mockup-header">左侧栏顶部 — 模型引擎完整状态</div>
+  <div class="mockup-body" style="background:#1a1a2e;padding:0;font-family:'SF Pro Display',system-ui,sans-serif;font-size:12px;">
+
+    <!-- ── 模型引擎标题 ── -->
+    <div style="padding:12px 14px 8px;display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;">🧠 模型引擎</span>
+      <span style="font-size:10px;color:#64748b;cursor:pointer;">⚙️ 管理</span>
+    </div>
+
+    <!-- ── 主模型下拉选择器 ── -->
+    <div style="padding:0 14px 8px;">
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;cursor:pointer;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span>🧠</span>
+            <div>
+              <div style="font-size:12px;font-weight:600;color:#fff;">DeepSeek v4-pro</div>
+              <div style="font-size:9px;color:#94a3b8;">主力模型 · 复杂推理 & 创作</div>
+            </div>
+          </div>
+          <span style="color:#64748b;font-size:10px;">▼</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 下拉展开后的模型列表 ── -->
+    <div style="padding:0 14px 8px;">
+      <div style="background:rgba(15,23,42,0.95);border:1px solid rgba(255,255,255,0.12);border-radius:8px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.4);">
+        <div style="font-size:9px;color:#64748b;padding:8px 12px 4px;text-transform:uppercase;letter-spacing:0.05em;">DeepSeek</div>
+        <div style="padding:8px 12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background:rgba(59,130,246,0.12);">
+          <div>
+            <div style="color:#fff;font-weight:600;font-size:12px;">🧠 v4-pro</div>
+            <div style="font-size:9px;color:#94a3b8;">推理 · 200K 上下文</div>
+          </div>
+          <span style="color:#22c55e;font-size:10px;">✓ 当前</span>
+        </div>
+        <div style="padding:8px 12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <div>
+            <div style="color:#cbd5e1;font-size:12px;">⚡ v4-flash</div>
+            <div style="font-size:9px;color:#94a3b8;">快速 · 200K 上下文</div>
+          </div>
+        </div>
+        <div style="border-top:1px solid rgba(255,255,255,0.06);font-size:9px;color:#64748b;padding:8px 12px 4px;text-transform:uppercase;letter-spacing:0.05em;">Anthropic</div>
+        <div style="padding:8px 12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <div>
+            <div style="color:#cbd5e1;font-size:12px;">🔮 Opus 4.8</div>
+            <div style="font-size:9px;color:#94a3b8;">最强 · 200K 上下文</div>
+          </div>
+        </div>
+        <div style="padding:8px 12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <div>
+            <div style="color:#cbd5e1;font-size:12px;">💎 Sonnet 4.6</div>
+            <div style="font-size:9px;color:#94a3b8;">平衡 · 200K 上下文</div>
+          </div>
+        </div>
+        <div style="border-top:1px solid rgba(255,255,255,0.06);padding:6px 12px;font-size:10px;color:#64748b;cursor:pointer;">+ 添加模型提供商...</div>
+      </div>
+    </div>
+
+    <!-- ── 快切按钮 ── -->
+    <div style="padding:0 14px 8px;display:flex;gap:6px;">
+      <div style="flex:1;padding:7px 4px;border-radius:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);text-align:center;cursor:pointer;">
+        <div style="font-size:10px;color:#94a3b8;">⚡ Flash</div>
+        <div style="font-size:8px;color:#64748b;">快任务</div>
+      </div>
+      <div style="flex:1;padding:7px 4px;border-radius:6px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.25);text-align:center;cursor:pointer;">
+        <div style="font-size:10px;color:#60a5fa;">🧠 Pro</div>
+        <div style="font-size:8px;color:#94a3b8;">推理</div>
+      </div>
+      <div style="flex:1;padding:7px 4px;border-radius:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);text-align:center;cursor:pointer;">
+        <div style="font-size:10px;color:#94a3b8;">🔮 Opus</div>
+        <div style="font-size:8px;color:#64748b;">最强</div>
+      </div>
+    </div>
+
+    <!-- ── 余额卡片 ── -->
+    <div style="padding:0 14px 12px;">
+      <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <span style="font-size:9px;font-weight:600;color:#94a3b8;">💰 DeepSeek 余额</span>
+          <span style="font-size:8px;color:#64748b;">🔄 同步自 cc</span>
+        </div>
+        <div style="font-size:20px;font-weight:700;color:#22c55e;">$18.42</div>
+        <div style="margin-top:6px;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;">
+          <div style="height:100%;width:38.6%;background:#22c55e;border-radius:2px;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:#64748b;margin-top:4px;">
+          <span>本月已用 $11.58</span><span>总额 $30.00</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <h3>🔄 与 cc switch 的数据同步机制</h3>
+  <div style="padding:14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;margin-top:12px;">
+    <table style="width:100%;font-size:11px;color:#cbd5e1;border-collapse:collapse;">
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+        <th style="text-align:left;padding:10px 12px;color:#94a3b8;font-size:10px;width:140px;">数据项</th>
+        <th style="text-align:left;padding:10px 12px;color:#94a3b8;font-size:10px;">来源</th>
+        <th style="text-align:left;padding:10px 12px;color:#94a3b8;font-size:10px;">同步方向</th>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+        <td style="padding:10px 12px;font-weight:600;">当前模型</td>
+        <td style="padding:10px 12px;font-size:11px;color:#94a3b8;">读取 <code style="color:#60a5fa;background:rgba(59,130,246,0.1);padding:1px 4px;border-radius:2px;">~/.claude/settings.json</code> → model 字段</td>
+        <td style="padding:10px 12px;font-size:10px;color:#22c55e;">双向：App 切换 ⇄ cc switch</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+        <td style="padding:10px 12px;font-weight:600;">可用模型列表</td>
+        <td style="padding:10px 12px;font-size:11px;color:#94a3b8;">读取 <code style="color:#60a5fa;background:rgba(59,130,246,0.1);padding:1px 4px;border-radius:2px;">~/.claude/models.json</code> 或 settings 中 providers 配置</td>
+        <td style="padding:10px 12px;font-size:10px;color:#94a3b8;">单向：cc → App</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+        <td style="padding:10px 12px;font-weight:600;">API 余额</td>
+        <td style="padding:10px 12px;font-size:11px;color:#94a3b8;">DeepSeek API / 读取 provider usage 端点</td>
+        <td style="padding:10px 12px;font-size:10px;color:#94a3b8;">单向：API → App（每小时）</td>
+      </tr>
+      <tr>
+        <td style="padding:10px 12px;font-weight:600;">Token 用量</td>
+        <td style="padding:10px 12px;font-size:11px;color:#94a3b8;">Claude Code session 实时统计</td>
+        <td style="padding:10px 12px;font-size:10px;color:#94a3b8;">单向：cc session → App</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<div class="section">
+  <h3>🧭 首次初始化引导流程</h3>
+  <div class="mockup" style="margin-top:12px;">
+    <div class="mockup-header">当检测到未配置任何模型时的引导卡片（替代模型选择器）</div>
+    <div class="mockup-body" style="background:#1a1a2e;padding:20px;">
+
+      <div style="text-align:center;padding:20px;">
+        <div style="font-size:40px;margin-bottom:12px;">🧠</div>
+        <h3 style="color:#fff;font-size:14px;margin:0 0 6px;">尚未配置模型</h3>
+        <p style="color:#94a3b8;font-size:11px;margin:0 0 20px;line-height:1.6;">
+          检测到你尚未通过 Claude Code 配置过模型提供商。<br>
+          运行以下命令快速开始，或在 App 中手动配置：
+        </p>
+
+        <!-- Terminal-style command -->
+        <div style="background:#0f172a;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:12px 16px;text-align:left;margin-bottom:16px;">
+          <div style="font-size:10px;color:#64748b;margin-bottom:4px;">终端</div>
+          <code style="color:#22c55e;font-size:12px;">$ cc switch</code>
+          <div style="font-size:10px;color:#94a3b8;margin-top:6px;line-height:1.6;">
+            → 选择模型提供商（DeepSeek / Anthropic / OpenAI 兼容）<br>
+            → 输入 API Key（存入 macOS Keychain 🔐）<br>
+            → 重启 App 后自动识别
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px;justify-content:center;">
+          <button class="mock-button" style="font-size:11px;padding:8px 18px;">📋 复制命令</button>
+          <button class="mock-button" style="font-size:11px;padding:8px 18px;">⚙️ 手动配置</button>
+        </div>
+
+        <div style="font-size:9px;color:#64748b;margin-top:12px;">
+          App 不存储密钥 · 配置由 Claude Code 统一管理
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>📊 数据流全景</h3>
+  <div style="padding:14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;margin-top:12px;font-size:11px;">
+    <pre style="color:#cbd5e1;line-height:1.8;margin:0;font-family:'SF Mono',monospace;font-size:10px;">
+┌─────────────────────────────────────────────────┐
+│              数据流向                              │
+│                                                    │
+│  ~/.claude/settings.json ──→ App 读取当前模型       │
+│  ~/.claude/models.json   ──→ App 读取可用模型列表    │
+│  cc switch                ←→ App 双向同步模型选择   │
+│  platform.deepseek.com   ──→ App 定时拉取余额       │
+│  Claude Code session     ──→ App 实时 Token 统计    │
+│                                                    │
+│  🔐 密钥全部由 cc 管理，App 不接触                  │
+└─────────────────────────────────────────────────┘
+    </pre>
+  </div>
+</div>

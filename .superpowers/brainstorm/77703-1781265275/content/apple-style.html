@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code Studio — Apple Design</title>
+<style>
+  :root {
+    --sidebar-bg: rgba(246, 246, 248, 0.75);
+    --content-bg: #ffffff;
+    --panel-bg: rgba(246, 246, 248, 0.7);
+    --divider: rgba(0,0,0,0.08);
+    --text-primary: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --text-tertiary: #aeaeb2;
+    --accent: #0071e3;
+    --accent-light: rgba(0,113,227,0.08);
+    --green: #34c759;
+    --orange: #ff9500;
+    --red: #ff3b30;
+    --blue: #007aff;
+    --purple: #af52de;
+    --bg-hover: rgba(0,0,0,0.04);
+    --bg-selected: rgba(0,113,227,0.1);
+    --card-bg: rgba(255,255,255,0.8);
+    --card-border: rgba(0,0,0,0.06);
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, 'SF Pro Display', 'SF Pro Text', BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background: #f0f0f2;
+    color: var(--text-primary);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* ── Window ── */
+  .window {
+    margin: 20px auto;
+    width: 1300px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.15), 0 0 1px rgba(0,0,0,0.1);
+    background: #f5f5f7;
+  }
+
+  /* ── Titlebar ── */
+  .titlebar {
+    height: 52px;
+    background: rgba(245,245,247,0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--divider);
+    gap: 12px;
+  }
+  .traffic-lights {
+    display: flex;
+    gap: 8px;
+    margin-right: 8px;
+  }
+  .traffic {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+  .traffic.close { background: #ff5f57; }
+  .traffic.minimize { background: #febc2e; }
+  .traffic.zoom { background: #28c840; }
+  .titlebar-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    flex: 1;
+    text-align: center;
+  }
+  .titlebar-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .tb-btn {
+    padding: 4px 12px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .tb-btn:hover { background: rgba(0,0,0,0.05); }
+
+  /* ── Main Layout ── */
+  .body {
+    display: flex;
+    height: 680px;
+  }
+
+  /* ── Sidebar (Left) ── */
+  .sidebar {
+    width: 260px;
+    background: rgba(246,246,248,0.8);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-right: 1px solid var(--divider);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  /* ── Sidebar Section ── */
+  .sidebar-section {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--divider);
+  }
+  .sidebar-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 16px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: none;
+    letter-spacing: -0.01em;
+  }
+  .sidebar-section-header .action {
+    font-size: 14px;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    font-weight: 400;
+    line-height: 1;
+    padding: 2px 4px;
+    border-radius: 4px;
+  }
+  .sidebar-section-header .action:hover { background: rgba(0,0,0,0.05); color: var(--text-secondary); }
+
+  /* ── Sidebar Items ── */
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 16px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-primary);
+    font-weight: 400;
+    border-radius: 0;
+    margin: 0;
+    min-height: 28px;
+  }
+  .sidebar-item:hover { background: var(--bg-hover); }
+  .sidebar-item.selected { background: var(--accent-light); color: var(--accent); font-weight: 500; }
+  .sidebar-item .sf-symbol {
+    width: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+  }
+  .sidebar-item.selected .sf-symbol { color: var(--accent); }
+  .sidebar-item .badge {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-weight: 400;
+  }
+  .sidebar-item .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+  .sidebar-item .chevron {
+    font-size: 9px;
+    color: var(--text-tertiary);
+    width: 14px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  /* indented child */
+  .sidebar-item.child { padding-left: 40px; font-size: 12px; }
+  .sidebar-item.grandchild { padding-left: 56px; font-size: 12px; color: var(--text-secondary); }
+  .sidebar-item.grandchild.selected { color: var(--accent); }
+
+  /* ── Model Selector ── */
+  .model-picker {
+    margin: 8px 12px;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.6);
+    border: 1px solid var(--divider);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+  }
+  .model-picker:hover { border-color: rgba(0,0,0,0.15); }
+  .model-picker .model-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .model-picker .model-info { flex: 1; min-width: 0; }
+  .model-picker .model-name { font-weight: 600; font-size: 13px; }
+  .model-picker .model-sub { font-size: 10px; color: var(--text-tertiary); }
+  .model-picker .model-chevron { color: var(--text-tertiary); font-size: 10px; }
+
+  /* quick switch */
+  .quick-switch {
+    display: flex;
+    gap: 6px;
+    padding: 0 12px 8px;
+  }
+  .quick-chip {
+    flex: 1;
+    padding: 6px 4px;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 10px;
+    cursor: pointer;
+    background: rgba(255,255,255,0.5);
+    border: 1px solid var(--divider);
+    color: var(--text-secondary);
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .quick-chip:hover { background: rgba(255,255,255,0.8); }
+  .quick-chip.active {
+    background: var(--accent-light);
+    border-color: transparent;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .quick-chip .chip-name { font-size: 11px; font-weight: 500; }
+  .quick-chip .chip-sub { font-size: 9px; color: var(--text-tertiary); }
+  .quick-chip.active .chip-sub { color: var(--accent); opacity: 0.7; }
+
+  /* balance card */
+  .balance-card {
+    margin: 0 12px 8px;
+    padding: 10px;
+    background: rgba(255,255,255,0.6);
+    border: 1px solid var(--divider);
+    border-radius: var(--radius-md);
+    font-size: 11px;
+  }
+  .balance-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+  .balance-label { color: var(--text-tertiary); font-size: 10px; }
+  .balance-amount { font-size: 22px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.02em; }
+  .balance-bar {
+    height: 4px;
+    background: rgba(0,0,0,0.06);
+    border-radius: 2px;
+    margin: 6px 0;
+    overflow: hidden;
+  }
+  .balance-bar-inner {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--accent), #5ac8fa);
+  }
+  .balance-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: var(--text-tertiary);
+  }
+
+  /* ── Content Area ── */
+  .content {
+    flex: 1;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  /* ── Tab Bar (Segmented Control style) ── */
+  .tabbar {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px 0;
+    gap: 0;
+    border-bottom: 1px solid var(--divider);
+  }
+  .tab {
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.15s;
+    letter-spacing: -0.01em;
+  }
+  .tab:hover { color: var(--text-primary); }
+  .tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* ── Chat Messages ── */
+  .chat-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+  }
+  .msg {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+  }
+  .msg.user { justify-content: flex-end; }
+  .msg-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+  .msg-avatar.claude { background: #f5f0e6; }
+  .msg-avatar.user { background: var(--accent-light); order: 2; }
+  .msg-body { max-width: 70%; }
+  .msg-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+    font-size: 11px;
+  }
+  .msg-author { font-weight: 600; color: var(--text-primary); }
+  .msg-time { color: var(--text-tertiary); font-size: 10px; }
+  .msg-content {
+    background: #f5f5f7;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+  .msg.user .msg-content {
+    background: var(--accent);
+    color: #fff;
+  }
+  .msg.user .msg-header { justify-content: flex-end; }
+  .msg.user .msg-author { color: var(--accent); }
+  .msg-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+    padding-left: 4px;
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+  .msg-actions span { cursor: pointer; }
+
+  /* artifact card in chat */
+  .artifact-card {
+    margin-top: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: white;
+    border: 1px solid var(--divider);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.15s;
+  }
+  .artifact-card:hover { box-shadow: var(--shadow-md); border-color: var(--accent); }
+  .msg.user .artifact-card { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.2); color: white; }
+
+  /* progress steps */
+  .progress-steps {
+    margin-top: 8px;
+    font-size: 12px;
+  }
+  .progress-step {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 0;
+    color: var(--text-secondary);
+  }
+  .progress-step.done { color: var(--green); }
+  .progress-step.active { color: var(--accent); font-weight: 500; }
+
+  /* ── Chat Input ── */
+  .input-area {
+    padding: 12px 20px;
+    border-top: 1px solid var(--divider);
+    background: rgba(255,255,255,0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .input-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    background: #f5f5f7;
+    border: 1px solid var(--divider);
+    border-radius: 12px;
+    padding: 8px 12px;
+    transition: all 0.15s;
+  }
+  .input-row:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,113,227,0.1);
+    background: white;
+  }
+  .input-row textarea {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    color: var(--text-primary);
+    outline: none;
+    resize: none;
+    font-family: inherit;
+    line-height: 1.5;
+    min-height: 24px;
+    max-height: 100px;
+  }
+  .input-row textarea::placeholder { color: var(--text-tertiary); }
+  .input-send {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .input-send:hover { background: #0077ed; transform: scale(1.05); }
+  .input-hint {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 10px;
+    color: var(--text-tertiary);
+  }
+
+  /* ── Right Panel ── */
+  .right-panel {
+    width: 280px;
+    background: rgba(246,246,248,0.7);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-left: 1px solid var(--divider);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .panel-section {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--divider);
+  }
+  .panel-section-header {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+  }
+
+  /* deploy targets */
+  .target-chips {
+    display: flex;
+    gap: 6px;
+  }
+  .target-chip {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--divider);
+    font-size: 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.5);
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .target-chip.checked {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--accent);
+  }
+  .target-chip .check {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--divider);
+    font-size: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .target-chip.checked .check {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: white;
+  }
+
+  /* file card */
+  .file-card {
+    padding: 10px;
+    background: rgba(255,255,255,0.6);
+    border: 1px solid var(--divider);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+  }
+  .file-card .file-icon { font-size: 18px; }
+
+  /* deploy button */
+  .btn-primary {
+    width: 100%;
+    padding: 10px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .btn-primary:hover { background: #0077ed; }
+  .btn-secondary {
+    width: 100%;
+    padding: 7px;
+    background: rgba(255,255,255,0.5);
+    border: 1px solid var(--divider);
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: inherit;
+    color: var(--text-secondary);
+    text-align: left;
+    margin-top: 4px;
+    transition: all 0.15s;
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.8); }
+
+  /* deploy history */
+  .deploy-item {
+    padding: 6px 0;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+  }
+  .deploy-item .d-status { font-size: 10px; }
+  .deploy-item .d-file { flex: 1; color: var(--text-primary); }
+  .deploy-item .d-time { color: var(--text-tertiary); font-size: 10px; }
+
+  /* Status bar */
+  .statusbar {
+    height: 32px;
+    background: rgba(245,245,247,0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--divider);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    font-size: 10px;
+    color: var(--text-tertiary);
+  }
+  .statusbar span { display: flex; align-items: center; gap: 4px; }
+  .status-dot-sm {
+    width: 5px; height: 5px; border-radius: 50%; display: inline-block;
+  }
+
+  /* Context menu style */
+  .context-menu {
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--divider);
+    border-radius: 8px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    padding: 4px;
+    font-size: 12px;
+    width: 180px;
+  }
+  .context-menu-item {
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .context-menu-item:hover { background: var(--accent); color: white; }
+  .context-menu-item.danger { color: var(--red); }
+  .context-menu-item.danger:hover { background: var(--red); color: white; }
+  .context-separator { height: 1px; background: var(--divider); margin: 3px 0; }
+
+  /* scrollbar styling */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }
+</style>
+</head>
+<body>
+
+<div class="window">
+  <!-- ── Titlebar ── -->
+  <div class="titlebar">
+    <div class="traffic-lights">
+      <div class="traffic close"></div>
+      <div class="traffic minimize"></div>
+      <div class="traffic zoom"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <rect width="24" height="24" rx="6" fill="#D97706"/>
+        <path d="M6 16V8l3 4 3-4v8M14 8v8l3-4 3 4V8" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="titlebar-title">Claude Code Studio</div>
+    <div class="titlebar-actions">
+      <button class="tb-btn" style="display:flex;align-items:center;gap:4px;">
+        <span style="width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block;"></span>
+        已连接
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Main Body ── -->
+  <div class="body">
+
+    <!-- ═══════════ LEFT SIDEBAR ═══════════ -->
+    <div class="sidebar">
+
+      <!-- Model Engine -->
+      <div class="sidebar-section">
+        <div class="sidebar-section-header">
+          模型引擎
+          <span class="action">⚙</span>
+        </div>
+
+        <!-- Model picker -->
+        <div class="model-picker">
+          <div class="model-icon">🧠</div>
+          <div class="model-info">
+            <div class="model-name">DeepSeek v4-pro</div>
+            <div class="model-sub">主力推理模型</div>
+          </div>
+          <span class="model-chevron">▾</span>
+        </div>
+
+        <!-- Quick switch -->
+        <div class="quick-switch">
+          <div class="quick-chip">
+            <div class="chip-name">⚡ Flash</div>
+            <div class="chip-sub">快速</div>
+          </div>
+          <div class="quick-chip active">
+            <div class="chip-name">🧠 Pro</div>
+            <div class="chip-sub">推理</div>
+          </div>
+          <div class="quick-chip">
+            <div class="chip-name">🔮 Opus</div>
+            <div class="chip-sub">最强</div>
+          </div>
+        </div>
+
+        <!-- Balance -->
+        <div class="balance-card">
+          <div class="balance-header">
+            <span class="balance-label">DeepSeek 余额</span>
+            <span style="font-size:9px;color:var(--text-tertiary);">🔄 每小时刷新</span>
+          </div>
+          <div class="balance-amount">$18.42</div>
+          <div class="balance-bar">
+            <div class="balance-bar-inner" style="width:38.6%;"></div>
+          </div>
+          <div class="balance-stats">
+            <span>本月已用 $11.58</span>
+            <span>总额 $30.00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Management -->
+      <div class="sidebar-section" style="flex:1;">
+        <div class="sidebar-section-header">
+          项目
+          <span style="display:flex;gap:4px;">
+            <span class="action">+📂</span>
+            <span class="action">+📁</span>
+          </span>
+        </div>
+
+        <!-- Category: 数据分析 -->
+        <div class="sidebar-item">
+          <span class="chevron">▼</span>
+          <span class="sf-symbol">📂</span>
+          <span>数据分析</span>
+          <span class="badge">3</span>
+        </div>
+        <div class="sidebar-item child selected">
+          <span class="chevron">▼</span>
+          <span class="sf-symbol">🏆</span>
+          <span>2026世界杯</span>
+          <span class="status-dot" style="background:var(--green);"></span>
+        </div>
+        <div class="sidebar-item grandchild selected">
+          <span class="sf-symbol">💬</span>
+          <span>小组赛预测模型优化</span>
+          <span class="badge">24</span>
+        </div>
+        <div class="sidebar-item grandchild">
+          <span class="sf-symbol">💬</span>
+          <span>淘汰赛对阵分析</span>
+          <span class="badge">31</span>
+        </div>
+        <div class="sidebar-item grandchild">
+          <span class="sf-symbol">💬</span>
+          <span>数据源调研</span>
+          <span class="badge">18</span>
+        </div>
+        <div class="sidebar-item grandchild" style="color:var(--text-tertiary);">
+          <span class="sf-symbol">+</span>
+          <span>新建会话</span>
+        </div>
+
+        <div class="sidebar-item child">
+          <span class="chevron">▶</span>
+          <span class="sf-symbol">📊</span>
+          <span>解题一致性评测</span>
+          <span class="status-dot" style="background:var(--orange);"></span>
+        </div>
+        <div class="sidebar-item child">
+          <span class="chevron">▶</span>
+          <span class="sf-symbol">⚔️</span>
+          <span>锐评话题PK清单</span>
+        </div>
+
+        <!-- Category: 产品开发 -->
+        <div class="sidebar-item">
+          <span class="chevron">▼</span>
+          <span class="sf-symbol">📂</span>
+          <span>产品开发</span>
+          <span class="badge">2</span>
+        </div>
+        <div class="sidebar-item child">
+          <span class="chevron">▶</span>
+          <span class="sf-symbol">🔧</span>
+          <span>Claude Code Studio</span>
+          <span class="status-dot" style="background:var(--blue);"></span>
+        </div>
+        <div class="sidebar-item child">
+          <span class="chevron">▶</span>
+          <span class="sf-symbol">🎨</span>
+          <span>封面工具</span>
+        </div>
+
+        <!-- Category: 未分类 -->
+        <div class="sidebar-item">
+          <span class="chevron">▶</span>
+          <span class="sf-symbol">📂</span>
+          <span>未分类</span>
+          <span class="badge">1</span>
+        </div>
+      </div>
+
+      <!-- User -->
+      <div style="padding:8px 16px;border-top:1px solid var(--divider);display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-secondary);">
+        <div style="width:24px;height:24px;border-radius:50%;background:var(--bg-hover);display:flex;align-items:center;justify-content:center;font-size:12px;">👤</div>
+        <span>paultunggm-pixel</span>
+      </div>
+    </div>
+
+    <!-- ═══════════ CENTER CONTENT ═══════════ -->
+    <div class="content">
+      <!-- Tabs -->
+      <div class="tabbar">
+        <div class="tab active">💬 对话</div>
+        <div class="tab">📋 方案</div>
+        <div class="tab">🎨 预览</div>
+        <div class="tab">📝 代码</div>
+        <div class="tab">🚀 部署</div>
+      </div>
+
+      <!-- Chat Messages -->
+      <div class="chat-area">
+        <!-- System -->
+        <div style="text-align:center;margin-bottom:20px;">
+          <span style="font-size:10px;color:var(--text-tertiary);background:rgba(0,0,0,0.02);padding:3px 12px;border-radius:10px;">今天 10:32 · DeepSeek v4-pro</span>
+        </div>
+
+        <!-- Claude msg -->
+        <div class="msg">
+          <div class="msg-avatar claude">🧠</div>
+          <div class="msg-body">
+            <div class="msg-header">
+              <span class="msg-author">Claude</span>
+              <span class="msg-time">10:32</span>
+            </div>
+            <div class="msg-content">
+              小组赛预测模型已根据最新赔率数据更新。<br><br>
+              📊 <strong>E组出线概率变化：</strong>巴西 87% → 91%，塞尔维亚 45% → 52%<br>
+              📊 <strong>H组出线概率变化：</strong>葡萄牙 78% → 82%，加纳 38% → 41%
+              <div class="artifact-card">
+                <span>📊</span> evaluation_report.html
+                <span style="font-size:10px;color:var(--text-tertiary);">点击预览 →</span>
+              </div>
+            </div>
+            <div class="msg-actions">
+              <span>👍</span><span>👎</span><span>📋 复制</span><span>🔄 重新生成</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- User msg -->
+        <div class="msg user">
+          <div class="msg-avatar user">👤</div>
+          <div class="msg-body">
+            <div class="msg-header">
+              <span class="msg-time">10:35</span>
+              <span class="msg-author">你</span>
+            </div>
+            <div class="msg-content">
+              把报告部署到 OSS 上，同时更新 GitHub Pages
+            </div>
+          </div>
+        </div>
+
+        <!-- Claude msg with progress -->
+        <div class="msg">
+          <div class="msg-avatar claude">🧠</div>
+          <div class="msg-body">
+            <div class="msg-header">
+              <span class="msg-author">Claude</span>
+              <span class="msg-time">10:36</span>
+            </div>
+            <div class="msg-content">
+              正在部署...
+              <div class="progress-steps">
+                <div class="progress-step done">✓ 上传 OSS · consistency-eval bucket <span style="color:var(--text-tertiary);margin-left:auto;">1.2s</span></div>
+                <div class="progress-step active">◌ GitHub Pages 构建中...</div>
+                <div class="progress-step" style="color:var(--text-tertiary);">○ 刷新 CDN 缓存</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input -->
+      <div class="input-area">
+        <div class="input-row">
+          <textarea rows="1" placeholder="输入消息... (⌘↵ 发送)"></textarea>
+          <button class="input-send">↑</button>
+        </div>
+        <div class="input-hint">
+          <span>💡 可拖入文件作为上下文</span>
+          <span>上下文: 12K tokens</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ RIGHT PANEL ═══════════ -->
+    <div class="right-panel">
+      <!-- Deploy targets -->
+      <div class="panel-section">
+        <div class="panel-section-header">部署目标</div>
+        <div class="target-chips">
+          <div class="target-chip checked">
+            <span class="check">✓</span> ☁️ OSS
+          </div>
+          <div class="target-chip checked">
+            <span class="check">✓</span> 🌐 Pages
+          </div>
+        </div>
+      </div>
+
+      <!-- File -->
+      <div class="panel-section">
+        <div class="panel-section-header">待部署文件</div>
+        <div class="file-card">
+          <span class="file-icon">📊</span>
+          <span style="flex:1;">evaluation_report.html</span>
+          <span style="font-size:10px;color:var(--text-tertiary);">46KB</span>
+        </div>
+      </div>
+
+      <!-- Deploy button -->
+      <div class="panel-section">
+        <button class="btn-primary">🚀 一键部署</button>
+        <button class="btn-secondary">👁 预览当前文件</button>
+        <button class="btn-secondary">🔄 仅刷新 CDN 缓存</button>
+      </div>
+
+      <!-- History -->
+      <div class="panel-section">
+        <div class="panel-section-header">最近部署</div>
+        <div class="deploy-item">
+          <span class="d-status" style="color:var(--green);">✓</span>
+          <span class="d-file">evaluation_report.html</span>
+          <span class="d-time">2h前</span>
+        </div>
+        <div class="deploy-item">
+          <span class="d-status" style="color:var(--green);">✓</span>
+          <span class="d-file">polymarket_report.html</span>
+          <span class="d-time">昨天</span>
+        </div>
+        <div class="deploy-item">
+          <span class="d-status" style="color:var(--red);">✗</span>
+          <span class="d-file">polymarket_report.html</span>
+          <span class="d-time">6/10</span>
+        </div>
+      </div>
+
+      <!-- Quick links -->
+      <div class="panel-section">
+        <div class="panel-section-header">快捷链接</div>
+        <button class="btn-secondary">📋 复制 OSS 链接</button>
+        <button class="btn-secondary">📋 复制 Pages 链接</button>
+        <button class="btn-secondary">📋 查看部署日志</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Status Bar ── -->
+  <div class="statusbar">
+    <span>
+      <span class="status-dot-sm" style="background:var(--green);"></span> OSS
+      <span class="status-dot-sm" style="background:var(--green);"></span> Pages
+    </span>
+    <span>workspace/2026世界杯 · 会话 12分钟 · Tokens 1.2K/200K</span>
+  </div>
+</div>
+
+</body>
+</html>

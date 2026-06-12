@@ -10,6 +10,7 @@ import json
 import re
 import os
 import html as html_module
+import datetime
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 INPUT_FILE = os.path.join(SCRIPT_DIR, 'raw_data.json')
@@ -1249,6 +1250,9 @@ html_content = '''<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>多模型解题答案一致性评测报告</title>
 <script src="https://cdn.bootcdn.net/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>if(typeof Chart==='undefined'){document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"><\\/script>')}</script>
@@ -1425,7 +1429,7 @@ tr:hover { background:rgba(99,102,241,0.03); }
 <div class="main">
 <div class="header">
 <h1>千问与竞对模型解题【答案一致性】评测 <span id="header-date" style="font-size:14px;font-weight:normal;color:#6b7280;"></span></h1>
-<p class="subtitle">以千问为基准，与其他模型进行答案一致性对比分析</p>
+<p class="subtitle">以千问为基准，与其他模型进行答案一致性对比分析 · 构建时间: BUILDTIME_PLACEHOLDER · 数据日期: <span id="header-date"></span></p>
 <div class="download-group">
 <a href="javascript:void(0)" class="download-btn" style="color:#ffffff;background:#7c3aed;border-color:#7c3aed;" onclick="document.getElementById('method-modal-overlay').style.display='flex'">评测方法说明</a>
 </div>
@@ -1515,6 +1519,29 @@ tr:hover { background:rgba(99,102,241,0.03); }
 // === 数据注入 ===
 const historyData = HISTORY_DATA_PLACEHOLDER;
 const pairNames = PAIR_NAMES_PLACEHOLDER;
+
+// === 版本检测（每次会话最多刷新一次） ===
+const BUILD_TIME = 'BUILDTIME_PLACEHOLDER';
+(function(){
+    if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return;
+    if (sessionStorage.getItem('_ver_checked')) return;
+    sessionStorage.setItem('_ver_checked', '1');
+    var vurl = 'https://paultunggm-pixel.github.io/consistency-eval/version.json?t=' + Date.now();
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', vurl, true);
+    xhr.timeout = 5000;
+    xhr.onload = function(){
+        if (xhr.status === 200) {
+            try {
+                var remote = JSON.parse(xhr.responseText);
+                if (remote.build_time && remote.build_time > BUILD_TIME) {
+                    location.reload(true);
+                }
+            } catch(e) {}
+        }
+    };
+    xhr.send();
+})();
 
 // === 初始化 ===
 let currentDateIdx = historyData.length - 1;
@@ -2216,6 +2243,7 @@ if (initErrors.length > 0) {
 history_json = json.dumps(history, ensure_ascii=False).replace('</script>', '<\\/script>')
 html_content = html_content.replace('HISTORY_DATA_PLACEHOLDER', history_json)
 html_content = html_content.replace('PAIR_NAMES_PLACEHOLDER', json.dumps([p[1] for p in COMPARISON_PAIRS], ensure_ascii=False))
+html_content = html_content.replace('BUILDTIME_PLACEHOLDER', datetime.datetime.now().strftime('%Y-%m-%d %H:%M'))
 
 # 内联KaTeX JS（避免CDN加载失败）
 katex_js_path = '/tmp/katex.min.js'
