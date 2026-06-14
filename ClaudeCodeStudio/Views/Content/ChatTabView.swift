@@ -41,6 +41,7 @@ struct ChatTabView: View {
                     }
                 }
             }
+            .frame(maxHeight: .infinity)
 
             // Quick actions
             QuickActionButtons().padding(.horizontal, 24).padding(.top, 8)
