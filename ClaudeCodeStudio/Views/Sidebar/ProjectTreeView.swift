@@ -149,30 +149,34 @@ struct ProjectRow: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Button(action: {
-                isExpanded.toggle()
-                appState.selectedProjectId = project.id.uuidString
-                NotificationCenter.default.post(name: .switchToProject, object: project.id)
-            }) {
-                HStack(spacing: 4) {
-                    if !projectManager.store.conversations(in: project).isEmpty {
-                        Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
-                            .font(.system(size: 8, weight: .medium))
-                            .foregroundColor(AppTheme.textTertiary)
-                    } else {
-                        Spacer().frame(width: 10)
+            HStack(spacing: 0) {
+                // Expand/collapse chevron
+                Button(action: { isExpanded.toggle() }) {
+                    Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
+                        .font(.system(size: 8, weight: .medium))
+                        .foregroundColor(AppTheme.textTertiary)
+                        .frame(width: 14, height: 24)
+                        .contentShape(Rectangle())
+                }.buttonStyle(.plain)
+
+                // Project name (click to switch session)
+                Button(action: {
+                    appState.selectedProjectId = project.id.uuidString
+                    NotificationCenter.default.post(name: .switchToProject, object: project.id)
+                }) {
+                    HStack(spacing: 4) {
+                        Text(project.icon).font(.system(size: 12))
+                        Text(project.name)
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(appState.selectedProjectId == project.id.uuidString ? AppTheme.accent : .primary)
+                            .lineLimit(1)
+                        Spacer()
                     }
-                    Text(project.icon).font(.system(size: 12))
-                    Text(project.name)
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundColor(appState.selectedProjectId == project.id.uuidString ? AppTheme.accent : .primary)
-                        .lineLimit(1)
-                    Spacer()
-                }
-                .padding(.horizontal, 6).padding(.vertical, 5)
-                .contentShape(Rectangle())
+                    .contentShape(Rectangle())
+                }.buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
+            .padding(.horizontal, 6).padding(.vertical, 5)
+            .background(appState.selectedProjectId == project.id.uuidString ? AppTheme.accentBackground : Color.clear)
             .background(appState.selectedProjectId == project.id.uuidString ? AppTheme.accentBackground : Color.clear)
 
             if isExpanded {
