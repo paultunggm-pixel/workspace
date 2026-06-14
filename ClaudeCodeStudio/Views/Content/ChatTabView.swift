@@ -8,7 +8,6 @@ struct ChatTabView: View {
     @EnvironmentObject var chatManager: ChatManager
     @EnvironmentObject var providerManager: ProviderManager
     @State private var inputText = ""
-    @FocusState private var isInputFocused: Bool
 
     var body: some View {
         VStack(spacing: 0) {
@@ -43,9 +42,23 @@ struct ChatTabView: View {
                 .padding(.top, 8)
 
             // Input bar
-            ChatInputBar(inputText: $inputText, isFocused: $isInputFocused) {
-                sendMessage()
+            HStack(spacing: 8) {
+                TextField("输入消息...", text: $inputText)
+                    .textFieldStyle(.roundedBorder)
+                    .font(.system(size: 13))
+                    .onSubmit { sendMessage() }
+                Button("发送") { sendMessage() }
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 12).padding(.vertical, 5)
+                    .background(RoundedRectangle(cornerRadius: 5)
+                        .fill(inputText.trimmingCharacters(in: .whitespaces).isEmpty ? Color.gray : AppTheme.accent))
+                    .buttonStyle(.plain)
+                    .disabled(inputText.trimmingCharacters(in: .whitespaces).isEmpty)
             }
+            .padding(.horizontal, 12).padding(.vertical, 8)
+            .background(RoundedRectangle(cornerRadius: 8).stroke(AppTheme.dividerGray, lineWidth: 1))
+            .padding(.horizontal, 24).padding(.vertical, 12)
         }
     }
 
@@ -343,44 +356,6 @@ struct QuickActionButtons: View {
     }
 }
 
-// MARK: - Chat Input Bar
-
-struct ChatInputBar: View {
-    @Binding var inputText: String
-    @FocusState.Binding var isFocused: Bool
-    var onSend: () -> Void
-
-    var body: some View {
-        HStack(spacing: 8) {
-            TextField("输入消息...", text: $inputText)
-                .textFieldStyle(.plain)
-                .font(.system(size: 13))
-                .focused($isFocused)
-                .onSubmit { onSend() }
-
-            Button("发送", action: onSend)
-                .font(.system(size: 11, weight: .medium))
-                .foregroundColor(.white)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 5)
-                .background(
-                    RoundedRectangle(cornerRadius: 5)
-                        .fill(inputText.trimmingCharacters(in: .whitespaces).isEmpty
-                            ? Color.gray : AppTheme.accent)
-                )
-                .buttonStyle(.plain)
-                .disabled(inputText.trimmingCharacters(in: .whitespaces).isEmpty)
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background(
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(AppTheme.dividerGray, lineWidth: 1)
-        )
-        .padding(.horizontal, 24)
-        .padding(.vertical, 12)
-    }
-}
 
 // MARK: - Chat Message List (auto-scroll)
 
