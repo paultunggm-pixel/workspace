@@ -18,8 +18,9 @@ struct ChatTabView: View {
                     }
                 }.padding(.horizontal, 24).padding(.vertical, 16)
             }
+            QuickActionButtons().padding(.horizontal, 24).padding(.top, 4)
             HStack(spacing: 8) {
-                TextField("输入...", text: $inputText).font(.system(size: 13)).onSubmit { send() }
+                TextField("输入消息...", text: $inputText).font(.system(size: 13)).onSubmit { send() }
                 Button("发送") { send() }
                     .font(.system(size: 11, weight: .medium)).foregroundColor(.white)
                     .padding(.horizontal, 12).padding(.vertical, 5)
@@ -28,7 +29,17 @@ struct ChatTabView: View {
             }
             .padding(.horizontal, 12).padding(.vertical, 8)
             .background(Color.white.overlay(Rectangle().frame(height: 1).foregroundColor(AppTheme.dividerGray), alignment: .top))
-            .padding(.horizontal, 24)
+            .padding(.horizontal, 24).padding(.bottom, 8)
+        }
+        .onChange(of: appState.selectedProjectId) { newId in
+            guard let projectId = newId.flatMap(UUID.init) else { return }
+            let conversations = projectManager.store.conversations.filter { $0.projectId == projectId }
+            if conversations.isEmpty {
+                let conv = projectManager.addConversation(title: "新对话", projectId: projectId)
+                chatManager.openSession(conv.id)
+            } else {
+                chatManager.openSession(conversations[0].id)
+            }
         }
             if let session = chatManager.activeSession {
                 Text(session.title).font(.system(size: 11, weight: .medium)).foregroundColor(AppTheme.textPrimary)
