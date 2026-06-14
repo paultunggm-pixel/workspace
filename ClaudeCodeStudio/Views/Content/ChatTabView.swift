@@ -332,50 +332,34 @@ struct ChatInputBar: View {
     var onSend: () -> Void
 
     var body: some View {
-        HStack(spacing: 10) {
-            // Attach button
-            Button(action: {}) {
-                Image(systemName: "paperclip")
-                    .font(.system(size: 13))
-                    .foregroundColor(AppTheme.textTertiary)
-            }
-            .buttonStyle(.plain)
-
-            // Text input
-            TextField("输入消息... (Enter 发送)", text: $inputText)
-                .textFieldStyle(.roundedBorder)
-                .font(.system(size: 12))
+        HStack(spacing: 8) {
+            TextField("输入消息...", text: $inputText)
+                .textFieldStyle(.plain)
+                .font(.system(size: 13))
                 .focused($isFocused)
                 .onSubmit { onSend() }
-                .frame(minHeight: 32)
 
-            // Send button
-            Button(action: onSend) {
-                Image(systemName: "arrow.up.circle.fill")
-                    .font(.system(size: 22))
-                    .foregroundColor(
-                        inputText.trimmingCharacters(in: .whitespaces).isEmpty
-                            ? AppTheme.textTertiary
-                            : AppTheme.accent
-                    )
-            }
-            .buttonStyle(.plain)
-            .disabled(inputText.trimmingCharacters(in: .whitespaces).isEmpty)
-            .keyboardShortcut(.return, modifiers: [.command])
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 10)
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color.white)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(AppTheme.dividerGray, lineWidth: 1)
+            Button("发送", action: onSend)
+                .font(.system(size: 11, weight: .medium))
+                .foregroundColor(.white)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 5)
+                .background(
+                    RoundedRectangle(cornerRadius: 5)
+                        .fill(inputText.trimmingCharacters(in: .whitespaces).isEmpty
+                            ? Color.gray : AppTheme.accent)
                 )
+                .buttonStyle(.plain)
+                .disabled(inputText.trimmingCharacters(in: .whitespaces).isEmpty)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(AppTheme.dividerGray, lineWidth: 1)
         )
         .padding(.horizontal, 24)
         .padding(.vertical, 12)
-        .background(Color.white)
     }
 }
 
