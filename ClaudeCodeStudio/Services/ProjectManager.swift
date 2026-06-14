@@ -15,6 +15,7 @@ class ProjectManager: ObservableObject {
         configDir = appSupport
         projectsFile = appSupport.appendingPathComponent("projects.json")
         loadFromDisk()
+        cleanupStore()
         store.ensureUncategorized()
         if store.projects.isEmpty { seedSampleData() }
     }
@@ -26,6 +27,28 @@ class ProjectManager: ObservableObject {
         if let loaded = try? JSONDecoder().decode(ProjectStore.self, from: data) {
             store = loaded
         }
+    }
+
+    private func cleanupStore() {
+        // Remove duplicate Uncategorized categories (from old UUID() bug)
+        var seen = Set<UUID>()
+        store.categories.removeAll { cat in
+            if cat.name == "未分类" {
+                if seen.contains(cat.id) { return true }
+                seen.insert(cat.id)
+            }
+            return false
+        }
+        // Fix orphaned projects to Uncategorized
+        let validIds = Set(store.categories.map { $0.id })
+        for i in store.projects.indices {
+            if !validIds.contains(store.projects[i].categoryId) {
+                store.projects[i].categoryId = Category.uncategorized
+            }
+        }
+        // Remove conversations for deleted projects
+        let projectIds = Set(store.projects.map { $0.id })
+        store.conversations.removeAll { !projectIds.contains($0.projectId) }
     }
 
     private func seedSampleData() {
@@ -80,7 +103,7 @@ class ProjectManager: ObservableObject {
         if let idx = store.categories.firstIndex(where: { $0.id == categoryId }) {
             store.categories[idx].isExpanded.toggle()
             objectWillChange.send()
-            saveToDisk()
+        saveToDisk()
         }
     }
 
@@ -120,8 +143,6 @@ class ProjectManager: ObservableObject {
     func removeProject(_ project: Project) {
         // Remove all conversations in this project
         store.conversations.removeAll { $0.projectId == project.id }
-        // Notify ChatManager to clean up sessions
-        NotificationCenter.default.post(name: .projectWasRemoved, object: project.id)
         // Remove project
         store.projects.removeAll { $0.id == project.id }
         // Remove from category
@@ -137,7 +158,7 @@ class ProjectManager: ObservableObject {
             store.projects[idx].name = name
             store.projects[idx].updatedAt = Date()
             objectWillChange.send()
-            saveToDisk()
+        saveToDisk()
         }
     }
 
@@ -145,7 +166,7 @@ class ProjectManager: ObservableObject {
         if let idx = store.projects.firstIndex(where: { $0.id == projectId }) {
             store.projects[idx].icon = icon
             objectWillChange.send()
-            saveToDisk()
+        saveToDisk()
         }
     }
 
@@ -179,7 +200,7 @@ class ProjectManager: ObservableObject {
             store.conversations[idx].status = status
             store.conversations[idx].updatedAt = Date()
             objectWillChange.send()
-            saveToDisk()
+        saveToDisk()
         }
     }
 
