@@ -11,6 +11,7 @@ class ChatManager: ObservableObject {
 
     // Quick-actions target for the three shortcut buttons
     @Published var pendingAction: QuickActionType?
+    weak var providerManager: ProviderManager?
 
     init() {
         seedSampleData()
@@ -89,8 +90,64 @@ class ChatManager: ObservableObject {
         sessions[idx].messages.append(assistantMsg)
         sessions[idx].updatedAt = Date()
 
-        // Simulate streaming (real implementation will hook into provider API)
-        simulateStream(for: sessions[idx].id, messageId: assistantMsg.id)
+        // Try real API, fallback to simulated response
+        if let provider = providerManager?.activeProvider,
+           provider.connectionStatus == .connected,
+           let apiKey = try? providerManager?.readKey(for: provider.id.uuidString) {
+            callRealAPI(provider: provider, apiKey: apiKey, sessionId: sessions[idx].id, messageId: assistantMsg.id)
+        } else {
+            simulateStream(for: sessions[idx].id, messageId: assistantMsg.id)
+        }
+    }
+
+    private func callRealAPI(provider: ProviderConfig, apiKey: String, sessionId: UUID, messageId: UUID) {
+        isStreaming = true
+        streamingContent = ""
+
+        let messages = buildMessageHistory(for: sessionId)
+
+        APIService.sendMessage(
+            provider: provider,
+            apiKey: apiKey,
+            model: provider.defaultModel,
+            messages: messages,
+            onChunk: { [weak self] chunk in
+                DispatchQueue.main.async {
+                    self?.streamingContent += chunk
+                }
+            },
+            onComplete: { [weak self] result in
+                DispatchQueue.main.async {
+                    guard let self = self else { return }
+                    self.isStreaming = false
+                    switch result {
+                    case .success(let content):
+                        if let sIdx = self.sessions.firstIndex(where: { $0.id == sessionId }),
+                           let mIdx = self.sessions[sIdx].messages.firstIndex(where: { $0.id == messageId }) {
+                            self.sessions[sIdx].messages[mIdx].content = content
+                            self.sessions[sIdx].messages[mIdx].isStreaming = false
+                            self.sessions[sIdx].totalTokens += content.count / 4
+                            self.sessions[sIdx].updatedAt = Date()
+                        }
+                    case .failure:
+                        if let sIdx = self.sessions.firstIndex(where: { $0.id == sessionId }),
+                           let mIdx = self.sessions[sIdx].messages.firstIndex(where: { $0.id == messageId }) {
+                            self.sessions[sIdx].messages[mIdx].content = "API 调用失败，请检查网络连接和 API Key 配置。"
+                            self.sessions[sIdx].messages[mIdx].isStreaming = false
+                        }
+                    }
+                    self.streamingContent = ""
+                }
+            }
+        )
+    }
+
+    private func buildMessageHistory(for sessionId: UUID) -> [APIService.Message] {
+        guard let session = sessions.first(where: { $0.id == sessionId }) else { return [] }
+        return session.messages
+            .filter { $0.role != .system && !$0.isStreaming }
+            .prefix(20)
+            .map { APIService.Message(role: $0.role == .assistant ? "assistant" : "user", content: $0.content) }
     }
 
     private func simulateStream(for sessionId: UUID, messageId: UUID) {

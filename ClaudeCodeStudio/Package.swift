@@ -25,6 +25,7 @@ let package = Package(
                 "Services/ProviderManager.swift",
                 "Services/ProjectManager.swift",
                 "Services/ChatManager.swift",
+                "Services/APIService.swift",
                 "Theme/AppTheme.swift",
                 "Views/Sidebar/SidebarView.swift",
                 "Views/Sidebar/ModelSelector.swift",
