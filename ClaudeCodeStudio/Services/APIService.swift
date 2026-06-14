@@ -30,14 +30,14 @@ enum APIService {
     struct AnthropicRequest: Encodable {
         let model: String
         let messages: [AnthropicMessage]
-        let max_tokens: Int
+        let maxTokens: Int
         let stream: Bool
 
         init(model: String, messages: [AnthropicMessage], stream: Bool = true) {
             self.model = model
             self.messages = messages
             self.stream = stream
-            self.max_tokens = 4096
+            self.maxTokens = 4096
         }
     }
 
