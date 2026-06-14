@@ -11,7 +11,8 @@ private let sampleServices: [ServiceConfig] = [
 /// Service management tab — unified MCP & non-MCP service connections.
 /// Summary bar + expandable service list + add-service catalog.
 struct ServiceTabView: View {
-    @State private var services: [ServiceConfig] = sampleServices
+    @EnvironmentObject var providerManager: ProviderManager
+    @State private var services: [ServiceConfig] = []
     @State private var expandedServiceId: UUID? = nil
     @State private var showCatalog = false
 
@@ -46,6 +47,10 @@ struct ServiceTabView: View {
                                 if let idx = services.firstIndex(where: { $0.id == service.id }) {
                                     services[idx].status = .disconnected
                                 }
+                                // Also disconnect matching provider
+                                if let pid = providerManager.store.providers.first(where: { service.name.contains($0.label) || $0.label.contains(service.name) })?.id {
+                                    providerManager.updateConnectionStatus(providerId: pid, status: .disconnected)
+                                }
                             }
                         )
                     }
@@ -57,6 +62,27 @@ struct ServiceTabView: View {
         .sheet(isPresented: $showCatalog) {
             ServiceCatalogView(services: $services)
         }
+        .onAppear { syncFromProviders() }
+    }
+
+    private func syncFromProviders() {
+        var merged = sampleServices
+        for p in providerManager.store.providers {
+            let svc = ServiceConfig(
+                name: p.label,
+                category: .aiSearch,
+                description: p.type.rawValue + " · " + p.defaultModel,
+                status: p.connectionStatus == .connected ? .connected :
+                        p.connectionStatus == .error ? .error : .disconnected,
+                endpoint: p.endpoint,
+                dailyCalls: 0,
+                tools: p.models
+            )
+            if !merged.contains(where: { $0.name == svc.name }) {
+                merged.append(svc)
+            }
+        }
+        services = merged
     }
 
     private var summaryBar: some View {
