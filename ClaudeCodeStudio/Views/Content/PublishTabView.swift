@@ -347,6 +347,9 @@ struct PublishTabView: View {
                 t.invalidate()
                 isBuilding = false
                 config.lastBuildDate = Date()
+                let name = config.projectType == .web ? "app-v1.0.\(artifacts.count).html" :
+                           config.projectType == .mobile ? "app-v1.0.\(artifacts.count).ipa" : "app-v1.0.\(artifacts.count).dmg"
+                artifacts.append(DeployArtifact(fileName: name, fileSize: Int64.random(in: 10000...5000000), type: config.projectType))
             }
         }
     }
@@ -356,7 +359,7 @@ struct PublishTabView: View {
         let channels = Array(selectedChannels)
         let success = channels  // Simulate all success
         let record = DeployRecord(
-            artifactName: "app-v1.0.0",
+            artifactName: artifacts.last?.fileName ?? "app-v1.0.0",
             channels: channels,
             successChannels: success,
             failedChannels: []
