@@ -13,8 +13,29 @@ class ChatManager: ObservableObject {
     @Published var pendingAction: QuickActionType?
     weak var providerManager: ProviderManager?
 
+    private let sessionsFile: URL = {
+        FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent(".claude-code-studio/sessions.json")
+    }()
+
     init() {
-        seedSampleData()
+        loadFromDisk()
+        if sessions.isEmpty { seedSampleData() }
+    }
+
+    private func loadFromDisk() {
+        guard let data = try? Data(contentsOf: sessionsFile),
+              let loaded = try? JSONDecoder().decode([ChatSession].self, from: data) else { return }
+        sessions = loaded
+        activeSessionId = sessions.first?.id
+    }
+
+    func saveToDisk() {
+        let dir = sessionsFile.deletingLastPathComponent()
+        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        if let data = try? JSONEncoder().encode(sessions) {
+            try? data.write(to: sessionsFile, options: .atomic)
+        }
     }
 
     private func seedSampleData() {
@@ -53,6 +74,7 @@ class ChatManager: ObservableObject {
             activeSessionId = session.id
             objectWillChange.send()
         }
+        saveToDisk()
     }
 
     func closeSession(_ sessionId: UUID) {
@@ -99,6 +121,7 @@ class ChatManager: ObservableObject {
         } else {
             simulateStream(for: sessions[idx].id, messageId: assistantMsg.id)
         }
+        saveToDisk()
     }
 
     private func callRealAPI(provider: ProviderConfig, apiKey: String, sessionId: UUID, messageId: UUID) {
