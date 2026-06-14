@@ -5,22 +5,26 @@ import UniformTypeIdentifiers
 /// 展示当前项目的最新方案内容、导出、更新提示。
 struct PlanTabView: View {
     @EnvironmentObject var appState: AppState
-    @State private var planContent = """
-    # 项目方案
-
-    暂无方案内容。开始与 Claude 对话后，AI 将自动分析对话内容并更新此方案文档。
-
-    ## 如何使用
-
-    1. 在会话 Tab 中描述你的需求
-    2. Claude 会理解你的意图并生方案
-    3. 方案会随对话自动刷新
-
-    ## 方案内容结构
-
-    AI 会根据项目特点自行决定内容结构，非固定模板。
-    """
+    @EnvironmentObject var chatManager: ChatManager
     @State private var isExporting = false
+
+    private var planContent: String {
+        let msgs = chatManager.activeSession?.messages.filter { $0.role == .assistant && !$0.isStreaming } ?? []
+        if let last = msgs.last, !last.content.isEmpty {
+            return "# " + (chatManager.activeSession?.title ?? "方案") + "\n\n" + last.content
+        }
+        return """
+        # 项目方案
+
+        暂无方案内容。在会话 Tab 中与 Claude 对话后，AI 回复将自动显示在此。
+
+        ## 如何使用
+
+        1. 在会话 Tab 中描述你的需求
+        2. Claude 会理解你的意图并生成方案
+        3. 方案会随对话自动刷新
+        """
+    }
 
     var body: some View {
         VStack(spacing: 0) {
