@@ -208,7 +208,7 @@ class ChatManager: ObservableObject {
         guard let session = sessions.first(where: { $0.id == sessionId }) else { return [] }
         return session.messages
             .filter { $0.role != .system && !$0.isStreaming }
-            .prefix(20)
+            .prefix(50)
             .map { APIService.Message(role: $0.role == .assistant ? "assistant" : "user", content: $0.content) }
     }
 
