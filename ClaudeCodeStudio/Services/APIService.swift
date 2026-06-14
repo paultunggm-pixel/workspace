@@ -162,12 +162,17 @@ enum APIService {
             request.httpBody = try JSONEncoder().encode(body)
         }
 
-        let (_, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await URLSession.shared.data(for: request)
         guard let httpResponse = response as? HTTPURLResponse else {
             throw APIError.invalidResponse
         }
-        return httpResponse.statusCode == 200 || httpResponse.statusCode == 401
-        // 401 = connected but bad key, 200 = fully working
+        if httpResponse.statusCode == 200 { return true }
+        if httpResponse.statusCode == 401 { return true }
+        // Show error body
+        if let body = String(data: data, encoding: .utf8), !body.isEmpty {
+            throw APIError.httpError(httpResponse.statusCode, body.prefix(200).description)
+        }
+        throw APIError.httpError(httpResponse.statusCode, nil)
     }
 }
 
@@ -255,14 +260,14 @@ enum APIError: LocalizedError {
     case invalidURL
     case invalidResponse
     case keyNotFound
-    case httpError(Int)
+    case httpError(Int, String?)
 
     var errorDescription: String? {
         switch self {
         case .invalidURL: return "无效的 API 端点"
         case .invalidResponse: return "无效的服务器响应"
         case .keyNotFound: return "未找到 API Key，请在侧栏配置"
-        case .httpError(let code): return "HTTP \(code)"
+        case .httpError(let code, let body): return "HTTP \(code)" + (body.map { ": \($0)" } ?? "")
         }
     }
 }

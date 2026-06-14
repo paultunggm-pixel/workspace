@@ -127,7 +127,7 @@ struct APIKeyInputCard: View {
                                 statusText = "Key 无效"
                             }
                         } catch {
-                            statusText = "连接失败"
+                            statusText = error.localizedDescription
                         }
                         isTesting = false
                     }
