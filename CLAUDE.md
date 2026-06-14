@@ -8,6 +8,41 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Claude Code 产生的所有文件和数据必须存放在 `~/Documents/Claude/` 目录中，禁止直接放在 `/Users/d.j.f/` 根目录下（CLAUDE.md 本身的 symlink 除外）
 - 使用 DeepSeek API 作为后端（deepseek-v4-pro / deepseek-v4-flash）
 
+## 项目结构
+
+```
+~/Documents/Claude/                        ← monorepo 根
+├── ClaudeCodeStudio/                      ← SwiftUI macOS 应用（主项目）
+│   ├── Models/         (AppState, ChatModels, ProjectModels 等 6 个)
+│   ├── Views/Content/  (ChatTabView, PlanTabView, PreviewTabView, CodeTabView, PublishTabView, ServiceTabView)
+│   ├── Views/Sidebar/  (ProjectTreeView, ModelEngineCard, SidebarView)
+│   ├── Services/       (ChatManager, KeychainManager, ProviderManager)
+│   └── Theme/          (AppTheme — 设计令牌集中管理)
+├── consistency-eval-gh/                  ← GitHub Pages 静态站 (独立 repo)
+├── 2026世界杯/                            ← 爬虫/数据分析脚本
+├── 解题答案一致性评测/                     ← 评测报告生成
+└── .omc/
+    ├── skills/          ← 项目定制 skill (ccs-add-tab, ccs-type-migration, deploy-static-to-oss-gh, excel-split-ids)
+    └── wiki/            ← 会话知识沉淀 (.omc/wiki/session-log/)
+```
+
+### ClaudeCodeStudio 架构
+
+- `AppState.selectedTab`（`ContentTab` 枚举，6 个 case）→ `TabBar` 渲染标签按钮 + `ContentArea` `switch` 路由到对应 `*TabView`
+- 所有视图通过 `@EnvironmentObject` 注入 `AppState`/`ChatManager`/`ProjectManager`/`ProviderManager`
+- 设计令牌集中在 `AppTheme` 枚举中（`cardRadius`/`accent`/`textPrimary` 等）
+
+### 构建与运行
+
+```bash
+# 构建
+cd ~/Documents/Claude/ClaudeCodeStudio
+xcodebuild -project ClaudeCodeStudio.xcodeproj -scheme ClaudeCodeStudio -destination 'platform=macOS' build
+
+# 运行
+open ~/Documents/Claude/ClaudeCodeStudio/.build/arm64-apple-macosx/debug/ClaudeCodeStudio
+```
+
 ## 文件访问安全规则
 
 - 仅允许读写 `~/Documents/Claude/` 目录内的文件，禁止访问本机任何其他路径的数据
@@ -49,6 +84,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `.env`、`.mcp.json` 等含密钥文件已加入 `.gitignore`
 - GitHub Push Protection 开启，防止意外推送密钥
 - 如推送被拒提示 secret scanning，先清理文件中的密钥再重试
+### 开发陷阱与已知问题
+
+| 陷阱 | 说明 |
+|------|------|
+| **struct 上不能用 `[weak self]`** | SwiftUI View 都是 struct，Timer/闭包直接用值捕获 `{ t in ... }`，不要加 `[weak self]` |
+| **`[weak self]` 仅用于 class** | `ChatManager`、`ProviderManager` 等 class 的闭包才是 `[weak self]` 的正确场景 |
+| **NotificationCenter 的 object 类型不检查** | 编译器不检查 `post(name:object:)` 和 `notif.object as?` 的类型，类型迁移时必须手动验证 |
+| **UUID? 与 String? 迁移查四处** | 定义点、`.uuidString` 转换、`.flatMap(UUID.init)`、通知 object —— 四处必须一致 |
+| **xcodebuild 偶遇网络超时** | GitHub 连接不稳定时 xcodebuild 可能卡在包解析，重试即可 |
+| **`.omc/` 默认 gitignore** | skill/wiki 文件需 `git add -f` 才能纳入版本控制 |
+
+
 
 ## 已安装插件
 
@@ -85,6 +132,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `deploy-static-site` 封装了 OSS + GitHub Pages + data.json 提取的完整部署流水线
 - 其他 skill 需要部署网页时，应调用 `deploy-static-site` 而非内联部署代码
 - `deploy-static-site` 使用固定配置（Bucket/Repo/凭据），不随调用方变化
+- 自定义 Skill 存放在 `.omc/skills/`，Wiki 存档在 `.omc/wiki/session-log/`，均需 `git add -f`（.omc 默认 gitignore）
+
+### 项目自定义 Skill
+
+| Skill | 触发词 | 用途 |
+|-------|--------|------|
+| `ccs-add-tab` | 添加新标签/新增 Tab | 为 ClaudeCodeStudio 添加新内容标签页（5 触点修改公式） |
+| `ccs-type-migration` | 类型迁移/改类型 | Swift 类型迁移操作清单 + 残留检测 |
+| `deploy-static-to-oss-gh` | 部署网页/部署报告/上线 | OSS + GitHub Pages 双通道部署 |
+| `excel-split-ids` | 拆分 Excel 逗号分隔 | Excel 逗号分隔 ID 拆分为多行 |
+
+### Worktree 开发流程
+
+```
+创建 worktree → executor 实现 → code-reviewer 审查 → 修复 → 提交 → 推送 → 合并到 main → 清理 worktree
+```
+
+- `git push origin <branch>:main` 可从 worktree 直接快进推送到远程 main（main 被本地 worktree 占用时）
+- 远程合并后，本地 main worktree 用 `git pull origin main` 同步
+- 清理：`git worktree remove <path> --force` + `git branch -D <branch>` + `git push origin --delete <branch>`
 
 ## 编码行为准则
 
