@@ -15,14 +15,14 @@ struct ProjectListCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
-                Text("📁 项目")
-                    .font(.system(size: 11, weight: .semibold)).foregroundColor(AppTheme.textPrimary)
+                Text("📁 项目(\(projectManager.store.projects.count))")
+                    .font(.system(size: 12, weight: .bold)).foregroundColor(.red)
                 Spacer()
                 Button(action: { showNewProject = true }) {
                     Image(systemName: "plus")
-                        .font(.system(size: 10, weight: .semibold)).foregroundColor(AppTheme.textSecondary)
+                        .font(.system(size: 11, weight: .bold)).foregroundColor(.red)
                 }.buttonStyle(.plain)
-            }
+            }.padding(.vertical, 4).background(Color.yellow.opacity(0.3))
 
             if projectManager.store.categories.isEmpty && projectManager.store.projects.isEmpty {
                 emptyState
