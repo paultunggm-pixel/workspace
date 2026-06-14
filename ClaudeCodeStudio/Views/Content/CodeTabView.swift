@@ -35,14 +35,36 @@ private let sampleCSSCode = """
 /// Lightweight positioning — not a full editor.
 struct CodeTabView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var chatManager: ChatManager
     @State private var selectedFile: CodeFile? = nil
     @State private var showDiff = false
 
-    let sampleFiles: [CodeFile] = [
-        CodeFile(name: "ContentView.swift", language: "swift", content: sampleSwiftCode),
-        CodeFile(name: "AppState.swift", language: "swift", content: sampleAppStateCode),
-        CodeFile(name: "styles.css", language: "css", content: sampleCSSCode)
-    ]
+    private var dynamicFiles: [CodeFile] {
+        var files: [CodeFile] = []
+        if let session = chatManager.activeSession {
+            for msg in session.messages where !msg.isStreaming {
+                for lang in ["swift", "python", "css", "javascript", "html"] {
+                    let code = extractCodeBlock(from: msg.content, language: lang)
+                    if !code.isEmpty {
+                        let ext = lang == "javascript" ? "js" : lang
+                        files.append(CodeFile(name: "response_\(files.count).\(ext)", language: lang, content: code))
+                    }
+                }
+            }
+        }
+        if files.isEmpty {
+            files = [CodeFile(name: "sample_ContentView.swift", language: "swift", content: sampleSwiftCode),
+                     CodeFile(name: "sample_AppState.swift", language: "swift", content: sampleAppStateCode)]
+        }
+        return files
+    }
+
+    private func extractCodeBlock(from text: String, language: String) -> String {
+        guard let start = text.range(of: "```" + language) else { return "" }
+        let after = text[start.upperBound...]
+        guard let end = after.range(of: "\n```") ?? after.range(of: "```") else { return "" }
+        return String(after[..<end.lowerBound]).trimmingCharacters(in: .whitespacesAndNewlines)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -105,7 +127,7 @@ struct CodeTabView: View {
             fileTabBar
         }
         .onAppear {
-            if selectedFile == nil { selectedFile = sampleFiles.first }
+            if selectedFile == nil { selectedFile = dynamicFiles.first }
         }
     }
 
@@ -220,7 +242,7 @@ struct CodeTabView: View {
     private var fileTabBar: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 0) {
-                ForEach(sampleFiles) { file in
+                ForEach(dynamicFiles) { file in
                     Button(action: { selectedFile = file }) {
                         HStack(spacing: 4) {
                             Text(file.languageIcon)
