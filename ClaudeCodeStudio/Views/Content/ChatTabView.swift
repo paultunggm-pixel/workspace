@@ -15,6 +15,19 @@ struct ChatTabView: View {
 
             // Message list with auto-scroll
             ChatMessageList()
+                .overlay(alignment: .top) {
+                    if chatManager.activeSession == nil {
+                        VStack(spacing: 8) {
+                            Text("在左侧项目列表中选择一个项目开始对话")
+                                .font(.system(size: 11))
+                                .foregroundColor(AppTheme.textSecondary)
+                                .padding(.horizontal, 16).padding(.vertical, 10)
+                                .background(RoundedRectangle(cornerRadius: 6)
+                                    .fill(AppTheme.cardBackground))
+                        }
+                        .padding(.top, 60)
+                    }
+                }
                 .frame(maxHeight: .infinity)
 
             // Quick action buttons
@@ -39,6 +52,11 @@ struct ChatTabView: View {
             .padding(.horizontal, 12).padding(.vertical, 8)
             .overlay(RoundedRectangle(cornerRadius: 8).stroke(AppTheme.dividerGray, lineWidth: 1))
             .padding(.horizontal, 24).padding(.vertical, 12)
+        }
+        .onChange(of: appState.selectedProjectId) { newId in
+            if let id = newId.flatMap(UUID.init) {
+                chatManager.openSession(for: id)
+            }
         }
     }
 
