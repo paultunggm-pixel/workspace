@@ -9,31 +9,21 @@ extension Notification.Name {
 struct ProjectListCard: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var projectManager: ProjectManager
-    @State private var showSheet: SheetType?
-    @State private var deleteTarget: Project?
     @State private var newName = ""
-
-    enum SheetType: Identifiable {
-        case newCategory, newProject, deleteProject
-        var id: Int { hashValue }
-    }
+    @State private var showNewProject = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            // Header
             HStack {
                 Text("📁 项目")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundColor(AppTheme.textPrimary)
+                    .font(.system(size: 11, weight: .semibold)).foregroundColor(AppTheme.textPrimary)
                 Spacer()
-                Button(action: { showSheet = .newProject }) {
+                Button(action: { showNewProject = true }) {
                     Image(systemName: "plus")
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundColor(AppTheme.textSecondary)
+                        .font(.system(size: 10, weight: .semibold)).foregroundColor(AppTheme.textSecondary)
                 }.buttonStyle(.plain)
             }
 
-            // Tree content
             if projectManager.store.categories.isEmpty && projectManager.store.projects.isEmpty {
                 emptyState
             } else {
@@ -41,52 +31,32 @@ struct ProjectListCard: View {
             }
         }
         .padding(10)
-        .background {
-            RoundedRectangle(cornerRadius: AppTheme.cardRadius)
-                .fill(AppTheme.cardBackground)
-        }
-        .overlay {
-            RoundedRectangle(cornerRadius: AppTheme.cardRadius)
-                .stroke(AppTheme.cardBorder, lineWidth: 1)
-        }
-        .sheet(item: $showSheet) { sheetType in
-            switch sheetType {
-            case .newCategory, .newProject:
-                newItemSheet(
-                    title: sheetType == .newCategory ? "新建分类" : "新建项目",
-                    icon: sheetType == .newCategory ? "📂" : "📁",
-                    onCreate: { name in
-                        if sheetType == .newCategory {
-                            projectManager.addCategory(name: name)
-                        } else {
-                            projectManager.addProject(name: name)
-                        }
-                    }
-                )
-            case .deleteProject:
-                if let project = deleteTarget {
-                    DeleteProjectDialog(project: project)
+        .background { RoundedRectangle(cornerRadius: AppTheme.cardRadius).fill(AppTheme.cardBackground) }
+        .overlay { RoundedRectangle(cornerRadius: AppTheme.cardRadius).stroke(AppTheme.cardBorder, lineWidth: 1) }
+        .sheet(isPresented: $showNewProject) {
+            VStack(spacing: 16) {
+                Text("📁 新建项目").font(.headline)
+                TextField("项目名称", text: $newName).textFieldStyle(.roundedBorder).frame(width: 200)
+                HStack(spacing: 12) {
+                    Button("取消") { newName = ""; showNewProject = false }.keyboardShortcut(.escape)
+                    Button("创建") {
+                        let n = newName.trimmingCharacters(in: .whitespaces)
+                        if !n.isEmpty { projectManager.addProject(name: n) }
+                        newName = ""; showNewProject = false
+                    }.disabled(newName.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
-            }
+            }.padding(30).frame(width: 280, height: 180)
         }
     }
 
     private var emptyState: some View {
         VStack(spacing: 6) {
-            Text("📁")
-                .font(.system(size: 20))
-            Text("暂无项目")
-                .font(.system(size: 10))
-                .foregroundColor(AppTheme.textTertiary)
-            Button(action: { showSheet = .newProject }) {
-                Label("新建项目", systemImage: "plus.circle.fill")
-                    .font(.system(size: 10))
-            }
-            .buttonStyle(.plain)
-            .foregroundColor(AppTheme.accent)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 12)
+            Text("📁").font(.system(size: 20))
+            Text("暂无项目").font(.system(size: 10)).foregroundColor(AppTheme.textTertiary)
+            Button(action: { showNewProject = true }) {
+                Label("新建项目", systemImage: "plus.circle.fill").font(.system(size: 10))
+            }.buttonStyle(.plain).foregroundColor(AppTheme.accent)
+        }.frame(maxWidth: .infinity).padding(.vertical, 12)
     }
 
     private var treeContent: some View {
@@ -96,16 +66,12 @@ struct ProjectListCard: View {
                     CategoryRow(category: category)
                 }
 
-                // Uncategorized projects (not in any visible category)
                 let categorizedIds = projectManager.store.categories.flatMap { $0.projectIds }
                 let orphans = projectManager.store.projects.filter { !categorizedIds.contains($0.id) }
                 if !orphans.isEmpty {
                     Divider().padding(.vertical, 2)
                     ForEach(orphans) { project in
-                        ProjectRow(project: project, onDelete: {
-                            deleteTarget = project
-                            showSheet = .deleteProject
-                        })
+                        ProjectRow(project: project)
                     }
                 }
             }
@@ -151,34 +117,23 @@ struct CategoryRow: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Button(action: {
-                projectManager.toggleCategory(category.id)
-            }) {
+            Button(action: { projectManager.toggleCategory(category.id) }) {
                 HStack(spacing: 4) {
                     Image(systemName: category.isExpanded ? "chevron.down" : "chevron.right")
-                        .font(.system(size: 8, weight: .medium))
-                        .foregroundColor(AppTheme.textTertiary)
+                        .font(.system(size: 8, weight: .medium)).foregroundColor(AppTheme.textTertiary)
                     Text(category.icon + " " + category.name)
-                        .font(.system(size: 10, weight: .medium))
-                        .foregroundColor(AppTheme.textSecondary)
+                        .font(.system(size: 10, weight: .medium)).foregroundColor(AppTheme.textSecondary)
                     Spacer()
                     Text("\(projectManager.store.projects(in: category).count)")
-                        .font(.system(size: 9))
-                        .foregroundColor(AppTheme.textTertiary)
+                        .font(.system(size: 9)).foregroundColor(AppTheme.textTertiary)
                 }
-                .padding(.horizontal, 4)
-                .padding(.vertical, 3)
-                .contentShape(Rectangle())
+                .padding(.horizontal, 4).padding(.vertical, 3).contentShape(Rectangle())
             }
             .buttonStyle(.plain)
 
             if category.isExpanded {
                 ForEach(projectManager.store.projects(in: category)) { project in
-                    ProjectRow(project: project, onDelete: {
-                        deleteTarget = project
-                        showSheet = .deleteProject
-                    })
-                        .padding(.leading, 12)
+                    ProjectRow(project: project).padding(.leading, 12)
                 }
             }
         }
@@ -189,7 +144,6 @@ struct CategoryRow: View {
 
 struct ProjectRow: View {
     let project: Project
-    let onDelete: () -> Void
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var projectManager: ProjectManager
     @State private var isExpanded = false
