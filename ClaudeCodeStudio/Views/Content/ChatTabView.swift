@@ -4,6 +4,7 @@ import Combine
 struct ChatTabView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var chatManager: ChatManager
+    @EnvironmentObject var projectManager: ProjectManager
     @State private var inputText = ""
 
     var body: some View {
@@ -63,8 +64,14 @@ struct ChatTabView: View {
             .padding(.horizontal, 24).padding(.vertical, 12)
         }
         .onChange(of: appState.selectedProjectId) { newId in
-            if let id = newId.flatMap(UUID.init) {
-                chatManager.openSession(for: id)
+            guard let projectId = newId.flatMap(UUID.init) else { return }
+            // Ensure a conversation exists for this project
+            let conversations = projectManager.store.conversations.filter { $0.projectId == projectId }
+            if conversations.isEmpty {
+                let conv = projectManager.addConversation(title: "新对话", projectId: projectId)
+                chatManager.openSession(conv.id)
+            } else {
+                chatManager.openSession(conversations[0].id)
             }
         }
     }
@@ -72,9 +79,9 @@ struct ChatTabView: View {
     private func send() {
         let text = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }
-        if chatManager.activeSession == nil {
-            let pid = appState.selectedProjectId.flatMap(UUID.init) ?? UUID()
-            chatManager.openSession(for: pid)
+        if chatManager.activeSession == nil, let projectId = appState.selectedProjectId.flatMap(UUID.init) {
+            let conv = projectManager.addConversation(title: String(text.prefix(30)), projectId: projectId)
+            chatManager.openSession(conv.id)
         }
         chatManager.sendMessage(text)
         inputText = ""
