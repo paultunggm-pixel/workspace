@@ -25,7 +25,6 @@ struct ChatTabView: View {
             // Input bar
             HStack(spacing: 8) {
                 TextField("输入消息...", text: $inputText)
-                    .textFieldStyle(.roundedBorder)
                     .font(.system(size: 13))
                     .onSubmit { sendMessage() }
                 Button("发送") { sendMessage() }
@@ -38,7 +37,7 @@ struct ChatTabView: View {
                     .disabled(inputText.trimmingCharacters(in: .whitespaces).isEmpty)
             }
             .padding(.horizontal, 12).padding(.vertical, 8)
-            .background(RoundedRectangle(cornerRadius: 8).stroke(AppTheme.dividerGray, lineWidth: 1))
+            .overlay(RoundedRectangle(cornerRadius: 8).stroke(AppTheme.dividerGray, lineWidth: 1))
             .padding(.horizontal, 24).padding(.vertical, 12)
         }
     }
