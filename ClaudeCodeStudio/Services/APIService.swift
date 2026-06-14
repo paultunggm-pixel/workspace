@@ -39,12 +39,6 @@ enum APIService {
             self.stream = stream
             self.max_tokens = 4096
         }
-
-        enum CodingKeys: String, CodingKey {
-            case model, messages
-            case maxTokens = "max_tokens"
-            case stream
-        }
     }
 
     struct AnthropicMessage: Encodable {
