@@ -41,9 +41,15 @@ struct ModelEngineCard: View {
             if providerManager.hasProviders {
                 VStack(spacing: 6) {
                     ModelSelector()
-                    if let active = providerManager.activeProvider,
-                       active.connectionStatus != .connected {
-                        InlineKeyInput(provider: active)
+                    if let active = providerManager.activeProvider {
+                        if active.connectionStatus == .connected {
+                            HStack {
+                                Circle().fill(Color.green).frame(width: 6, height: 6)
+                                Text("\(active.label) 已连接").font(.system(size: 9)).foregroundColor(.green)
+                            }
+                        } else {
+                            InlineKeyInput(provider: active)
+                        }
                     }
                     QuickSwitchButtons()
                     if providerManager.activeProvider?.connectionStatus == .connected {
