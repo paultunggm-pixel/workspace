@@ -82,9 +82,9 @@ enum SettingsSection: String, CaseIterable {
 // MARK: - Communication Settings
 
 struct CommunicationSettings: View {
-    @State private var language = "简体中文"
-    @State private var replyStyle = "简洁"
-    @State var languages = ["简体中文", "繁體中文", "English"]
+    @AppStorage("settings.language") private var language = "简体中文"
+    @AppStorage("settings.replyStyle") private var replyStyle = "简洁"
+    let languages = ["简体中文", "繁體中文", "English"]
     let styles = ["简洁", "适度", "详尽"]
 
     var body: some View {
@@ -108,12 +108,6 @@ struct CommunicationSettings: View {
                                     .fill(language == lang ? AppTheme.accent : Color.black.opacity(0.04))
                             )
                         }
-                        Button(action: { languages.append("其他语言") }) {
-                            Text("+ 其他")
-                                .font(.system(size: 10))
-                        }
-                        .buttonStyle(.plain)
-                        .foregroundColor(AppTheme.accent)
                     }
                 }
 
@@ -143,11 +137,11 @@ struct CommunicationSettings: View {
 // MARK: - Permissions Settings
 
 struct PermissionsSettings: View {
-    @State private var askFrequency = "关键确认"
-    @State private var readWriteScope = "指定目录"
-    @State private var workDir = "~/Documents/Claude/"
-    @State private var noStoreKeys = true
-    @State private var confirmExport = true
+    @AppStorage("settings.askFrequency") private var askFrequency = "关键确认"
+    @AppStorage("settings.readWriteScope") private var readWriteScope = "指定目录"
+    @AppStorage("settings.workDir") private var workDir = "~/Documents/Claude/"
+    @AppStorage("settings.noStoreKeys") private var noStoreKeys = true
+    @AppStorage("settings.confirmExport") private var confirmExport = true
 
     let frequencies = ["关键确认", "每步询问", "高度自主"]
     let scopes = ["指定目录", "全局授权"]
@@ -202,10 +196,10 @@ struct PermissionsSettings: View {
 // MARK: - Coding Style
 
 struct CodingStyleSettings: View {
-    @State private var alignFirst = true
-    @State private var simpleFirst = true
-    @State private var preciseEdit = true
-    @State private var autoReview = true
+    @AppStorage("settings.alignFirst") private var alignFirst = true
+    @AppStorage("settings.simpleFirst") private var simpleFirst = true
+    @AppStorage("settings.preciseEdit") private var preciseEdit = true
+    @AppStorage("settings.autoReview") private var autoReview = true
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -227,7 +221,7 @@ struct CodingStyleSettings: View {
 // MARK: - Custom Rules
 
 struct CustomRulesSettings: View {
-    @State private var rules = ""
+    @AppStorage("settings.customRules") private var rules = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -249,13 +243,13 @@ struct CustomRulesSettings: View {
 // MARK: - Project Overview
 
 struct ProjectOverviewSettings: View {
-    @State private var projectName = "Claude Code Studio"
-    @State private var description = "macOS 原生 AI 编程助手"
+    @AppStorage("settings.projectName") private var projectName = "Claude Code Studio"
+    @AppStorage("settings.projectDescription") private var description = "macOS 原生 AI 编程助手"
     @State private var dataSources: [String] = ["GitHub", "本地文件"]
     @State private var techStack: [String] = ["SwiftUI", "Swift"]
     @State private var productType = "💻 桌面客户端"
     @State private var deployTarget = "GitHub Releases"
-    @State private var projectRules = ""
+    @AppStorage("settings.projectRules") private var projectRules = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
