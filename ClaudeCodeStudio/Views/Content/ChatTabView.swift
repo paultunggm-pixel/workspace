@@ -9,9 +9,27 @@ struct ChatTabView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Text("CHAT TAB").foregroundColor(.white).font(.largeTitle)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.red)
+            ScrollView {
+                LazyVStack(spacing: 12) {
+                    if let session = chatManager.activeSession, !session.messages.isEmpty {
+                        ForEach(session.messages) { msg in MessageRow(message: msg).id(msg.id) }
+                    } else {
+                        Text("开始与 Claude 对话").font(.system(size: 14)).foregroundColor(AppTheme.textSecondary).padding(.top, 40)
+                    }
+                }.padding(.horizontal, 24).padding(.vertical, 16)
+            }
+            HStack(spacing: 8) {
+                TextField("输入...", text: $inputText).font(.system(size: 13)).onSubmit { send() }
+                Button("发送") { send() }
+                    .font(.system(size: 11, weight: .medium)).foregroundColor(.white)
+                    .padding(.horizontal, 12).padding(.vertical, 5)
+                    .background(RoundedRectangle(cornerRadius: 5).fill(inputText.trimmingCharacters(in: .whitespaces).isEmpty ? Color.gray : AppTheme.accent))
+                    .buttonStyle(.plain).disabled(inputText.trimmingCharacters(in: .whitespaces).isEmpty)
+            }
+            .padding(.horizontal, 12).padding(.vertical, 8)
+            .background(Color.white.overlay(Rectangle().frame(height: 1).foregroundColor(AppTheme.dividerGray), alignment: .top))
+            .padding(.horizontal, 24)
+        }
             if let session = chatManager.activeSession {
                 Text(session.title).font(.system(size: 11, weight: .medium)).foregroundColor(AppTheme.textPrimary)
                     .padding(.horizontal, 24).padding(.vertical, 6)
