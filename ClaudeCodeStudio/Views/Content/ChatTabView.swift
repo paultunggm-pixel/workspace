@@ -6,31 +6,12 @@ import Combine
 struct ChatTabView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var chatManager: ChatManager
-    @EnvironmentObject var providerManager: ProviderManager
     @State private var inputText = ""
 
     var body: some View {
         VStack(spacing: 0) {
             // Sub-tab bar for multiple conversations
             ConversationTabs()
-
-            // API status
-            if let provider = providerManager.activeProvider {
-                HStack(spacing: 6) {
-                    Circle()
-                        .fill(provider.connectionStatus == .connected ? Color.green : Color.yellow)
-                        .frame(width: 6, height: 6)
-                    Text(provider.connectionStatus == .connected
-                         ? "\(provider.label) 已连接"
-                         : "\(provider.label) 未连接 — 请在侧栏配置 API Key")
-                        .font(.system(size: 10))
-                        .foregroundColor(AppTheme.textSecondary)
-                    Spacer()
-                }
-                .padding(.horizontal, 24)
-                .padding(.vertical, 4)
-                .background(Color.yellow.opacity(provider.connectionStatus == .connected ? 0 : 0.1))
-            }
 
             // Message list with auto-scroll
             ChatMessageList()
