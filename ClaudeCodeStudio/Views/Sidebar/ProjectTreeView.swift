@@ -145,6 +145,7 @@ struct ProjectRow: View {
     let project: Project
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var projectManager: ProjectManager
+    @EnvironmentObject var chatManager: ChatManager
     @State private var isExpanded = false
 
     var body: some View {
@@ -180,42 +181,27 @@ struct ProjectRow: View {
             .background(appState.selectedProjectId == project.id.uuidString ? AppTheme.accentBackground : Color.clear)
 
             if isExpanded {
-                ForEach(projectManager.store.conversations(in: project)) { conv in
-                    ConversationRow(conversation: conv)
+                let projectSessions = chatManager.sessions.filter { $0.projectId == project.id }
+                if projectSessions.isEmpty {
+                    Text("  暂无对话").font(.system(size: 9)).foregroundColor(AppTheme.textTertiary).padding(.leading, 16)
+                } else {
+                    ForEach(projectSessions) { session in
+                        HStack(spacing: 4) {
+                            Circle().fill(Color.green).frame(width: 5, height: 5)
+                            Text(session.title).font(.system(size: 10)).foregroundColor(.primary).lineLimit(1)
+                            Spacer()
+                        }
+                        .padding(.horizontal, 4).padding(.vertical, 3)
                         .padding(.leading, 16)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            chatManager.openSession(session.id)
+                            NotificationCenter.default.post(name: .switchToProject, object: project.id)
+                        }
+                    }
                 }
             }
         }
     }
 }
 
-// MARK: - Conversation Row
-
-struct ConversationRow: View {
-    let conversation: Conversation
-    @EnvironmentObject var appState: AppState
-    @EnvironmentObject var projectManager: ProjectManager
-
-    var body: some View {
-        HStack(spacing: 4) {
-            Circle().fill(statusColor).frame(width: 5, height: 5)
-            Text(conversation.title)
-                .font(.system(size: 10))
-                .foregroundColor(.primary)
-                .lineLimit(1)
-            Spacer()
-        }
-        .padding(.horizontal, 4).padding(.vertical, 3)
-        .contentShape(Rectangle())
-        .contentShape(Rectangle())
-    }
-
-    private var statusColor: Color {
-        switch conversation.status {
-        case .active: return .green
-        case .paused: return .yellow
-        case .completed: return .gray
-        }
-    }
-}
-// ProjectListCard+CategoryRow+ProjectRow+ConversationRow defined above
