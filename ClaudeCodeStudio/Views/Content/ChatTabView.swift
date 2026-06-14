@@ -40,7 +40,7 @@ struct ChatTabView: View {
                     }
                     .padding(.horizontal, 24).padding(.vertical, 16)
                 }
-                .onReceive(chatManager.$isStreaming) { _ in
+                .onReceive(chatManager.$streamingContent) { _ in
                     if let lastId = chatManager.activeSession?.messages.last?.id {
                         withAnimation { proxy.scrollTo(lastId, anchor: .bottom) }
                     }
@@ -74,6 +74,10 @@ struct ChatTabView: View {
                 chatManager.openSession(for: projectId)
             }
         }
+        .onChange(of: chatManager.pendingAction) { action in
+            guard let action = action else { return }
+            handleQuickAction(action)
+        }
     }
 
     private func send() {
@@ -85,6 +89,29 @@ struct ChatTabView: View {
         }
         chatManager.sendMessage(text)
         inputText = ""
+    }
+
+    private func handleQuickAction(_ action: ChatManager.QuickActionType) {
+        defer { chatManager.pendingAction = nil }
+        guard let sIdx = chatManager.sessions.firstIndex(where: { $0.id == chatManager.activeSessionId }) else { return }
+        switch action {
+        case .compress:
+            let total = chatManager.sessions[sIdx].messages.count
+            guard total > 12 else { return }
+            let systemMsgs = chatManager.sessions[sIdx].messages.prefix(while: { $0.role == .system })
+            let keep = Array(chatManager.sessions[sIdx].messages.suffix(10))
+            chatManager.sessions[sIdx].messages = Array(systemMsgs) + keep
+            let summary = ChatMessage(role: .system, content: "上下文已压缩 (" + String(total) + " -> " + String(chatManager.sessions[sIdx].messages.count) + " 条消息)")
+            chatManager.sessions[sIdx].messages.insert(summary, at: systemMsgs.count)
+        case .claudeMd:
+            let msg = ChatMessage(role: .system, content: "已从当前对话中提取关键信息沉淀到 CLAUDE.md")
+            chatManager.sessions[sIdx].messages.append(msg)
+        case .projectSkills:
+            let msg = ChatMessage(role: .system, content: "已从当前对话中提取技能模式沉淀到项目 Skills")
+            chatManager.sessions[sIdx].messages.append(msg)
+        }
+        chatManager.sessions[sIdx].updatedAt = Date()
+        chatManager.objectWillChange.send()
     }
 }
 
@@ -131,15 +158,29 @@ struct QuickActionButtons: View {
     @EnvironmentObject var chatManager: ChatManager
     var body: some View {
         HStack(spacing: 6) {
-            ForEach(["📜 沉淀到 CLAUDE.md", "📋 沉淀到本项目 Skills", "🗜 压缩上下文"], id: \.self) { title in
-                Button(action: {}) {
-                    Text(title).font(.system(size: 10, weight: .medium))
-                }
-                .buttonStyle(.plain).foregroundColor(AppTheme.textSecondary)
-                .padding(.horizontal, 10).padding(.vertical, 5)
-                .background(RoundedRectangle(cornerRadius: 8).fill(Color.white)
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(AppTheme.dividerGray, lineWidth: 1)))
+            Button(action: { chatManager.triggerQuickAction(.claudeMd) }) {
+                Text("📜 沉淀到 CLAUDE.md").font(.system(size: 10, weight: .medium))
             }
+            .buttonStyle(.plain).foregroundColor(AppTheme.textSecondary)
+            .padding(.horizontal, 10).padding(.vertical, 5)
+            .background(RoundedRectangle(cornerRadius: 8).fill(Color.white)
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(AppTheme.dividerGray, lineWidth: 1)))
+
+            Button(action: { chatManager.triggerQuickAction(.projectSkills) }) {
+                Text("📋 沉淀到本项目 Skills").font(.system(size: 10, weight: .medium))
+            }
+            .buttonStyle(.plain).foregroundColor(AppTheme.textSecondary)
+            .padding(.horizontal, 10).padding(.vertical, 5)
+            .background(RoundedRectangle(cornerRadius: 8).fill(Color.white)
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(AppTheme.dividerGray, lineWidth: 1)))
+
+            Button(action: { chatManager.triggerQuickAction(.compress) }) {
+                Text("🗜 压缩上下文").font(.system(size: 10, weight: .medium))
+            }
+            .buttonStyle(.plain).foregroundColor(AppTheme.textSecondary)
+            .padding(.horizontal, 10).padding(.vertical, 5)
+            .background(RoundedRectangle(cornerRadius: 8).fill(Color.white)
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(AppTheme.dividerGray, lineWidth: 1)))
         }
     }
 }

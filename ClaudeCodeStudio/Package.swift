@@ -11,7 +11,6 @@ let package = Package(
         .executableTarget(
             name: "ClaudeCodeStudio",
             path: ".",
-            swiftSettings: [.define("MACOS_14_DEPLOY")],
             sources: [
                 "ClaudeCodeStudioApp.swift",
                 "ContentView.swift",
@@ -43,7 +42,8 @@ let package = Package(
                 "Views/Settings/SettingsView.swift",
                 "Views/Titlebar/TitlebarView.swift",
                 "Views/StatusBar/StatusBarView.swift"
-            ]
+            ],
+            swiftSettings: [.define("MACOS_14_DEPLOY")]
         )
     ]
 )

@@ -16,7 +16,7 @@ struct Category: Identifiable, Codable, Equatable {
         self.projectIds = projectIds
     }
 
-    static let uncategorized = UUID() // sentinel for "未分类"
+    static let uncategorized = UUID(uuidString: "00000000-0000-0000-0000-000000000001")! // sentinel for "未分类"
 }
 
 /// A project containing conversations and artifacts

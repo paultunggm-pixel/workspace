@@ -124,4 +124,5 @@ struct InlineKeyInput: View {
                 }
             }
         }
+    }
 }

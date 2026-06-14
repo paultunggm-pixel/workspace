@@ -127,7 +127,7 @@ class ProviderManager: ObservableObject {
     func saveKey(_ key: String, for providerId: String) throws {
         keyStore[providerId] = key
         // Also try Keychain
-        try? KeychainManager.save(key: key, for: providerId)
+        try KeychainManager.save(key: key, for: providerId)
     }
 
     func readKey(for providerId: String) throws -> String {

@@ -12,7 +12,7 @@ struct ModelSelector: View {
             if let active = providerManager.activeProvider {
                 Text(active.type.icon).font(.system(size: 13))
                 Picker("", selection: Binding(
-                    get: { providerManager.store.activeProviderId ?? UUID() },
+                    get: { providerManager.store.activeProviderId ?? active.id },
                     set: { providerManager.setActiveProvider($0) }
                 )) {
                     ForEach(availableProviders) { provider in

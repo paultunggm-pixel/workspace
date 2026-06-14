@@ -12,6 +12,7 @@ class ChatManager: ObservableObject {
     // Quick-actions target for the three shortcut buttons
     @Published var pendingAction: QuickActionType?
     weak var providerManager: ProviderManager?
+    weak var projectManager: ProjectManager?
 
     private let sessionsFile: URL = {
         FileManager.default.homeDirectoryForCurrentUser
@@ -21,13 +22,22 @@ class ChatManager: ObservableObject {
     init() {
         loadFromDisk()
         if sessions.isEmpty { seedSampleData() }
+        NotificationCenter.default.addObserver(forName: .projectWasRemoved, object: nil, queue: .main) { [weak self] notif in
+            guard let self = self, let projectId = notif.object as? UUID else { return }
+            self.sessions.removeAll { $0.projectId == projectId }
+            if let active = self.activeSessionId, !self.sessions.contains(where: { $0.id == active }) {
+                self.activeSessionId = self.sessions.first?.id
+            }
+            self.saveToDisk()
+        }
     }
 
     private func loadFromDisk() {
         guard let data = try? Data(contentsOf: sessionsFile),
               let loaded = try? JSONDecoder().decode([ChatSession].self, from: data) else { return }
         sessions = loaded
-        activeSessionId = sessions.first?.id
+        let sid = UserDefaults.standard.string(forKey: "CCS_activeSessionId").flatMap(UUID.init)
+        activeSessionId = sid.flatMap { id in sessions.contains(where: { $0.id == id }) ? id : nil } ?? sessions.first?.id
     }
 
     func saveToDisk() {
@@ -36,6 +46,7 @@ class ChatManager: ObservableObject {
         if let data = try? JSONEncoder().encode(sessions) {
             try? data.write(to: sessionsFile, options: .atomic)
         }
+        UserDefaults.standard.set(activeSessionId?.uuidString, forKey: "CCS_activeSessionId")
     }
 
     private func seedSampleData() {
@@ -61,8 +72,20 @@ class ChatManager: ObservableObject {
         sessions.first(where: { $0.id == activeSessionId })
     }
 
+    func fixOrphanedSessions() {
+        guard let pm = projectManager, !pm.store.projects.isEmpty else { return }
+        for i in sessions.indices {
+            let pid = sessions[i].projectId
+            if !pm.store.projects.contains(where: { $0.id == pid }) {
+                sessions[i].projectId = pm.store.projects[0].id
+            }
+        }
+        if !sessions.isEmpty { saveToDisk() }
+    }
+
     func openSession(_ sessionId: UUID) {
         activeSessionId = sessionId
+        saveToDisk()
     }
 
     func openSession(for projectId: UUID, title: String = "新会话") {
@@ -73,14 +96,24 @@ class ChatManager: ObservableObject {
             sessions.append(session)
             activeSessionId = session.id
             objectWillChange.send()
+            projectManager?.addConversation(title: title, projectId: projectId)
         }
         saveToDisk()
     }
 
     func closeSession(_ sessionId: UUID) {
-        sessions.removeAll { $0.id == sessionId }
-        if activeSessionId == sessionId {
-            activeSessionId = sessions.last?.id
+        if let session = sessions.first(where: { $0.id == sessionId }) {
+            let projectId = session.projectId
+            sessions.removeAll { $0.id == sessionId }
+            if activeSessionId == sessionId {
+                activeSessionId = sessions.last?.id
+            }
+            saveToDisk()
+            // Sync: remove matching conversation from ProjectManager
+            if let pm = projectManager,
+               let conv = pm.store.conversations.first(where: { $0.projectId == projectId }) {
+                pm.removeConversation(conv)
+            }
         }
     }
 
@@ -88,6 +121,7 @@ class ChatManager: ObservableObject {
         if let idx = sessions.firstIndex(where: { $0.id == sessionId }) {
             sessions[idx].title = title
             sessions[idx].updatedAt = Date()
+            saveToDisk()
         }
     }
 
@@ -153,6 +187,7 @@ class ChatManager: ObservableObject {
                             self.sessions[sIdx].totalTokens += content.count / 4
                             self.sessions[sIdx].updatedAt = Date()
                             self.objectWillChange.send()
+                            self.saveToDisk()
                         }
                     case .failure:
                         if let sIdx = self.sessions.firstIndex(where: { $0.id == sessionId }),
@@ -160,6 +195,7 @@ class ChatManager: ObservableObject {
                             self.sessions[sIdx].messages[mIdx].content = "API 调用失败"
                             self.sessions[sIdx].messages[mIdx].isStreaming = false
                             self.objectWillChange.send()
+                            self.saveToDisk()
                         }
                     }
                     self.streamingContent = ""
@@ -183,13 +219,13 @@ class ChatManager: ObservableObject {
         streamingContent = ""
         let chars = Array(demoResponse)
         var index = 0
-        Timer.scheduledTimer(withTimeInterval: 0.003, repeats: true) { [weak self] timer in
-            guard let self = self else { timer.invalidate(); return }
+        let streamTimer = Timer(fire: Date(), interval: 0.003, repeats: true) { [weak self] t in
+            guard let self = self else { t.invalidate(); return }
             if index < chars.count {
                 self.streamingContent += String(chars[index])
                 index += 1
             } else {
-                timer.invalidate(); self.isStreaming = false
+                t.invalidate(); self.isStreaming = false
                 if let sIdx = self.sessions.firstIndex(where: { $0.id == sessionId }),
                    let mIdx = self.sessions[sIdx].messages.firstIndex(where: { $0.id == messageId }) {
                     self.sessions[sIdx].messages[mIdx].content = self.streamingContent
@@ -197,10 +233,12 @@ class ChatManager: ObservableObject {
                     self.sessions[sIdx].totalTokens += self.streamingContent.count / 4
                     self.sessions[sIdx].updatedAt = Date()
                     self.objectWillChange.send()
+                    self.saveToDisk()
                 }
                 self.streamingContent = ""
             }
         }
+        RunLoop.current.add(streamTimer, forMode: .common)
     }
 
     func regenerateLastMessage() {

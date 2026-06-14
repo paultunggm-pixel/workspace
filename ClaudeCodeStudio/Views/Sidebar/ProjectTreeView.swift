@@ -2,6 +2,7 @@ import SwiftUI
 
 extension Notification.Name {
     static let switchToProject = Notification.Name("switchToProject")
+    static let projectWasRemoved = Notification.Name("projectWasRemoved")
 }
 
 // MARK: - Project List Card (container)
@@ -78,34 +79,6 @@ struct ProjectListCard: View {
         .frame(maxHeight: 220)
     }
 
-    private func newItemSheet(title: String, icon: String, onCreate: @escaping (String) -> Void) -> some View {
-        VStack(spacing: 16) {
-            Text(icon).font(.system(size: 32))
-            Text(title).font(.headline)
-            TextField("名称", text: $newName)
-                .textFieldStyle(.roundedBorder)
-                .frame(width: 200)
-            HStack(spacing: 12) {
-                Button("取消") {
-                    newName = ""
-                    showSheet = nil
-                }
-                .keyboardShortcut(.escape)
-                Button("创建") {
-                    let name = newName.trimmingCharacters(in: .whitespaces)
-                    if !name.isEmpty {
-                        onCreate(name)
-                    }
-                    newName = ""
-                    showSheet = nil
-                }
-                .keyboardShortcut(.return)
-                .disabled(newName.trimmingCharacters(in: .whitespaces).isEmpty)
-            }
-        }
-        .padding(30)
-        .frame(width: 280, height: 200)
-    }
 }
 
 // MARK: - Category Row
@@ -177,7 +150,6 @@ struct ProjectRow: View {
                 }.buttonStyle(.plain)
             }
             .padding(.horizontal, 6).padding(.vertical, 5)
-            .background(appState.selectedProjectId == project.id.uuidString ? AppTheme.accentBackground : Color.clear)
             .background(appState.selectedProjectId == project.id.uuidString ? AppTheme.accentBackground : Color.clear)
 
             if isExpanded {

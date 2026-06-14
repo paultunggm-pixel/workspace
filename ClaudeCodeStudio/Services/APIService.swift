@@ -156,7 +156,7 @@ enum APIService {
             encoder.keyEncodingStrategy = .convertToSnakeCase
             request.httpBody = try encoder.encode(body)
         } else {
-            let body = ChatRequest(model: provider.defaultModel, messages: [
+            let body = ChatRequest(model: provider.defaultModel.isEmpty ? "gpt-3.5-turbo" : provider.defaultModel, messages: [
                 Message(role: "user", content: "hi")
             ], stream: false)
             request.httpBody = try JSONEncoder().encode(body)
@@ -167,7 +167,7 @@ enum APIService {
             throw APIError.invalidResponse
         }
         if httpResponse.statusCode == 200 { return true }
-        if httpResponse.statusCode == 401 { return true }
+        if httpResponse.statusCode == 401 { throw APIError.httpError(401, "API Key 无效") }
         // Show error body
         if let body = String(data: data, encoding: .utf8), !body.isEmpty {
             throw APIError.httpError(httpResponse.statusCode, body.prefix(200).description)
@@ -240,12 +240,12 @@ private class StreamingDelegate: NSObject, URLSessionDataDelegate {
 
     private func extractText(from jsonData: Data, isAnthropic: Bool) -> String? {
         if isAnthropic {
-            if let chunk = try? JSONDecoder().decode(AnthropicChunk.self, from: jsonData),
+            if let chunk = try? JSONDecoder().decode(APIService.AnthropicChunk.self, from: jsonData),
                let text = chunk.delta?.text {
                 return text
             }
         } else {
-            if let chunk = try? JSONDecoder().decode(OpenAIChunk.self, from: jsonData),
+            if let chunk = try? JSONDecoder().decode(APIService.OpenAIChunk.self, from: jsonData),
                let text = chunk.choices?.first?.delta?.content {
                 return text
             }

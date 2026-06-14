@@ -13,6 +13,8 @@ struct ClaudeCodeStudioApp: App {
         let proj = ProjectManager()
         let chat = ChatManager()
         chat.providerManager = pm
+        chat.projectManager = proj
+        chat.fixOrphanedSessions()
         _appState = StateObject(wrappedValue: app)
         _providerManager = StateObject(wrappedValue: pm)
         _projectManager = StateObject(wrappedValue: proj)

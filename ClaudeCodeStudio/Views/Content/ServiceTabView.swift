@@ -59,8 +59,6 @@ struct ServiceTabView: View {
         }
     }
 
-}
-
     private var summaryBar: some View {
         let connected = services.filter { $0.status == .connected }.count
         let errors = services.filter { $0.status == .error || $0.status == .rateLimited }.count

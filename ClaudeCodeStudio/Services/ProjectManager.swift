@@ -80,7 +80,7 @@ class ProjectManager: ObservableObject {
         if let idx = store.categories.firstIndex(where: { $0.id == categoryId }) {
             store.categories[idx].isExpanded.toggle()
             objectWillChange.send()
-        saveToDisk()
+            saveToDisk()
         }
     }
 
@@ -120,6 +120,8 @@ class ProjectManager: ObservableObject {
     func removeProject(_ project: Project) {
         // Remove all conversations in this project
         store.conversations.removeAll { $0.projectId == project.id }
+        // Notify ChatManager to clean up sessions
+        NotificationCenter.default.post(name: .projectWasRemoved, object: project.id)
         // Remove project
         store.projects.removeAll { $0.id == project.id }
         // Remove from category
@@ -135,7 +137,7 @@ class ProjectManager: ObservableObject {
             store.projects[idx].name = name
             store.projects[idx].updatedAt = Date()
             objectWillChange.send()
-        saveToDisk()
+            saveToDisk()
         }
     }
 
@@ -143,7 +145,7 @@ class ProjectManager: ObservableObject {
         if let idx = store.projects.firstIndex(where: { $0.id == projectId }) {
             store.projects[idx].icon = icon
             objectWillChange.send()
-        saveToDisk()
+            saveToDisk()
         }
     }
 
@@ -177,7 +179,7 @@ class ProjectManager: ObservableObject {
             store.conversations[idx].status = status
             store.conversations[idx].updatedAt = Date()
             objectWillChange.send()
-        saveToDisk()
+            saveToDisk()
         }
     }
 
