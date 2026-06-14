@@ -19,25 +19,32 @@ struct ChatTabView: View {
             }
 
             // Messages
-            ScrollView {
-                LazyVStack(spacing: 12) {
-                    if let session = chatManager.activeSession, !session.messages.isEmpty {
-                        ForEach(session.messages) { msg in
-                            MessageRow(message: msg).id(msg.id)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    LazyVStack(spacing: 12) {
+                        if let session = chatManager.activeSession, !session.messages.isEmpty {
+                            ForEach(session.messages) { msg in
+                                MessageRow(message: msg).id(msg.id)
+                            }
+                        } else {
+                            VStack(spacing: 16) {
+                                Image(systemName: "brain.head.profile")
+                                    .font(.system(size: 40))
+                                    .foregroundColor(AppTheme.claudeAmber.opacity(0.5))
+                                Text("开始与 Claude 对话")
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundColor(AppTheme.textSecondary)
+                            }
+                            .frame(maxWidth: .infinity, minHeight: 200)
                         }
-                    } else {
-                        VStack(spacing: 16) {
-                            Image(systemName: "brain.head.profile")
-                                .font(.system(size: 40))
-                                .foregroundColor(AppTheme.claudeAmber.opacity(0.5))
-                            Text("开始与 Claude 对话")
-                                .font(.system(size: 14, weight: .medium))
-                                .foregroundColor(AppTheme.textSecondary)
-                        }
-                        .frame(maxWidth: .infinity, minHeight: 200)
+                    }
+                    .padding(.horizontal, 24).padding(.vertical, 16)
+                }
+                .onReceive(chatManager.$isStreaming) { _ in
+                    if let lastId = chatManager.activeSession?.messages.last?.id {
+                        withAnimation { proxy.scrollTo(lastId, anchor: .bottom) }
                     }
                 }
-                .padding(.horizontal, 24).padding(.vertical, 16)
             }
 
             // Quick actions
