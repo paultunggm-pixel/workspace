@@ -4,6 +4,7 @@ struct ChatTabView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var chatManager: ChatManager
     @State private var inputText = ""
+    @State private var lastScrollTime = Date.distantPast
 
     var body: some View {
         VStack(spacing: 0) {
@@ -41,6 +42,9 @@ struct ChatTabView: View {
                     .padding(.horizontal, 24).padding(.vertical, 16)
                 }
                 .onReceive(chatManager.$streamingContent) { _ in
+                    let now = Date()
+                    guard now.timeIntervalSince(lastScrollTime) > 0.1 else { return }
+                    lastScrollTime = now
                     if let lastId = chatManager.activeSession?.messages.last?.id {
                         withAnimation { proxy.scrollTo(lastId, anchor: .bottom) }
                     }
