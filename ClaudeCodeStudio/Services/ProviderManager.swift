@@ -75,6 +75,15 @@ class ProviderManager: ObservableObject {
         saveToDisk()
     }
 
+    func addQuickProvider(type: ProviderType = .deepseek) {
+        let provider = ProviderConfig(type: type, connectionStatus: .disconnected)
+        store.providers.append(provider)
+        if store.activeProviderId == nil {
+            store.activeProviderId = provider.id
+        }
+        saveToDisk()
+    }
+
     func removeProvider(_ provider: ProviderConfig) {
         store.providers.removeAll { $0.id == provider.id }
         if store.activeProviderId == provider.id {

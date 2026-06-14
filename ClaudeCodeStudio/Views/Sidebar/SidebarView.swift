@@ -61,7 +61,9 @@ struct ModelEngineCard: View {
                     Text("点击下方按钮添加模型提供商")
                         .font(.system(size: 9))
                         .foregroundColor(AppTheme.textSecondary)
-                    Button(action: {}) {
+                    Button(action: {
+                        providerManager.addQuickProvider()
+                    }) {
                         Label("添加提供商", systemImage: "plus.circle.fill")
                             .font(.system(size: 11))
                     }
