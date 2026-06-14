@@ -33,14 +33,35 @@ private let sampleMarkdown = """
 /// Bottom file tab bar switches between artifact files.
 struct PreviewTabView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var chatManager: ChatManager
     @State private var selectedFile: PreviewFile? = nil
     @State private var selectedViewport: ViewportMode = .desktop
 
-    let sampleFiles: [PreviewFile] = [
-        PreviewFile(name: "index.html", type: .html, content: sampleHTML),
-        PreviewFile(name: "screenshot.png", type: .image, content: ""),
-        PreviewFile(name: "README.md", type: .markdown, content: sampleMarkdown)
-    ]
+    private var dynamicFiles: [PreviewFile] {
+        var files: [PreviewFile] = []
+        if let session = chatManager.activeSession {
+            for (i, msg) in session.messages.filter({ !$0.isStreaming }).enumerated() {
+                if msg.content.contains("```html") {
+                    let html = extractCodeBlock(from: msg.content, language: "html")
+                    if !html.isEmpty {
+                        files.append(PreviewFile(name: "response_\(i).html", type: .html, content: html))
+                    }
+                }
+            }
+        }
+        if files.isEmpty {
+            files = [PreviewFile(name: "sample_index.html", type: .html, content: sampleHTML),
+                     PreviewFile(name: "sample_README.md", type: .markdown, content: sampleMarkdown)]
+        }
+        return files
+    }
+
+    private func extractCodeBlock(from text: String, language: String) -> String {
+        guard let start = text.range(of: "```" + language) else { return "" }
+        let after = text[start.upperBound...]
+        guard let end = after.range(of: "\n```") ?? after.range(of: "```") else { return "" }
+        return String(after[..<end.lowerBound]).trimmingCharacters(in: .whitespacesAndNewlines)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -86,7 +107,10 @@ struct PreviewTabView: View {
             fileTabBar
         }
         .onAppear {
-            if selectedFile == nil { selectedFile = sampleFiles.last }
+            if selectedFile == nil { selectedFile = dynamicFiles.last }
+        }
+        .onReceive(chatManager.$streamingContent) { _ in
+            selectedFile = dynamicFiles.last
         }
     }
 
@@ -133,7 +157,7 @@ struct PreviewTabView: View {
     private var fileTabBar: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 0) {
-                ForEach(sampleFiles) { file in
+                ForEach(dynamicFiles) { file in
                     Button(action: { selectedFile = file }) {
                         HStack(spacing: 4) {
                             Image(systemName: file.type.icon)
