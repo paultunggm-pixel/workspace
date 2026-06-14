@@ -32,5 +32,12 @@ struct ClaudeCodeStudioApp: App {
         }
         .windowStyle(.titleBar)
         .windowToolbarStyle(.unified)
+        .commands {
+            CommandGroup(replacing: .appInfo) {
+                Button("关于 Claude Code Studio") {
+                    NSApp.orderFrontStandardAboutPanel()
+                }
+            }
+        }
     }
 }
