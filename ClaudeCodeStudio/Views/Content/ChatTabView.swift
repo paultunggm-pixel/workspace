@@ -104,14 +104,47 @@ struct ChatTabView: View {
             let summary = ChatMessage(role: .system, content: "上下文已压缩 (" + String(total) + " -> " + String(chatManager.sessions[sIdx].messages.count) + " 条消息)")
             chatManager.sessions[sIdx].messages.insert(summary, at: systemMsgs.count)
         case .claudeMd:
-            let msg = ChatMessage(role: .system, content: "已从当前对话中提取关键信息沉淀到 CLAUDE.md")
+            let summary = extractSummary()
+            writeToClaudeMd(summary)
+            let msg = ChatMessage(role: .system, content: "已从对话提取关键信息写入 CLAUDE.md")
             chatManager.sessions[sIdx].messages.append(msg)
         case .projectSkills:
-            let msg = ChatMessage(role: .system, content: "已从当前对话中提取技能模式沉淀到项目 Skills")
+            let summary = extractSummary()
+            writeToProjectSkills(summary)
+            let msg = ChatMessage(role: .system, content: "已从对话提取技能模式写入项目 Skills (.omc/skills/)")
             chatManager.sessions[sIdx].messages.append(msg)
         }
         chatManager.sessions[sIdx].updatedAt = Date()
         chatManager.objectWillChange.send()
+    }
+
+    private func extractSummary() -> String {
+        guard let session = chatManager.activeSession else { return "" }
+        let msgs = session.messages.filter { $0.role != .system }
+        return msgs.map { ($0.role == .user ? "[用户] " : "[Claude] ") + $0.content }
+            .suffix(10).joined(separator: "\n\n")
+    }
+
+    private func writeToClaudeMd(_ content: String) {
+        let home = FileManager.default.homeDirectoryForCurrentUser
+        let file = home.appendingPathComponent("Documents/Claude/CLAUDE.md")
+        let entry = "\n\n## 从对话沉淀 (\(Date().formatted(date: .numeric, time: .shortened)))\n\n" + content + "\n"
+        if let handle = try? FileHandle(forWritingTo: file) {
+            handle.seekToEndOfFile()
+            handle.write(entry.data(using: .utf8)!)
+            try? handle.close()
+        } else {
+            try? entry.data(using: .utf8)?.write(to: file)
+        }
+    }
+
+    private func writeToProjectSkills(_ content: String) {
+        let home = FileManager.default.homeDirectoryForCurrentUser
+        let dir = home.appendingPathComponent("Documents/Claude/.omc/skills")
+        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        let file = dir.appendingPathComponent("project-skill.md")
+        let entry = "# 项目技能\n\n从 Claude Code Studio 对话提取\n\n" + content + "\n"
+        try? entry.data(using: .utf8)?.write(to: file)
     }
 }
 
