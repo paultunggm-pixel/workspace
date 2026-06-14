@@ -42,11 +42,13 @@ struct ModelEngineCard: View {
                 VStack(spacing: 6) {
                     ModelSelector()
                     if let active = providerManager.activeProvider,
-                       active.connectionStatus == .disconnected {
-                        APIKeyInputCard(provider: active)
+                       active.connectionStatus != .connected {
+                        InlineKeyInput(provider: active)
                     }
                     QuickSwitchButtons()
-                    BalanceCard()
+                    if providerManager.activeProvider?.connectionStatus == .connected {
+                        BalanceCard()
+                    }
                 }
                 .padding(10)
                 .background(RoundedRectangle(cornerRadius: AppTheme.cardRadius).fill(AppTheme.cardBackground)
@@ -87,63 +89,34 @@ struct ModelEngineCard: View {
 
 // ProjectListCard defined in ProjectTreeView.swift
 
-struct APIKeyInputCard: View {
+struct InlineKeyInput: View {
     let provider: ProviderConfig
     @EnvironmentObject var providerManager: ProviderManager
-    @State private var apiKey = ""
-    @State private var isTesting = false
-    @State private var statusText = ""
+    @State private var key = ""
+    @State private var msg = ""
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("🔑 \(provider.type.icon) \(provider.label) API Key")
-                .font(.system(size: 9, weight: .semibold))
-                .foregroundColor(AppTheme.textSecondary)
-
-            SecureField("sk-...", text: $apiKey)
-                .textFieldStyle(.roundedBorder)
-                .font(.system(size: 10))
-
-            if !statusText.isEmpty {
-                Text(statusText)
-                    .font(.system(size: 9))
-                    .foregroundColor(statusText.contains("成功") ? .green : .red)
-            }
-
-            HStack(spacing: 8) {
-                Button(action: {
-                    isTesting = true
-                    statusText = "测试中..."
-                    let key = apiKey.trimmingCharacters(in: .whitespaces)
-                    Task {
-                        do {
-                            let ok = try await APIService.testConnection(provider: provider, apiKey: key)
-                            if ok {
-                                try providerManager.saveKey(key, for: provider.id.uuidString)
-                                providerManager.updateConnectionStatus(providerId: provider.id, status: .connected)
-                                statusText = "连接成功"
-                                apiKey = ""
-                            } else {
-                                statusText = "Key 无效"
-                            }
-                        } catch {
-                            statusText = error.localizedDescription
-                        }
-                        isTesting = false
-                    }
-                }) {
-                    Text("保存并测试")
-                        .font(.system(size: 10, weight: .medium))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 4)
+        HStack(spacing: 4) {
+            TextField("粘贴 \(provider.label) API Key...", text: $key)
+                .textFieldStyle(.roundedBorder).font(.system(size: 9))
+            Button("保存") {
+                let k = key.trimmingCharacters(in: .whitespaces)
+                guard !k.isEmpty else { return }
+                do {
+                    try providerManager.saveKey(k, for: provider.id.uuidString)
+                    providerManager.updateConnectionStatus(providerId: provider.id, status: .connected)
+                    key = ""; msg = "已连接"
+                } catch {
+                    msg = error.localizedDescription
                 }
-                .buttonStyle(.plain)
-                .foregroundColor(.white)
-                .background(RoundedRectangle(cornerRadius: 5).fill(AppTheme.accent))
-                .disabled(apiKey.trimmingCharacters(in: .whitespaces).isEmpty || isTesting)
             }
+            .font(.system(size: 9, weight: .medium)).foregroundColor(.white)
+            .padding(.horizontal, 8).padding(.vertical, 3)
+            .background(RoundedRectangle(cornerRadius: 4).fill(AppTheme.accent))
+            .buttonStyle(.plain)
         }
-        .padding(8)
-        .background(RoundedRectangle(cornerRadius: 6).fill(Color.yellow.opacity(0.08)))
+        if !msg.isEmpty {
+            Text(msg).font(.system(size: 8)).foregroundColor(msg.contains("已连接") ? .green : .red)
+        }
     }
 }
