@@ -121,22 +121,29 @@ class ProviderManager: ObservableObject {
         saveToDisk()
     }
 
-    // MARK: - Keychain
+    // MARK: - Keychain / In-Memory Key Store
+    private var keyStore: [String: String] = [:]
 
     func saveKey(_ key: String, for providerId: String) throws {
-        try KeychainManager.save(key: key, for: providerId)
+        keyStore[providerId] = key
+        // Also try Keychain
+        try? KeychainManager.save(key: key, for: providerId)
     }
 
     func readKey(for providerId: String) throws -> String {
-        try KeychainManager.read(for: providerId)
+        // Try in-memory first
+        if let key = keyStore[providerId] { return key }
+        // Fallback to Keychain
+        return try KeychainManager.read(for: providerId)
     }
 
     func hasKey(for providerId: String) -> Bool {
-        KeychainManager.exists(for: providerId)
+        keyStore[providerId] != nil || KeychainManager.exists(for: providerId)
     }
 
     func deleteKey(for providerId: String) throws {
-        try KeychainManager.delete(for: providerId)
+        keyStore.removeValue(forKey: providerId)
+        try? KeychainManager.delete(for: providerId)
     }
 
     // MARK: - Computed
