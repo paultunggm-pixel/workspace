@@ -155,8 +155,8 @@ struct ServiceRowView: View {
                                 }
                             }
                             HStack(spacing: 8) {
-                                Button("重连") {}.buttonStyle(.plain).foregroundColor(AppTheme.accent).font(.system(size: 9))
-                                Button("日志") {}.buttonStyle(.plain).foregroundColor(AppTheme.textSecondary).font(.system(size: 9))
+                                Button("重连") { onToggle() }.buttonStyle(.plain).foregroundColor(AppTheme.accent).font(.system(size: 9))
+                                Button("日志") { onToggle() }.buttonStyle(.plain).foregroundColor(AppTheme.textSecondary).font(.system(size: 9))
                                 Button("断开") { onDisconnect() }.buttonStyle(.plain).foregroundColor(.red).font(.system(size: 9))
                             }
                         }

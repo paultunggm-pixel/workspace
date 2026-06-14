@@ -84,7 +84,7 @@ enum SettingsSection: String, CaseIterable {
 struct CommunicationSettings: View {
     @State private var language = "简体中文"
     @State private var replyStyle = "简洁"
-    let languages = ["简体中文", "繁體中文", "English"]
+    @State var languages = ["简体中文", "繁體中文", "English"]
     let styles = ["简洁", "适度", "详尽"]
 
     var body: some View {
@@ -108,7 +108,7 @@ struct CommunicationSettings: View {
                                     .fill(language == lang ? AppTheme.accent : Color.black.opacity(0.04))
                             )
                         }
-                        Button(action: {}) {
+                        Button(action: { languages.append("其他语言") }) {
                             Text("+ 其他")
                                 .font(.system(size: 10))
                         }
@@ -327,7 +327,7 @@ struct ProjectOverviewSettings: View {
                     .background(RoundedRectangle(cornerRadius: 4).fill(AppTheme.accentBackground))
                     .foregroundColor(AppTheme.accent)
                 }
-                Button(action: {}) {
+                Button(action: { items.wrappedValue.append("新项目") }) {
                     Text("+ 添加").font(.system(size: 9))
                 }
                 .buttonStyle(.plain)

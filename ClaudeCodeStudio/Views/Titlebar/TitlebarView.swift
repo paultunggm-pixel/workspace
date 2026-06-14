@@ -23,7 +23,7 @@ struct TitlebarView: View {
                 Button("CLAUDE.md 长期记忆配置") { showSettings = true }
                 Button("Claude 内核更新") { showAbout = true }
                 Divider()
-                Button("头像及昵称") {}
+                Button("头像及昵称") { showSettings = true }
                 Button("语言设置") { showSettings = true }
                 Divider()
                 Button("关于") { showAbout = true }

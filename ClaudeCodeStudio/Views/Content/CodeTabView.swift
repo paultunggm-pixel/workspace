@@ -65,7 +65,7 @@ struct CodeTabView: View {
                 .foregroundColor(AppTheme.accent)
                 .padding(.trailing, 8)
 
-                Button(action: {}) {
+                Button(action: { NSWorkspace.shared.open(URL(fileURLWithPath: ".")) }) {
                     Label("VS Code", systemImage: "arrow.up.forward.app")
                         .font(.system(size: 10))
                 }

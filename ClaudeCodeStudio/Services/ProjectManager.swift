@@ -91,8 +91,9 @@ class ProjectManager: ObservableObject {
         guard category.id != Category.uncategorized else {
             throw ProjectError.cannotDeleteUncategorized
         }
-        guard store.projects(in: category).isEmpty else {
-            throw ProjectError.categoryNotEmpty
+        // Move projects to Uncategorized instead of failing
+        for project in store.projects(in: category) {
+            moveProject(project.id, to: Category.uncategorized)
         }
         store.categories.removeAll { $0.id == category.id }
         objectWillChange.send()

@@ -124,7 +124,7 @@ struct PublishTabView: View {
                             .padding(.leading, 8)
 
                         if config.projectType != .web {
-                            Button(action: {}) {
+                            Button(action: { simulateBuild() }) {
                                 Text(localTestLabel)
                                     .font(.system(size: 9))
                             }

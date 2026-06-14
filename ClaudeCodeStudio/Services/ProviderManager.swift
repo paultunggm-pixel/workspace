@@ -67,11 +67,11 @@ class ProviderManager: ObservableObject {
 
     func addProvider(type: ProviderType, label: String? = nil, endpoint: String? = nil, apiKey: String) throws {
         let provider = ProviderConfig(type: type, label: label, endpoint: endpoint)
+        try saveKey(apiKey, for: provider.id.uuidString) // Save key first
         store.providers.append(provider)
         if store.activeProviderId == nil {
             store.activeProviderId = provider.id
         }
-        try saveKey(apiKey, for: provider.id.uuidString)
         saveToDisk()
     }
 
@@ -127,7 +127,7 @@ class ProviderManager: ObservableObject {
     func saveKey(_ key: String, for providerId: String) throws {
         keyStore[providerId] = key
         // Also try Keychain
-        try KeychainManager.save(key: key, for: providerId)
+        try? KeychainManager.save(key: key, for: providerId)
     }
 
     func readKey(for providerId: String) throws -> String {
