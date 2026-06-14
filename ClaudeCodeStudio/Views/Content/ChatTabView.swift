@@ -59,7 +59,8 @@ struct ChatTabView: View {
     private func send() {
         let text = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }
-        if chatManager.activeSession == nil, let pid = appState.selectedProjectId.flatMap(UUID.init) {
+        if chatManager.activeSession == nil {
+            let pid = appState.selectedProjectId.flatMap(UUID.init) ?? UUID()
             chatManager.openSession(for: pid)
         }
         chatManager.sendMessage(text)
