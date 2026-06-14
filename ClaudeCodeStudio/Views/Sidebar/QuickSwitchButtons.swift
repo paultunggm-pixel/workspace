@@ -9,6 +9,12 @@ struct QuickSwitchButtons: View {
             ForEach(ModelTier.allCases, id: \.self) { tier in
                 Button(action: {
                     providerManager.setModelTier(tier)
+                    if let idx = providerManager.store.providers.firstIndex(where: { $0.id == providerManager.store.activeProviderId }),
+                       let model = providerManager.store.providers[idx].models.dropFirst(tier == .flash ? 0 : tier == .pro ? 1 : 2).first {
+                        providerManager.store.providers[idx].defaultModel = model
+                        providerManager.objectWillChange.send()
+                        providerManager.saveToDisk()
+                    }
                 }) {
                     Text(tier.icon + " " + tier.rawValue)
                         .font(.system(size: 10, weight: providerManager.store.activeModelTier == tier ? .semibold : .regular))
