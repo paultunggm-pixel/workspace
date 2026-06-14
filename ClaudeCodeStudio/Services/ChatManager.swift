@@ -168,37 +168,19 @@ class ChatManager: ObservableObject {
     }
 
     private func simulateStream(for sessionId: UUID, messageId: UUID) {
+        let demoResponse = "[模拟响应]\n好的，我来帮你完成这个任务。\n\n```swift\nstruct ExampleView: View {\n    var body: some View {\n        Text(\"Hello\")\n            .font(.title)\n    }\n}\n```\n\n这是模拟响应。请在侧栏配置API Key以使用真实AI。"
+
         isStreaming = true
         streamingContent = ""
-
-        let demoResponse = """
-        好的，我来帮你完成这个任务。
-
-        ```swift
-        struct ExampleView: View {
-            var body: some View {
-                Text("Hello, Claude Code Studio!")
-                    .font(.title)
-                    .padding()
-            }
-        }
-        ```
-
-        以上代码创建了一个简单的 SwiftUI 视图。你可以根据需要调整字体大小和间距。
-        """
-
         let chars = Array(demoResponse)
         var index = 0
-
-        Timer.scheduledTimer(withTimeInterval: 0.015, repeats: true) { [weak self] timer in
+        Timer.scheduledTimer(withTimeInterval: 0.003, repeats: true) { [weak self] timer in
             guard let self = self else { timer.invalidate(); return }
             if index < chars.count {
                 self.streamingContent += String(chars[index])
                 index += 1
             } else {
-                timer.invalidate()
-                self.isStreaming = false
-                // Finalize message
+                timer.invalidate(); self.isStreaming = false
                 if let sIdx = self.sessions.firstIndex(where: { $0.id == sessionId }),
                    let mIdx = self.sessions[sIdx].messages.firstIndex(where: { $0.id == messageId }) {
                     self.sessions[sIdx].messages[mIdx].content = self.streamingContent
