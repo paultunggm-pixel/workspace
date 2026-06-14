@@ -15,14 +15,13 @@ struct ProjectListCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
-                Text("📁 项目(\(projectManager.store.projects.count))")
-                    .font(.system(size: 12, weight: .bold)).foregroundColor(.red)
+                Text("📁 项目")
+                    .font(.system(size: 11, weight: .semibold)).foregroundColor(.primary)
                 Spacer()
                 Button(action: { showNewProject = true }) {
-                    Image(systemName: "plus")
-                        .font(.system(size: 11, weight: .bold)).foregroundColor(.red)
+                    Image(systemName: "plus").font(.system(size: 10, weight: .semibold)).foregroundColor(AppTheme.textSecondary)
                 }.buttonStyle(.plain)
-            }.padding(.vertical, 4).background(Color.yellow.opacity(0.3))
+            }
 
             if projectManager.store.categories.isEmpty && projectManager.store.projects.isEmpty {
                 emptyState
@@ -122,7 +121,7 @@ struct CategoryRow: View {
                     Image(systemName: category.isExpanded ? "chevron.down" : "chevron.right")
                         .font(.system(size: 8, weight: .medium)).foregroundColor(AppTheme.textTertiary)
                     Text(category.icon + " " + category.name)
-                        .font(.system(size: 10, weight: .medium)).foregroundColor(AppTheme.textSecondary)
+                        .font(.system(size: 11, weight: .semibold)).foregroundColor(.primary)
                     Spacer()
                     Text("\(projectManager.store.projects(in: category).count)")
                         .font(.system(size: 9)).foregroundColor(AppTheme.textTertiary)
@@ -163,10 +162,10 @@ struct ProjectRow: View {
                     } else {
                         Spacer().frame(width: 10)
                     }
-                    Text(project.icon).font(.system(size: 11))
+                    Text(project.icon).font(.system(size: 12))
                     Text(project.name)
-                        .font(.system(size: 11, weight: appState.selectedProjectId == project.id.uuidString ? .semibold : .regular))
-                        .foregroundColor(appState.selectedProjectId == project.id.uuidString ? AppTheme.accent : AppTheme.textPrimary)
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(appState.selectedProjectId == project.id.uuidString ? AppTheme.accent : .primary)
                         .lineLimit(1)
                     Spacer()
                 }
