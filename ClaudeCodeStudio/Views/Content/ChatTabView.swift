@@ -76,9 +76,9 @@ struct ChatTabView: View {
             .overlay(RoundedRectangle(cornerRadius: 8).stroke(AppTheme.dividerGray, lineWidth: 1))
             .padding(.horizontal, 24).padding(.bottom, 12)
         }
-        .onChange(of: appState.selectedProjectId) { newId in
-            if let projectId = newId.flatMap(UUID.init) {
-                chatManager.openSession(for: projectId)
+        .onReceive(appState.$selectedProjectId) { newId in
+            if let id = newId, let uuid = UUID(uuidString: id) {
+                chatManager.openSession(for: uuid)
             }
         }
     }
