@@ -34,8 +34,6 @@ struct ProjectListCard: View {
                         .font(.system(size: 10, weight: .semibold))
                         .foregroundColor(AppTheme.textSecondary)
                 }
-                .menuStyle(.borderlessButton)
-                .fixedSize()
             }
 
             // Tree content
@@ -253,16 +251,6 @@ struct ProjectRow: View {
             }
             Button(action: {}) {
                 Label("重命名项目", systemImage: "pencil")
-            }
-            Divider()
-            Menu("移动到...") {
-                ForEach(projectManager.store.categories) { cat in
-                    if cat.id != project.categoryId {
-                        Button(cat.icon + " " + cat.name) {
-                            projectManager.moveProject(project.id, to: cat.id)
-                        }
-                    }
-                }
             }
             Divider()
             Button(action: {}) {
