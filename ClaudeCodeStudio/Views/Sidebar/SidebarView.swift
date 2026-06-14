@@ -96,27 +96,26 @@ struct InlineKeyInput: View {
     @State private var msg = ""
 
     var body: some View {
-        HStack(spacing: 4) {
-            TextField("粘贴 \(provider.label) API Key...", text: $key)
+        VStack(alignment: .leading, spacing: 4) {
+            TextField("粘贴 \(provider.label) API Key", text: $key)
                 .textFieldStyle(.roundedBorder).font(.system(size: 9))
-            Button("保存") {
-                let k = key.trimmingCharacters(in: .whitespaces)
-                guard !k.isEmpty else { return }
-                do {
-                    try providerManager.saveKey(k, for: provider.id.uuidString)
-                    providerManager.updateConnectionStatus(providerId: provider.id, status: .connected)
-                    key = ""; msg = "已连接"
-                } catch {
-                    msg = error.localizedDescription
+            HStack(spacing: 6) {
+                Button("保存") {
+                    let k = key.trimmingCharacters(in: .whitespaces)
+                    guard !k.isEmpty else { return }
+                    do {
+                        try providerManager.saveKey(k, for: provider.id.uuidString)
+                        providerManager.updateConnectionStatus(providerId: provider.id, status: .connected)
+                        key = ""; msg = "已连接 " + provider.label
+                    } catch { msg = error.localizedDescription }
+                }
+                .font(.system(size: 9, weight: .medium)).foregroundColor(.white)
+                .padding(.horizontal, 10).padding(.vertical, 3)
+                .background(RoundedRectangle(cornerRadius: 4).fill(AppTheme.accent))
+                .buttonStyle(.plain)
+                if !msg.isEmpty {
+                    Text(msg).font(.system(size: 8)).foregroundColor(msg.contains("已连接") ? .green : .red)
                 }
             }
-            .font(.system(size: 9, weight: .medium)).foregroundColor(.white)
-            .padding(.horizontal, 8).padding(.vertical, 3)
-            .background(RoundedRectangle(cornerRadius: 4).fill(AppTheme.accent))
-            .buttonStyle(.plain)
         }
-        if !msg.isEmpty {
-            Text(msg).font(.system(size: 8)).foregroundColor(msg.contains("已连接") ? .green : .red)
-        }
-    }
 }
