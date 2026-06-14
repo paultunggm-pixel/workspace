@@ -250,5 +250,13 @@ struct HTMLWebView: NSViewRepresentable {
         return webView
     }
 
-    func updateNSView(_ nsView: WKWebView, context: Context) {}
+    func updateNSView(_ nsView: WKWebView, context: Context) {
+        if nsView.title != "loading" || html != context.coordinator.lastHtml {
+            context.coordinator.lastHtml = html
+            nsView.loadHTMLString(html, baseURL: nil)
+        }
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator() }
+    class Coordinator { var lastHtml = "" }
 }
