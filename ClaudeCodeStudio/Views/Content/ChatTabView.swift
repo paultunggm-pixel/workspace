@@ -342,12 +342,12 @@ struct ChatInputBar: View {
             .buttonStyle(.plain)
 
             // Text input
-            TextField("发送消息... (Shift+Enter 换行, Enter 发送)", text: $inputText, axis: .vertical)
-                .textFieldStyle(.plain)
+            TextField("输入消息... (Enter 发送)", text: $inputText)
+                .textFieldStyle(.roundedBorder)
                 .font(.system(size: 12))
                 .focused($isFocused)
-                .lineLimit(1...6)
                 .onSubmit { onSend() }
+                .frame(minHeight: 32)
 
             // Send button
             Button(action: onSend) {
@@ -361,6 +361,7 @@ struct ChatInputBar: View {
             }
             .buttonStyle(.plain)
             .disabled(inputText.trimmingCharacters(in: .whitespaces).isEmpty)
+            .keyboardShortcut(.return, modifiers: [.command])
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
