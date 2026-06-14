@@ -96,11 +96,13 @@ class ProviderManager: ObservableObject {
     func setActiveProvider(_ id: UUID) {
         guard store.providers.contains(where: { $0.id == id }) else { return }
         store.activeProviderId = id
+        objectWillChange.send()
         saveToDisk()
     }
 
     func setModelTier(_ tier: ModelTier) {
         store.activeModelTier = tier
+        objectWillChange.send()
         saveToDisk()
     }
 
@@ -108,12 +110,14 @@ class ProviderManager: ObservableObject {
         guard let idx = store.providers.firstIndex(where: { $0.id == providerId }) else { return }
         store.providers[idx].lastBalance = amount
         store.providers[idx].lastBalanceDate = Date()
+        objectWillChange.send()
         saveToDisk()
     }
 
     func updateConnectionStatus(providerId: UUID, status: ProviderConfig.ConnectionStatus) {
         guard let idx = store.providers.firstIndex(where: { $0.id == providerId }) else { return }
         store.providers[idx].connectionStatus = status
+        objectWillChange.send()
         saveToDisk()
     }
 

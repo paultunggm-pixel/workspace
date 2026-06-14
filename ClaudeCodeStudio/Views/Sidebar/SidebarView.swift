@@ -96,7 +96,7 @@ struct APIKeyInputCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("🔑 API Key")
+            Text("🔑 \(provider.type.icon) \(provider.label) API Key")
                 .font(.system(size: 9, weight: .semibold))
                 .foregroundColor(AppTheme.textSecondary)
 

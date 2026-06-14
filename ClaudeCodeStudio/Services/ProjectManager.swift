@@ -59,6 +59,7 @@ class ProjectManager: ObservableObject {
     func addCategory(name: String, icon: String = "📂") -> Category {
         let cat = Category(name: name, icon: icon)
         store.categories.append(cat)
+        objectWillChange.send()
         saveToDisk()
         return cat
     }
@@ -71,13 +72,15 @@ class ProjectManager: ObservableObject {
             throw ProjectError.categoryNotEmpty
         }
         store.categories.removeAll { $0.id == category.id }
+        objectWillChange.send()
         saveToDisk()
     }
 
     func toggleCategory(_ categoryId: UUID) {
         if let idx = store.categories.firstIndex(where: { $0.id == categoryId }) {
             store.categories[idx].isExpanded.toggle()
-            saveToDisk()
+            objectWillChange.send()
+        saveToDisk()
         }
     }
 
@@ -96,6 +99,7 @@ class ProjectManager: ObservableObject {
         if let nci = store.categories.firstIndex(where: { $0.id == categoryId }) {
             store.categories[nci].projectIds.append(projectId)
         }
+        objectWillChange.send()
         saveToDisk()
     }
 
@@ -108,6 +112,7 @@ class ProjectManager: ObservableObject {
         if let idx = store.categories.firstIndex(where: { $0.id == categoryId }) {
             store.categories[idx].projectIds.append(project.id)
         }
+        objectWillChange.send()
         saveToDisk()
         return project
     }
@@ -121,6 +126,7 @@ class ProjectManager: ObservableObject {
         if let idx = store.categories.firstIndex(where: { $0.id == project.categoryId }) {
             store.categories[idx].projectIds.removeAll { $0 == project.id }
         }
+        objectWillChange.send()
         saveToDisk()
     }
 
@@ -128,14 +134,16 @@ class ProjectManager: ObservableObject {
         if let idx = store.projects.firstIndex(where: { $0.id == projectId }) {
             store.projects[idx].name = name
             store.projects[idx].updatedAt = Date()
-            saveToDisk()
+            objectWillChange.send()
+        saveToDisk()
         }
     }
 
     func updateProjectIcon(_ projectId: UUID, icon: String) {
         if let idx = store.projects.firstIndex(where: { $0.id == projectId }) {
             store.projects[idx].icon = icon
-            saveToDisk()
+            objectWillChange.send()
+        saveToDisk()
         }
     }
 
@@ -149,6 +157,7 @@ class ProjectManager: ObservableObject {
             store.projects[idx].conversationIds.append(conv.id)
             store.projects[idx].updatedAt = Date()
         }
+        objectWillChange.send()
         saveToDisk()
         return conv
     }
@@ -159,6 +168,7 @@ class ProjectManager: ObservableObject {
         if let idx = store.projects.firstIndex(where: { $0.id == projectId }) {
             store.projects[idx].conversationIds.removeAll { $0 == conversation.id }
         }
+        objectWillChange.send()
         saveToDisk()
     }
 
@@ -166,7 +176,8 @@ class ProjectManager: ObservableObject {
         if let idx = store.conversations.firstIndex(where: { $0.id == conversationId }) {
             store.conversations[idx].status = status
             store.conversations[idx].updatedAt = Date()
-            saveToDisk()
+            objectWillChange.send()
+        saveToDisk()
         }
     }
 
