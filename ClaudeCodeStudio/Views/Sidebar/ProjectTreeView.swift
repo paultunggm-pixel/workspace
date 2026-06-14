@@ -102,6 +102,11 @@ struct CategoryRow: View {
                 .padding(.horizontal, 4).padding(.vertical, 3).contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .contextMenu {
+                if category.id != Category.uncategorized {
+                    Button("删除分类") { try? projectManager.removeCategory(category) }
+                }
+            }
 
             if category.isExpanded {
                 ForEach(projectManager.store.projects(in: category)) { project in
@@ -151,6 +156,9 @@ struct ProjectRow: View {
             }
             .padding(.horizontal, 6).padding(.vertical, 5)
             .background(appState.selectedProjectId == project.id.uuidString ? AppTheme.accentBackground : Color.clear)
+            .contextMenu {
+                Button("删除项目") { projectManager.removeProject(project) }
+            }
 
             if isExpanded {
                 let projectSessions = chatManager.sessions.filter { $0.projectId == project.id }
