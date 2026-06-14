@@ -2,127 +2,53 @@ import SwiftUI
 
 struct SidebarView: View {
     @EnvironmentObject var appState: AppState
-    @EnvironmentObject var providerManager: ProviderManager
-
+    
     var body: some View {
         ScrollView {
-            VStack(spacing: AppTheme.cardMargin) {
+            VStack(spacing: 10) {
                 ModelEngineCard()
-                    .padding(.horizontal, AppTheme.cardMargin)
-
+                    .padding(.horizontal, 10)
                 ProjectListCard()
-                    .padding(.horizontal, AppTheme.cardMargin)
+                    .padding(.horizontal, 10)
             }
-            .padding(.top, AppTheme.cardMargin)
-            .padding(.bottom, AppTheme.cardMargin)
+            .padding(.top, 10).padding(.bottom, 10)
         }
-        .background(Color(nsColor: .controlBackgroundColor))
+        .background(Color(nsColor:.windowBackgroundColor).opacity(0.5))
     }
 }
 
-struct ModelEngineCard: View {
-    @EnvironmentObject var appState: AppState
-    @EnvironmentObject var providerManager: ProviderManager
-
+struct ProjectListCard: View {
+    let cats = ProjectStore.sampleCategories
+    let projs = ProjectStore.sampleProjects
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment:.leading,spacing:0) {
             HStack {
-                Text("🧠 模型引擎")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(AppTheme.textPrimary)
+                Text("项目").font(.system(size:10,weight:.semibold)).foregroundColor(.secondary)
                 Spacer()
-                if providerManager.activeProvider != nil {
-                    Circle()
-                        .fill(Color.green)
-                        .frame(width: 6, height: 6)
+                Text("+ 分类").font(.system(size:10)).foregroundColor(.secondary)
+                Text("+ 项目").font(.system(size:10)).foregroundColor(.secondary)
+            }.padding(.bottom,8).overlay(Rectangle().frame(height:1).foregroundColor(Color.black.opacity(0.07)),alignment:.bottom)
+            
+            ForEach(cats) { cat in
+                HStack(spacing:6) {
+                    Text(cat.icon)
+                    Text(cat.name).font(.system(size:11,weight:.semibold))
+                    Spacer()
+                    Text("\(projs.filter{$0.categoryId==cat.id}.count)").font(.system(size:9)).foregroundColor(.secondary)
+                }.padding(.vertical,5)
+                
+                ForEach(projs.filter{$0.categoryId==cat.id}) { p in
+                    HStack(spacing:4) {
+                        Text(p.name).font(.system(size:11))
+                        Spacer()
+                        Text("⋯").font(.system(size:12)).foregroundColor(.secondary)
+                    }.padding(.vertical,4).padding(.leading,28)
                 }
             }
-
-            if providerManager.hasProviders {
-                VStack(spacing: 6) {
-                    ModelSelector()
-                    if let active = providerManager.activeProvider {
-                        if active.connectionStatus == .connected {
-                            HStack {
-                                Circle().fill(Color.green).frame(width: 6, height: 6)
-                                Text("\(active.label) 已连接").font(.system(size: 9)).foregroundColor(.green)
-                            }
-                        } else {
-                            InlineKeyInput(provider: active)
-                        }
-                    }
-                    QuickSwitchButtons()
-                    if providerManager.activeProvider?.connectionStatus == .connected {
-                        BalanceCard()
-                    }
-                }
-                .padding(10)
-                .background(RoundedRectangle(cornerRadius: AppTheme.cardRadius).fill(AppTheme.cardBackground)
-                    .overlay(RoundedRectangle(cornerRadius: AppTheme.cardRadius).stroke(AppTheme.cardBorder, lineWidth: 1)))
-            } else {
-                VStack(spacing: 10) {
-                    Text("🧠")
-                        .font(.system(size: 28))
-                    Text("尚未配置模型")
-                        .font(.system(size: 11))
-                        .foregroundColor(AppTheme.textPrimary)
-                    Text("点击下方按钮添加模型提供商")
-                        .font(.system(size: 9))
-                        .foregroundColor(AppTheme.textSecondary)
-                    Button(action: {
-                        providerManager.addQuickProvider()
-                    }) {
-                        Label("添加提供商", systemImage: "plus.circle.fill")
-                            .font(.system(size: 11))
-                    }
-                    .buttonStyle(.plain)
-                    .foregroundColor(AppTheme.accent)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 20)
-                .background(
-                    RoundedRectangle(cornerRadius: AppTheme.cardRadius)
-                        .fill(AppTheme.cardBackground)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: AppTheme.cardRadius)
-                                .stroke(AppTheme.cardBorder, lineWidth: 1)
-                        )
-                )
-            }
+            Spacer(minLength:20)
         }
-    }
-}
-
-// ProjectListCard defined in ProjectTreeView.swift
-
-struct InlineKeyInput: View {
-    let provider: ProviderConfig
-    @EnvironmentObject var providerManager: ProviderManager
-    @State private var key = ""
-    @State private var msg = ""
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            TextField("粘贴 \(provider.label) API Key", text: $key)
-                .textFieldStyle(.roundedBorder).font(.system(size: 9))
-            HStack(spacing: 6) {
-                Button("保存") {
-                    let k = key.trimmingCharacters(in: .whitespaces)
-                    guard !k.isEmpty else { return }
-                    do {
-                        try providerManager.saveKey(k, for: provider.id.uuidString)
-                        providerManager.updateConnectionStatus(providerId: provider.id, status: .connected)
-                        key = ""; msg = "已连接 " + provider.label
-                    } catch { msg = error.localizedDescription }
-                }
-                .font(.system(size: 9, weight: .medium)).foregroundColor(.white)
-                .padding(.horizontal, 10).padding(.vertical, 3)
-                .background(RoundedRectangle(cornerRadius: 4).fill(AppTheme.accent))
-                .buttonStyle(.plain)
-                if !msg.isEmpty {
-                    Text(msg).font(.system(size: 8)).foregroundColor(msg.contains("已连接") ? .green : .red)
-                }
-            }
-        }
+        .padding(12)
+        .background(RoundedRectangle(cornerRadius:10).fill(Color.white.opacity(0.55)).overlay(RoundedRectangle(cornerRadius:10).stroke(Color.black.opacity(0.07),lineWidth:1)))
     }
 }
