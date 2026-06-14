@@ -90,29 +90,14 @@ class ChatManager: ObservableObject {
         // Force @Published to fire for internal array mutation
         objectWillChange.send()
 
-        // Check why API isn't being used
-        let reason: String
-        if providerManager == nil {
-            reason = "[ProviderManager未注入]"
-        } else if providerManager?.activeProvider == nil {
-            reason = "[无活跃Provider]"
-        } else if providerManager?.activeProvider?.connectionStatus != .connected {
-            reason = "[Provider未连接: \(providerManager?.activeProvider?.connectionStatus.rawValue ?? "?")]"
-        } else if (try? providerManager?.readKey(for: providerManager!.activeProvider!.id.uuidString)) == nil {
-            reason = "[Keychain中无API Key]"
+        if let pm = providerManager,
+           let provider = pm.activeProvider,
+           provider.connectionStatus == .connected,
+           let apiKey = try? pm.readKey(for: provider.id.uuidString) {
+            callRealAPI(provider: provider, apiKey: apiKey, sessionId: sessions[idx].id, messageId: assistantMsg.id)
         } else {
-            let provider = providerManager!.activeProvider!
-            if let apiKey = try? providerManager?.readKey(for: provider.id.uuidString) {
-                callRealAPI(provider: provider, apiKey: apiKey, sessionId: sessions[idx].id, messageId: assistantMsg.id)
-                return
-            }
-            reason = "[未知错误]"
+            simulateStream(for: sessions[idx].id, messageId: assistantMsg.id)
         }
-        // Show reason in assistant message
-        sessions[idx].messages[sessions[idx].messages.count - 1].content = reason + "\n使用模拟响应"
-        sessions[idx].messages[sessions[idx].messages.count - 1].isStreaming = false
-        objectWillChange.send()
-        simulateStream(for: sessions[idx].id, messageId: assistantMsg.id)
     }
 
     private func callRealAPI(provider: ProviderConfig, apiKey: String, sessionId: UUID, messageId: UUID) {
