@@ -8,6 +8,14 @@ struct ChatTabView: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            // Session header
+            if let session = chatManager.activeSession {
+                Text(session.title).font(.system(size: 11, weight: .medium)).foregroundColor(AppTheme.textPrimary)
+                    .padding(.horizontal, 24).padding(.vertical, 6)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.white.overlay(Rectangle().frame(height: 1).foregroundColor(AppTheme.dividerGray), alignment: .bottom))
+            }
+
             // Messages
             ScrollViewReader { proxy in
                 ScrollView {
@@ -53,6 +61,11 @@ struct ChatTabView: View {
             .padding(.horizontal, 12).padding(.vertical, 8)
             .overlay(RoundedRectangle(cornerRadius: 8).stroke(AppTheme.dividerGray, lineWidth: 1))
             .padding(.horizontal, 24).padding(.vertical, 12)
+        }
+        .onChange(of: appState.selectedProjectId) { newId in
+            if let id = newId.flatMap(UUID.init) {
+                chatManager.openSession(for: id)
+            }
         }
     }
 
