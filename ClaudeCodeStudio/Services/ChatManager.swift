@@ -148,13 +148,34 @@ class ChatManager: ObservableObject {
         objectWillChange.send()
 
         if let pm = providerManager,
-           let provider = pm.activeProvider,
-           provider.connectionStatus == .connected,
-           let apiKey = try? pm.readKey(for: provider.id.uuidString) {
-            callRealAPI(provider: provider, apiKey: apiKey, sessionId: sessions[idx].id, messageId: assistantMsg.id)
+           let provider = pm.activeProvider {
+            if provider.connectionStatus == .connected {
+                if let apiKey = try? pm.readKey(for: provider.id.uuidString) {
+                    callRealAPI(provider: provider, apiKey: apiKey, sessionId: sessions[idx].id, messageId: assistantMsg.id)
+                } else {
+                    // Connected but key missing - show error
+                    let errorMsg = ChatMessage(role: .system, content: "错误：已连接但无法读取 API Key，请在侧栏重新配置。")
+                    sessions[idx].messages.append(errorMsg)
+                    objectWillChange.send()
+                }
+            } else {
+                simulateStream(for: sessions[idx].id, messageId: assistantMsg.id)
+            }
         } else {
             simulateStream(for: sessions[idx].id, messageId: assistantMsg.id)
         }
+        saveToDisk()
+    }
+
+    private func finalizeAssistantMessage(sessionId: UUID, messageId: UUID, content: String) {
+        guard let sIdx = sessions.firstIndex(where: { $0.id == sessionId }),
+              let mIdx = sessions[sIdx].messages.firstIndex(where: { $0.id == messageId })
+        else { return }
+        sessions[sIdx].messages[mIdx].content = content
+        sessions[sIdx].messages[mIdx].isStreaming = false
+        sessions[sIdx].totalTokens += content.count / 4
+        sessions[sIdx].updatedAt = Date()
+        objectWillChange.send()
         saveToDisk()
     }
 
@@ -180,23 +201,9 @@ class ChatManager: ObservableObject {
                     self.isStreaming = false
                     switch result {
                     case .success(let content):
-                        if let sIdx = self.sessions.firstIndex(where: { $0.id == sessionId }),
-                           let mIdx = self.sessions[sIdx].messages.firstIndex(where: { $0.id == messageId }) {
-                            self.sessions[sIdx].messages[mIdx].content = content
-                            self.sessions[sIdx].messages[mIdx].isStreaming = false
-                            self.sessions[sIdx].totalTokens += content.count / 4
-                            self.sessions[sIdx].updatedAt = Date()
-                            self.objectWillChange.send()
-                            self.saveToDisk()
-                        }
+                        self.finalizeAssistantMessage(sessionId: sessionId, messageId: messageId, content: content)
                     case .failure:
-                        if let sIdx = self.sessions.firstIndex(where: { $0.id == sessionId }),
-                           let mIdx = self.sessions[sIdx].messages.firstIndex(where: { $0.id == messageId }) {
-                            self.sessions[sIdx].messages[mIdx].content = "API 调用失败"
-                            self.sessions[sIdx].messages[mIdx].isStreaming = false
-                            self.objectWillChange.send()
-                            self.saveToDisk()
-                        }
+                        self.finalizeAssistantMessage(sessionId: sessionId, messageId: messageId, content: "API 调用失败")
                     }
                     self.streamingContent = ""
                 }
@@ -226,15 +233,7 @@ class ChatManager: ObservableObject {
                 index += 1
             } else {
                 t.invalidate(); self.isStreaming = false
-                if let sIdx = self.sessions.firstIndex(where: { $0.id == sessionId }),
-                   let mIdx = self.sessions[sIdx].messages.firstIndex(where: { $0.id == messageId }) {
-                    self.sessions[sIdx].messages[mIdx].content = self.streamingContent
-                    self.sessions[sIdx].messages[mIdx].isStreaming = false
-                    self.sessions[sIdx].totalTokens += self.streamingContent.count / 4
-                    self.sessions[sIdx].updatedAt = Date()
-                    self.objectWillChange.send()
-                    self.saveToDisk()
-                }
+                self.finalizeAssistantMessage(sessionId: sessionId, messageId: messageId, content: self.streamingContent)
                 self.streamingContent = ""
             }
         }

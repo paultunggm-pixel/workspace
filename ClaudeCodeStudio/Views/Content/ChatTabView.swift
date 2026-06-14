@@ -88,7 +88,7 @@ struct ChatTabView: View {
         let text = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }
         if chatManager.activeSession == nil,
-           let projectId = appState.selectedProjectId.flatMap(UUID.init) {
+           let projectId = appState.selectedProjectId {
             chatManager.openSession(for: projectId)
         }
         chatManager.sendMessage(text)

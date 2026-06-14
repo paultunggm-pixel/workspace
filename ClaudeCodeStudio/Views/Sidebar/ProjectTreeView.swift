@@ -140,14 +140,14 @@ struct ProjectRow: View {
 
                 // Project name (click to switch session)
                 Button(action: {
-                    appState.selectedProjectId = project.id.uuidString
+                    appState.selectedProjectId = project.id
                     NotificationCenter.default.post(name: .switchToProject, object: project.id)
                 }) {
                     HStack(spacing: 4) {
                         Text(project.icon).font(.system(size: 12))
                         Text(project.name)
                             .font(.system(size: 12, weight: .medium))
-                            .foregroundColor(appState.selectedProjectId == project.id.uuidString ? AppTheme.accent : .primary)
+                            .foregroundColor(appState.selectedProjectId == project.id ? AppTheme.accent : .primary)
                             .lineLimit(1)
                         Spacer()
                     }
@@ -155,7 +155,7 @@ struct ProjectRow: View {
                 }.buttonStyle(.plain)
             }
             .padding(.horizontal, 6).padding(.vertical, 5)
-            .background(appState.selectedProjectId == project.id.uuidString ? AppTheme.accentBackground : Color.clear)
+            .background(appState.selectedProjectId == project.id ? AppTheme.accentBackground : Color.clear)
             .contextMenu {
                 Button("删除项目") { projectManager.removeProject(project) }
             }
@@ -184,4 +184,3 @@ struct ProjectRow: View {
         }
     }
 }
-

@@ -20,7 +20,7 @@ struct ContentView: View {
 private let sampleAppStateCode = """
 import SwiftUI
 class AppState: ObservableObject {
-    @Published var selectedProjectId: String? = nil
+    @Published var selectedProjectId: UUID? = nil
     @Published var selectedTab: ContentTab = .chat
     @Published var tokenCount: Int = 0
 }
