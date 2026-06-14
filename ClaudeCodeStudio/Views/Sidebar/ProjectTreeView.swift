@@ -194,17 +194,15 @@ struct ConversationRow: View {
 
     var body: some View {
         HStack(spacing: 4) {
-            Circle()
-                .fill(statusColor)
-                .frame(width: 5, height: 5)
+            Circle().fill(statusColor).frame(width: 5, height: 5)
             Text(conversation.title)
-                .font(.system(size: 9))
-                .foregroundColor(AppTheme.textSecondary)
+                .font(.system(size: 10))
+                .foregroundColor(.primary)
                 .lineLimit(1)
             Spacer()
         }
-        .padding(.horizontal, 4)
-        .padding(.vertical, 2)
+        .padding(.horizontal, 4).padding(.vertical, 3)
+        .contentShape(Rectangle())
         .contentShape(Rectangle())
     }
 
