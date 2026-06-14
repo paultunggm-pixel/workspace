@@ -5,13 +5,15 @@ struct StatusBarView: View {
 
     var body: some View {
         HStack {
-            // GitHub status
+            // GitHub status - reads from AppState
             HStack(spacing: 6) {
                 Text("🐙")
                 Text(appState.gitBranch)
                     .font(.system(size: 9, design: .monospaced))
-                Text("·")
-                Text(appState.gitLastCommit)
+                if !appState.gitLastCommit.isEmpty {
+                    Text("·")
+                    Text(appState.gitLastCommit.prefix(7))
+                }
             }
             .font(.system(size: 9))
             .foregroundColor(AppTheme.textTertiary)
@@ -20,8 +22,8 @@ struct StatusBarView: View {
 
             // Engine & Token status
             HStack(spacing: 10) {
-                Text("Engine v2.1.150")
-                Text("Tokens \(appState.tokenCount)K/\(appState.tokenLimit/1000)K")
+                Text("Claude Code Studio")
+                Text("Tokens \(appState.tokenCount)/\(appState.tokenLimit)")
             }
             .font(.system(size: 9))
             .foregroundColor(AppTheme.textTertiary)
