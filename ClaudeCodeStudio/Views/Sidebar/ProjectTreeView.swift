@@ -22,18 +22,11 @@ struct ProjectListCard: View {
                     .font(.system(size: 11, weight: .semibold))
                     .foregroundColor(AppTheme.textPrimary)
                 Spacer()
-                Menu {
-                    Button(action: { showSheet = .newProject }) {
-                        Label("新建项目", systemImage: "doc.badge.plus")
-                    }
-                    Button(action: { showSheet = .newCategory }) {
-                        Label("新建分类", systemImage: "folder.badge.plus")
-                    }
-                } label: {
+                Button(action: { showSheet = .newProject }) {
                     Image(systemName: "plus")
                         .font(.system(size: 10, weight: .semibold))
                         .foregroundColor(AppTheme.textSecondary)
-                }
+                }.buttonStyle(.plain)
             }
 
             // Tree content
@@ -185,15 +178,6 @@ struct CategoryRow: View {
                 }
             }
         }
-        .contextMenu {
-            if category.id != Category.uncategorized {
-                Button(role: .destructive, action: {
-                    try? projectManager.removeCategory(category)
-                }) {
-                    Label("删除分类", systemImage: "trash")
-                }
-            }
-        }
     }
 }
 
@@ -245,22 +229,6 @@ struct ProjectRow: View {
                 }
             }
         }
-        .contextMenu {
-            Button(action: {}) {
-                Label("在 Finder 中打开", systemImage: "folder")
-            }
-            Button(action: {}) {
-                Label("重命名项目", systemImage: "pencil")
-            }
-            Divider()
-            Button(action: {}) {
-                Label("导出会话记录", systemImage: "square.and.arrow.up")
-            }
-            Divider()
-            Button(role: .destructive, action: { onDelete() }) {
-                Label("删除项目", systemImage: "trash")
-            }
-        }
     }
 }
 
@@ -285,24 +253,6 @@ struct ConversationRow: View {
         .padding(.horizontal, 4)
         .padding(.vertical, 2)
         .contentShape(Rectangle())
-        .contextMenu {
-            Button(action: {
-                projectManager.updateConversationStatus(conversation.id, status: .active)
-            }) {
-                Label("标记活跃", systemImage: "circle.fill")
-            }
-            Button(action: {
-                projectManager.updateConversationStatus(conversation.id, status: .completed)
-            }) {
-                Label("标记完成", systemImage: "checkmark.circle")
-            }
-            Divider()
-            Button(role: .destructive, action: {
-                projectManager.removeConversation(conversation)
-            }) {
-                Label("删除会话", systemImage: "trash")
-            }
-        }
     }
 
     private var statusColor: Color {

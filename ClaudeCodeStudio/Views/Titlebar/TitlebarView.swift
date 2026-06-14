@@ -53,7 +53,6 @@ struct TitlebarView: View {
                 .background(Color.black.opacity(0.03))
                 .clipShape(Capsule())
             }
-            .menuStyle(.borderlessButton)
             .fixedSize()
             .padding(.trailing, 8)
         }
