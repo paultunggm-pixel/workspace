@@ -7,14 +7,6 @@ struct ChatTabView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // DEBUG: Click to force session
-            HStack {
-                Text("会话数: \(chatManager.sessions.count)").font(.system(size: 9)).foregroundColor(.red)
-                if let pid = appState.selectedProjectId {
-                    Text("选中: \(pid.prefix(8))").font(.system(size: 9)).foregroundColor(.blue)
-                }
-            }.padding(.horizontal, 24).padding(.vertical, 2)
-
             // Session title bar
             if let session = chatManager.activeSession {
                 Text(session.title)
@@ -69,6 +61,11 @@ struct ChatTabView: View {
             .background(Color.white.overlay(
                 Rectangle().frame(height: 1).foregroundColor(AppTheme.dividerGray), alignment: .top))
             .padding(.horizontal, 24).padding(.bottom, 8)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .switchToProject)) { notif in
+            if let projectId = notif.object as? UUID {
+                chatManager.openSession(for: projectId)
+            }
         }
     }
 

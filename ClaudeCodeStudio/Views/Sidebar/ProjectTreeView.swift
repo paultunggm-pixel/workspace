@@ -1,5 +1,9 @@
 import SwiftUI
 
+extension Notification.Name {
+    static let switchToProject = Notification.Name("switchToProject")
+}
+
 // MARK: - Project List Card (container)
 
 struct ProjectListCard: View {
@@ -188,7 +192,6 @@ struct ProjectRow: View {
     let onDelete: () -> Void
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var projectManager: ProjectManager
-    @EnvironmentObject var chatManager: ChatManager
     @State private var isExpanded = false
 
     var body: some View {
@@ -196,7 +199,7 @@ struct ProjectRow: View {
             Button(action: {
                 isExpanded.toggle()
                 appState.selectedProjectId = project.id.uuidString
-                chatManager.openSession(for: project.id)
+                NotificationCenter.default.post(name: .switchToProject, object: project.id)
             }) {
                 HStack(spacing: 4) {
                     if !projectManager.store.conversations(in: project).isEmpty {
