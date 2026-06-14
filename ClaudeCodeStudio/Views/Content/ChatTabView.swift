@@ -4,7 +4,6 @@ import Combine
 struct ChatTabView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var chatManager: ChatManager
-    @EnvironmentObject var projectManager: ProjectManager
     @State private var inputText = ""
 
     var body: some View {
@@ -78,13 +77,8 @@ struct ChatTabView: View {
             .padding(.horizontal, 24).padding(.bottom, 12)
         }
         .onChange(of: appState.selectedProjectId) { newId in
-            guard let projectId = newId.flatMap(UUID.init) else { return }
-            let conversations = projectManager.store.conversations.filter { $0.projectId == projectId }
-            if conversations.isEmpty {
-                let conv = projectManager.addConversation(title: "新对话", projectId: projectId)
-                chatManager.openSession(conv.id)
-            } else {
-                chatManager.openSession(conversations[0].id)
+            if let projectId = newId.flatMap(UUID.init) {
+                chatManager.openSession(for: projectId)
             }
         }
     }
@@ -93,8 +87,7 @@ struct ChatTabView: View {
         let text = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }
         if chatManager.activeSession == nil, let projectId = appState.selectedProjectId.flatMap(UUID.init) {
-            let conv = projectManager.addConversation(title: String(text.prefix(30)), projectId: projectId)
-            chatManager.openSession(conv.id)
+            chatManager.openSession(for: projectId)
         }
         chatManager.sendMessage(text)
         inputText = ""
