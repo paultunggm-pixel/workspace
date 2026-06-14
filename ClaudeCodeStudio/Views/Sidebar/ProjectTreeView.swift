@@ -199,28 +199,23 @@ struct ProjectRow: View {
                 HStack(spacing: 4) {
                     if !projectManager.store.conversations(in: project).isEmpty {
                         Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
-                            .font(.system(size: 7, weight: .medium))
+                            .font(.system(size: 8, weight: .medium))
                             .foregroundColor(AppTheme.textTertiary)
                     } else {
                         Spacer().frame(width: 10)
                     }
-                    Text(project.icon)
-                        .font(.system(size: 10))
+                    Text(project.icon).font(.system(size: 11))
                     Text(project.name)
-                        .font(.system(size: 10, weight: appState.selectedProjectId == project.id.uuidString ? .semibold : .regular))
+                        .font(.system(size: 11, weight: appState.selectedProjectId == project.id.uuidString ? .semibold : .regular))
                         .foregroundColor(appState.selectedProjectId == project.id.uuidString ? AppTheme.accent : AppTheme.textPrimary)
                         .lineLimit(1)
                     Spacer()
                 }
-                .padding(.horizontal, 4)
-                .padding(.vertical, 2)
+                .padding(.horizontal, 6).padding(.vertical, 5)
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .background(
-                appState.selectedProjectId == project.id.uuidString
-                    ? AppTheme.accentBackground
-                    : Color.clear
-            )
+            .background(appState.selectedProjectId == project.id.uuidString ? AppTheme.accentBackground : Color.clear)
 
             if isExpanded {
                 ForEach(projectManager.store.conversations(in: project)) { conv in
