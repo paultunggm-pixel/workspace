@@ -72,7 +72,6 @@ class ChatManager: ObservableObject {
 
     func sendMessage(_ content: String, attachments: [ChatAttachment] = []) {
         guard let idx = sessions.firstIndex(where: { $0.id == activeSessionId }) else {
-            // Auto-create session if none active
             return
         }
 
@@ -80,17 +79,17 @@ class ChatManager: ObservableObject {
         sessions[idx].messages.append(userMsg)
         sessions[idx].updatedAt = Date()
 
-        // Auto-title from first message
         if sessions[idx].title == "新会话" {
             sessions[idx].title = String(content.prefix(40)).trimmingCharacters(in: .whitespaces)
         }
 
-        // Add placeholder assistant message for streaming
         let assistantMsg = ChatMessage(role: .assistant, content: "", isStreaming: true)
         sessions[idx].messages.append(assistantMsg)
         sessions[idx].updatedAt = Date()
 
-        // Try real API, fallback to simulated response
+        // Force @Published to fire for internal array mutation
+        objectWillChange.send()
+
         if let provider = providerManager?.activeProvider,
            provider.connectionStatus == .connected,
            let apiKey = try? providerManager?.readKey(for: provider.id.uuidString) {
@@ -128,12 +127,14 @@ class ChatManager: ObservableObject {
                             self.sessions[sIdx].messages[mIdx].isStreaming = false
                             self.sessions[sIdx].totalTokens += content.count / 4
                             self.sessions[sIdx].updatedAt = Date()
+                            self.objectWillChange.send()
                         }
                     case .failure:
                         if let sIdx = self.sessions.firstIndex(where: { $0.id == sessionId }),
                            let mIdx = self.sessions[sIdx].messages.firstIndex(where: { $0.id == messageId }) {
-                            self.sessions[sIdx].messages[mIdx].content = "API 调用失败，请检查网络连接和 API Key 配置。"
+                            self.sessions[sIdx].messages[mIdx].content = "API 调用失败"
                             self.sessions[sIdx].messages[mIdx].isStreaming = false
+                            self.objectWillChange.send()
                         }
                     }
                     self.streamingContent = ""
@@ -188,6 +189,7 @@ class ChatManager: ObservableObject {
                     self.sessions[sIdx].messages[mIdx].isStreaming = false
                     self.sessions[sIdx].totalTokens += self.streamingContent.count / 4
                     self.sessions[sIdx].updatedAt = Date()
+                    self.objectWillChange.send()
                 }
                 self.streamingContent = ""
             }
