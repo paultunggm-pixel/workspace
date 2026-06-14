@@ -7,6 +7,14 @@ struct ChatTabView: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            // DEBUG: Click to force session
+            HStack {
+                Text("会话数: \(chatManager.sessions.count)").font(.system(size: 9)).foregroundColor(.red)
+                if let pid = appState.selectedProjectId {
+                    Text("选中: \(pid.prefix(8))").font(.system(size: 9)).foregroundColor(.blue)
+                }
+            }.padding(.horizontal, 24).padding(.vertical, 2)
+
             // Session title bar
             if let session = chatManager.activeSession {
                 Text(session.title)
