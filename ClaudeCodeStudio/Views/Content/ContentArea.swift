@@ -27,17 +27,3 @@ struct ContentArea: View {
         .padding(.bottom, AppTheme.contentMargin)
     }
 }
-
-struct DebugTabView: View {
-    let label: String
-    let color: Color
-    var body: some View {
-        VStack {
-            Text(label)
-                .font(.largeTitle)
-                .foregroundColor(.white)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-        .background(color)
-    }
-}

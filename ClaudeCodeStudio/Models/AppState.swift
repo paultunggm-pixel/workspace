@@ -1,7 +1,7 @@
 import SwiftUI
 
 class AppState: ObservableObject {
-    @Published var selectedProjectId: String? = nil
+    @Published var selectedProjectId: UUID? = nil
     @Published var selectedTab: ContentTab = .chat
     @Published var engineStatus: EngineStatus = .disconnected
     @Published var gitBranch: String = "main"
