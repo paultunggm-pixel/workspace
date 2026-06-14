@@ -34,18 +34,18 @@ class ProviderManager: ObservableObject {
             label: "DeepSeek Pro",
             defaultModel: "deepseek-chat",
             models: ["deepseek-chat", "deepseek-reasoner"],
-            lastBalance: 86.50,
-            lastBalanceDate: Date(),
-            connectionStatus: .connected
+            lastBalance: nil,
+            lastBalanceDate: nil,
+            connectionStatus: .disconnected
         )
         let qw = ProviderConfig(
             type: .qwen,
             label: "Qwen Turbo",
             defaultModel: "qwen-turbo",
             models: ["qwen-turbo", "qwen-plus", "qwen-max"],
-            lastBalance: 42.00,
-            lastBalanceDate: Date(),
-            connectionStatus: .connected
+            lastBalance: nil,
+            lastBalanceDate: nil,
+            connectionStatus: .disconnected
         )
         store.providers = [dp, qw]
         store.activeProviderId = dp.id
