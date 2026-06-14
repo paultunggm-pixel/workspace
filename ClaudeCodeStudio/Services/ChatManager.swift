@@ -51,6 +51,7 @@ class ChatManager: ObservableObject {
             let session = ChatSession(title: title, projectId: projectId)
             sessions.append(session)
             activeSessionId = session.id
+            objectWillChange.send()
         }
     }
 
