@@ -9,8 +9,9 @@ struct ChatTabView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // DEBUG: visible test bar
-            Text("输入框在这里").foregroundColor(.red).font(.system(size: 20)).padding(40)
+            Text("CHAT TAB").foregroundColor(.white).font(.largeTitle)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.red)
             if let session = chatManager.activeSession {
                 Text(session.title).font(.system(size: 11, weight: .medium)).foregroundColor(AppTheme.textPrimary)
                     .padding(.horizontal, 24).padding(.vertical, 6)
